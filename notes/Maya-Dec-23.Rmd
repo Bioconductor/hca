@@ -199,13 +199,13 @@ Then the base URL, endpoint, and all parameters
 
 ```{r}
 base_url <- "https://service.dev.singlecell.gi.ucsc.edu"
-endpoint <- "/index/project"
+endpoint <- "/index/projects"
 parameters <- list(
     catalog="dcp2",
     filters=encoded_filter,
     size=100,
     sort="projectTitle",
-    order="as"
+    order="asc"
 )
 ```
 
