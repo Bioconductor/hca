@@ -246,7 +246,9 @@ tryCatch({
     message(e)
 })
 
-httr::headers(response)
+headers(response) %>%
+    str()
+
 lst <- httr::content(response)
 ## lst$hits$projectTitle... ???
 ```
@@ -255,13 +257,58 @@ TODO
 
 1. Figure out authentication (Martin)
 
+    - This turned out to be a non-issue, the path we used originally
+      was `/index/project` (singular), but should have been
+      `/index/projects`. We had also used `order="as"` when we should
+      have had `order="asc"`
+
 2. Figure out how to parse return value (Maya)
 
-    - What are the `projectTitle` of projects with 'pancreas' as organ? (should be same as [here][])
+    - What are the `projectTitle` of projects with 'pancreas' as
+      organ? (should be same as [here][])
     
-3. Formulate additional filters, projects using `genusSpecies = "Homo sapiens"`
+    - As a start, here are the 'names' of list elements, and the
+      length (number of elements of each element
+      
+      ```{r}
+      names(lst)
+      lengths(lst)
+      ```
+      
+      Note that elements do not have to be named, e.g., each 'hit' is
+      not named
+      
+      ```{r}
+      names(lst)
+      lengths(lst)
+      ```
+      
+      Unnamed elements can be accessed via a 1-based double square bracket
+      
+      ```{r}
+      names(lst$hits[[1]])
+      ```
+      
+      The path to the first project title matching the filter is (in
+      two equivalent ways)
+      
+      ```{r}
+      t1 <- lst$hits[[1]]$projects[[1]]$projectTitle
+      t1
+      t2 <- lst[["hits"]][[1]][["projects"]][[1]][["projectTitle"]]
+      identical(t1, t2)
+      ```
+      
+      Use `sapply()` with `X = lst$hits` to generate a vector of
+      project titles matching our query.
 
-4. Incorporate simple queries like this into an R package.
+3. What information in is `lst$pagination` and `lst$termFacets`?
+
+4. Formulate additional filters, projects using `genusSpecies = "Homo
+   sapiens"`. What about combining filters -- projects using `"Mus
+   musculus"` (mouse) to study expression in the brain.
+
+5. Incorporate simple queries like this into an R package.
 
     ```
     project <- function(organ = character()) {
