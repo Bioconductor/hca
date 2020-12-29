@@ -195,7 +195,7 @@ encoded_filter <- utils::URLencode(json_filter, reserved = TRUE)
 encoded_filter
 ```
 
-Then the base URL, endpoint, and all parameters
+Then the base URL, endpoint, and all other parameters
 
 ```{r}
 base_url <- "https://service.dev.singlecell.gi.ucsc.edu"

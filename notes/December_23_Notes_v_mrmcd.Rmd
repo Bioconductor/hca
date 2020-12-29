@@ -1,0 +1,134 @@
+---
+title: "December 23 Notes"
+author: "Maya Reed McDaniel"
+date: "12/23/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# [Human Cell Atlas](https://data.humancellatlas.org/)
+## Biological Background
+- Possible to isolate an individual cell, measure level of expression of each gene in that cell
+- The result is a matrix:
+    - rows = genes (~ N=30k)
+    - columns = cells (~ M = 10k - 1mil)
+    - matrix cells = expression values
+- Experiments on the order of 10ks of cells and typically about 30k genes
+- Matrices of expression values tend to be sparse i.e. 95% of cells may be zeros
+
+## Workflow
+- Pipeline:
+    - extract short DNA sequences from cells (millions per cell)
+    - From DNA sequences (about 100 nucleotide base pairs long) they are analyzed and output to FASTQ files
+    - FASTQ files are often transformed to BAM or CRAM formats
+    - BAM or CRAM files are summarized into the matrices
+        - `.csv` file (standard)
+        - `.loom` (based on `hdf5` *which is NOT hadoop*, but rather astrophysics derived file format for large data)
+        - `.mtx` for sparse text-based matrix representation with 3 columns: 1. row index, 2. column index, and 3. non-zero value 
+
+## Projects
+- Focus on a relatively small number of samples ex. 4 humans
+- Each "project" is an experiment that is an entry in the overall database
+    - some fields include the tissue organ type, species, etc.
+
+## [GUI](https://data.humancellatlas.org/explore/projects?catalog=dcp1&filter=%5B%7B%22facetName%22:%22genusSpecies%22,%22terms%22:%5B%22Homo%20sapiens%22%5D%7D%5D)
+- each row represents a project
+
+## [API](https://service.azul.data.humancellatlas.org/)
+- [swagger (old name) or openAPI (newer name)](https://swagger.io/docs/specification/about/)
+    - JSON specification of an API; define endpoints and the parameters used to invoke the endpoint
+    - gives an overview and description of the API
+    - GUI for testing some of the API functionality using the **Try it Out** button and executing
+        - ex. `GET` request on endpoint `/index/projects` with catalog of `dcp2` and filter of `{"organ" : {"is" : ["pancreas"]}}`
+        - provides you with the `curl` command to make the API call from your own terminal, and the request URL if you want to navigate there via the browser
+        - result returned as JSON
+        
+## Accessing API from R
+- using the `httr` and `jsonlite` packages
+```{r}
+library(httr)
+library(jsonlite)
+```
+
+- start with the filter (aiming for `{"organ" : {"is" : ["pancreas"]}}`)
+```{r}
+r_filter <- list(
+    organ = list(
+        is = "pancreas"
+    )
+)
+
+# takes list and makes it json
+json_filter <- toJSON(r_filter)
+# need to encode url so that curly braces are not escaped, but treated as legal characters
+encoded_filter <- utils::URLencode(json_filter, reserved = TRUE)
+encoded_filter
+```
+
+- then base URL, endpoint, and all params
+```{r}
+base_url <- "https://service.dev.singlecell.gi.ucsc.edu"
+endpoint <- "/index/projects"
+
+params <- list(
+    catalog = "dcp2",
+    filters = encoded_filter,
+    size = 100,
+    sort = "projectTitle",
+    order = "asc"
+)
+
+```        
+- futher process the params
+
+```{r}
+# do names(params) to get parameter key names
+names(params)
+param_key_value <- paste(names(params), params, sep="=")
+param_key_value
+```
+
+- format the query by collapsing into single string separated by `&`
+```{r}
+query <- paste(param_key_value, collapse = "&")
+query
+```
+
+- form the URL for the GET query
+```{r}
+# paste with no sep
+url <- paste0(
+    base_url,
+    endpoint,
+    "?",
+    query
+)
+url
+```
+
+- Now that we have url, make request using `httr` package
+```{r}
+response <- httr::GET(url)
+httr::stop_for_status(response) # make sure response code isn't 400 or higher
+httr::headers(response)
+httr::content(response)
+```
+TODO
+1. ***Need an authentication token***
+2. parse return value
+    - what are the `projectTitle` of the projects with "pancreas" as the organ
+3. formulate additional filters
+    - projects using homo sapien samples i.e. `genusSpecies = "Homo sapiens"`
+4. incorporate these kinds of queries into an R package i.e. different types of functions
+```
+project <-function(organ = character()){
+    # query for appropriate projects
+    # transform the results into tibble with 1 row per project
+    # and additional project info in that row as columns
+    # tibble(projectTitle = ..., genusSpecies = ...)
+}
+```
+    - each of the above chunks could be a mini function in the package

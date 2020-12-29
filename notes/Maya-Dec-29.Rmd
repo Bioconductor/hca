@@ -1,0 +1,148 @@
+---
+title: "Preliminary HCAccess Work"
+author: "Maya Reed McDaniel"
+date: "12/29/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Recap:
+
+```{r}
+# load packages
+library(httr)
+library(jsonlite)
+library(dplyr)
+
+# construct a query filter (aiming for `{"organ" : {"is" : ["pancreas"]}}`)
+r_filter <- list(
+    organ = list(
+        is = "pancreas"
+    )
+)
+
+# takes list and makes it json
+json_filter <- toJSON(r_filter)
+# need to encode url so that curly braces are not escaped, but treated as legal characters
+encoded_filter <- utils::URLencode(json_filter, reserved = TRUE)
+encoded_filter
+
+# putting together base url, endpoint, and other parameters
+base_url <- "https://service.dev.singlecell.gi.ucsc.edu"
+endpoint <- "/index/projects"
+
+params <- list(
+    catalog = "dcp2",
+    filters = encoded_filter,
+    size = 100,
+    sort = "projectTitle",
+    order = "asc"
+)
+
+# further parameter processing; do names(params) to get parameter key names
+names(params)
+param_key_value <- paste(names(params), params, sep="=")
+param_key_value
+
+# format the query by collapsing into single string separated by `&`
+query <- paste(param_key_value, collapse = "&")
+query
+
+# form the URL for the GET query
+# paste with no sep
+url <- paste0(
+    base_url,
+    endpoint,
+    "?",
+    query
+)
+
+url
+
+# Now that we have url, make request using `httr` package
+# wrapping in a try-catch block
+
+response <- httr::GET(url)
+tryCatch({
+    httr::stop_for_status(response) # make sure response code isn't 400 or higher
+}, error = function(e) {
+    ## convert error into a simple 'message' so execution continues
+    message(e)
+})
+
+# output headers as a string
+httr::headers(response) %>%
+    str()
+
+# response content
+lst <- httr::content(response)
+lst
+```
+
+---
+## Figure out how to parse return value
+- our goal here is to extract a list of project titles for the projects returned by our query
+
+- As a start, here are the 'names' of list elements making up the response's content, and the length (number of elements of each element)
+      
+```{r}
+names(lst)
+lengths(lst)
+```
+
+> Any index, when queried, returns a JSON array of ***hits***. Each hit represents a metadata entity. Nested in each hit is a summary of the properties of entities associated with the hit.
+
+- The hits (4 in total) are unnamed; unnamed elements can be accessed via a 1-based double square bracket
+
+```{r}
+names(lst$hits[[1]])
+```
+
+- The path to the first project title matching the filter is (in two equivalent ways)
+      
+```{r}
+t1 <- lst$hits[[1]]$projects[[1]]$projectTitle
+t1
+t2 <- lst[["hits"]][[1]][["projects"]][[1]][["projectTitle"]]
+t2
+identical(t1, t2)
+```
+
+- Use `sapply()` with `X = lst$hits` to generate a vector of project titles matching our query.
+```{r}
+# function for extracting project titles
+extract_proj_titles <- function(X = list()){
+    # print(identical(X, lst[["hits"]]))
+    proj_titles <- c()
+    num_hits <- length(X)
+    # print(paste('num_hits:', num_hits))
+    for (hit_ind in 1:num_hits){
+        current_hit <- X[[hit_ind]]
+        num_projs <- length(current_hit$projects)
+        for (proj_ind in 1:num_projs){
+            current_proj <- current_hit$projects[[proj_ind]]
+            proj_titles <- append(proj_titles, current_proj$projectTitle)
+        }
+    }
+    
+    return(proj_titles)
+}
+
+sapply(X = list(lst$"hits"), FUN = extract_proj_titles)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+~end~
