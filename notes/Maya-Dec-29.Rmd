@@ -79,11 +79,11 @@ httr::headers(response) %>%
 
 # response content
 lst <- httr::content(response)
-lst
+# lst
 ```
 
 ---
-## Figure out how to parse return value
+## 2. Figure out how to parse return value
 - our goal here is to extract a list of project titles for the projects returned by our query
 
 - As a start, here are the 'names' of list elements making up the response's content, and the length (number of elements of each element)
@@ -134,11 +134,182 @@ extract_proj_titles <- function(X = list()){
 sapply(X = list(lst$"hits"), FUN = extract_proj_titles)
 ```
 
+---
+## 3. What information in is `lst$pagination` and `lst$termFacets`?
 
+```{r}
+names(lst$pagination)
+lst$pagination
+# pagination i.e. the number of pages the results make up, given a specific break point
+# there are only 4 hits, they all fit on one page
+# the hits are sorted in ascending order on the basis of projectTitle
+```
 
+```{r}
+names(lst$termFacets)
+lst$termFacets
+# contains a summary of the facets available for composing filters, and the various values those facets take on withing the results of the query
+```
 
+---
+## 4. Formulate additional filters
+- Some examples include:
+    - projects using `genusSpecies = "Homo sapiens"`
+    - combining filters: projects using `"Mus musculus"` (mouse) to study expression in the brain.
 
+### First, encapsulating the API querying capabilities in functions
 
+- function for constructing the query url
+```{r}
+construct_query_filter <- function(r_filter = list(), base_url = "https://service.dev.singlecell.gi.ucsc.edu", endpoint = "/index/projects", params = list()){
+    # takes list and makes it json
+    json_filter <- toJSON(r_filter)
+    
+    # need to encode url so that curly braces are not escaped, but treated as legal characters
+    encoded_filter <- utils::URLencode(json_filter, reserved = TRUE)
+    
+    # add encoded filter to params
+    # help from: https://www.datamentor.io/r-programming/list/
+    params[["filters"]] <- encoded_filter
+    
+    
+    # further parameter processing; do names(params) to get parameter key names
+    param_key_value <- paste(names(params), params, sep="=")
+    
+    # format the query by collapsing into single string separated by `&`
+    query <- paste(param_key_value, collapse = "&")
+    
+    # form the URL for the GET query
+    # paste with no sep
+    url <- paste0(
+        base_url,
+        endpoint,
+        "?",
+        query
+    )
+}
+```
+
+- function for making the API call request
+```{r}
+
+hca_api_call <- function(url = ''){
+    response <- httr::GET(url)
+    tryCatch({
+        httr::stop_for_status(response) # make sure response code isn't 400 or higher
+    }, error = function(e) {
+        ## convert error into a simple 'message' so execution continues
+        message(e)
+    })
+    
+    # help returning multiple values: https://stackoverflow.com/questions/8936099/returning-multiple-objects-in-an-r-function
+    
+    headers <- httr::headers(response) %>%
+                str()
+    content <- httr::content(response)
+    
+    resp <- list("headers" = headers, "content" = content)
+    return(resp)
+}
+```
+
+- composed function
+```{r}
+# putting it all together
+
+hca_base_call <- function(r_filter = list(), base_url = "https://service.dev.singlecell.gi.ucsc.edu", endpoint = "/index/projects", params = list()){
+    url <- construct_query_filter(r_filter, base_url, endpoint, params)
+    resp <- hca_api_call(url)
+    return(resp)
+}
+```
+
+- testing out the functions
+```{r}
+# construct a query filter (aiming for `{"organ" : {"is" : ["pancreas"]}}`)
+r_filter <- list(
+    organ = list(
+        is = "pancreas"
+    )
+)
+
+# putting together base url, endpoint, and other parameters
+base_url <- "https://service.dev.singlecell.gi.ucsc.edu"
+endpoint <- "/index/projects"
+
+params <- list(
+    catalog = "dcp2",
+    size = 100,
+    sort = "projectTitle",
+    order = "asc"
+)
+
+out <- hca_base_call(r_filter = r_filter, base_url = base_url, endpoint = endpoint, params = params)
+out$headers
+out$content
+```
+
+### Next, our new queries
+***base url and endpoint are not changing***
+A. projects using `genusSpecies = "Homo sapiens"`
+```{r}
+homo_sapien_filter <- list(
+    genusSpecies = list(
+        is = "Homo sapiens"
+    )
+)
+
+homo_sapien_params <- list(
+    catalog = "dcp2",
+    size = 20,
+    sort = "projectTitle",
+    order = "asc"
+)
+
+homo_sapien_results <- hca_base_call(r_filter = homo_sapien_filter, base_url = base_url, endpoint = endpoint, params = homo_sapien_params)
+
+homo_sapien_results$headers
+#homo_sapien_results$content
+
+names(homo_sapien_results$content)
+lengths(homo_sapien_results$content)
+
+# looking at the project titles
+sapply(X = list(homo_sapien_results$content$hits), FUN = extract_proj_titles)
+```
+
+B. combining filters: projects using `"Mus musculus"` (mouse) to study expression in the brain.
+```{r}
+mouse_brain_filter <- list(
+    genusSpecies = list(
+        is = "Mus musculus"
+    ),
+    organ = list(
+        is = "brain"
+    )
+)
+
+mouse_brain_params <- list(
+    catalog = "dcp2",
+    size = 20,
+    sort = "projectTitle",
+    order = "asc"
+)
+
+mouse_brain_results <- hca_base_call(r_filter = mouse_brain_filter, base_url = base_url, endpoint = endpoint, params = mouse_brain_params)
+
+mouse_brain_results$headers
+#mouse_brain_results$content
+
+names(mouse_brain_results$content)
+lengths(mouse_brain_results$content)
+
+# looking at the project titles
+sapply(X = list(mouse_brain_results$content$hits), FUN = extract_proj_titles)
+```
+
+---
+## 5. Incorporate simple queries like this into an R package (WIP)
 
 
 
