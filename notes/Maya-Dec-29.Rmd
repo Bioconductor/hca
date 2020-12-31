@@ -25,7 +25,7 @@ r_filter <- list(
 )
 
 # takes list and makes it json
-json_filter <- toJSON(r_filter)
+json_filter <- jsonlite::toJSON(r_filter)
 # need to encode url so that curly braces are not escaped, but treated as legal characters
 encoded_filter <- utils::URLencode(json_filter, reserved = TRUE)
 encoded_filter
@@ -75,7 +75,7 @@ tryCatch({
 
 # output headers as a string
 httr::headers(response) %>%
-    str()
+        utils::str()
 
 # response content
 lst <- httr::content(response)
@@ -181,6 +181,7 @@ construct_query_filter <- function(r_filter = list(), base_url = "https://servic
     
     # form the URL for the GET query
     # paste with no sep
+    # url automatically returned as it is the last statement in the function
     url <- paste0(
         base_url,
         endpoint,
@@ -205,7 +206,7 @@ hca_api_call <- function(url = ''){
     # help returning multiple values: https://stackoverflow.com/questions/8936099/returning-multiple-objects-in-an-r-function
     
     headers <- httr::headers(response) %>%
-                str()
+                utils::str()
     content <- httr::content(response)
     
     resp <- list("headers" = headers, "content" = content)
@@ -310,10 +311,62 @@ sapply(X = list(mouse_brain_results$content$hits), FUN = extract_proj_titles)
 
 ---
 ## 5. Incorporate simple queries like this into an R package (WIP)
+- adding each of the functions defined above into the package
+- Martin also suggested a function the took query parameters more directly and returned a tibble summary of matching results
 
+```{r}
+# parameters are just some of the supported facets
+projects <- function(assayType = character(),
+                     biologicalSex = character(),
+                     fileFormat = character(),
+                     genusSpecies = character(),
+                     instrumentManufacturerModel = character(),
+                     organ = character(),
+                     catalog = "dcp2",
+                     size = 100,
+                     sort = "projectTitle",
+                     order = "asc") {
+  ## query for appropriate projects -- httr::GET(...)
+  r_filter <- list(
+    assayType = list(
+        is = dplyr::coalesce(assayType, "")
+    ),
+    biologicalSex = list(
+        is = dplyr::coalesce(biologicalSex, "")
+    ),
+    fileFormat = list(
+        is = dplyr::coalesce(fileFormat, "")
+    ),
+    genusSpecies = list(
+        is = dplyr::coalesce(genusSpecies, "")
+    ),
+    instrumentManufacturerModel = list(
+        is = dplyr::coalesce(instrumentManufacturerModel, "")
+    ),
+    organ = list(
+        is = dplyr::coalesce(organ, "")
+    ),
+  )
+  
+  base_url <- "https://service.dev.singlecell.gi.ucsc.edu"
+  endpoint <- "/index/projects"
 
-
-
-
+  params <- list(
+      catalog = catalog,
+      size = size,
+      sort = sort,
+      order = order
+  )
+  
+  query_results <- hca_base_call(r_filter = r_filter,
+                                 base_url = base_url,
+                                 endpoint = endpoint,
+                                 params = mouse_brain_params)
+  ## transform the results into a tibble with 1 row per project, 
+  ## and addiitonal information about each project, e.g., genusSpecies,
+  ## as columns
+  ## tibble(projectTitle = ..., genusSpecies = ..., ...)
+}
+```
 
 ~end~

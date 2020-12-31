@@ -1,16 +1,26 @@
 Package: HCAccess
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
+Title: Utilities for interacting with the Human Cell Atlas API
+Version: 0.0.1
 Authors@R: 
-    person(given = "First",
-           family = "Last",
+    c(person(given = "Maya",
+           family = "McDaniel",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to
-    pick a license
+           email = "maya.mcdaniel@roswellpark.org"
+      ),
+      person(given = "Martin",
+           family = "Morgan",
+           role = c("aut"),
+           email = "martin.morgan@roswellpark.org"
+      )
+    )
+Description: This package allows users to query the Human Cell Atlas for data on
+    single-cell experiments via its API.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
+Imports: 
+    httr,
+    jsonlite,
+    dplyr
