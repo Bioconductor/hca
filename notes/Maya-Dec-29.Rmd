@@ -315,37 +315,67 @@ sapply(X = list(mouse_brain_results$content$hits), FUN = extract_proj_titles)
 - Martin also suggested a function the took query parameters more directly and returned a tibble summary of matching results
 
 ```{r}
+# function for extracting project titles
+extract_proj_details <- function(X = list()){
+    # print(identical(X, lst[["hits"]]))
+    proj_titles <- c()
+    proj_fileFormats <- c()
+    proj_genusSpecies <- c()
+    proj_instrumentManufacturerModels <- c()
+    proj_organs <- c()
+    
+    num_hits <- length(X)
+    print(paste('num_hits:', num_hits))
+    for (hit_ind in 1:num_hits){
+        current_hit <- X[[hit_ind]]
+        
+        # get project details
+        num_projs <- length(current_hit$projects)
+        for (proj_ind in 1:num_projs){
+            current_proj <- current_hit$projects[[proj_ind]]
+            proj_titles <- append(proj_titles, current_proj$projectTitle)
+            proj_fileFormats <- append(proj_fileFormats, current_proj$fileTypeSummary[[1]]$fileType)
+            proj_genusSpecies <- append(proj_genusSpecies, current_proj$donorOrganisms[[1]]$genusSpecies[[1]])
+            proj_instrumentManufacturerModels <- append(proj_instrumentManufacturerModels,
+                                                        current_proj$protocols[[2]]$instrumentManufacturerModel)
+            proj_organs <- append(proj_organs, current_proj$specimens[[1]]$organs[[1]])
+        }
+    }
+    
+    tibble(title = proj_titles,
+           fileFormat = proj_fileFormats,
+           genusSpecies = proj_genusSpecies,
+           instrumentManufacturerModel = proj_instrumentManufacturerModels,
+           organ = proj_organs)
+}
+```
+
+```{r}
 # parameters are just some of the supported facets
-projects <- function(assayType = character(),
-                     biologicalSex = character(),
-                     fileFormat = character(),
-                     genusSpecies = character(),
-                     instrumentManufacturerModel = character(),
-                     organ = character(),
+# need to figure out how to make arguments optional
+projects <- function(fileFormat = NA,
+                     genusSpecies = character(0),
+                     instrumentManufacturerModel = character(0),
+                     organ = character(0),
                      catalog = "dcp2",
                      size = 100,
                      sort = "projectTitle",
                      order = "asc") {
   ## query for appropriate projects -- httr::GET(...)
+  # need to figure out how to account for not all arguments being required
   r_filter <- list(
-    assayType = list(
-        is = dplyr::coalesce(assayType, "")
-    ),
-    biologicalSex = list(
-        is = dplyr::coalesce(biologicalSex, "")
-    ),
     fileFormat = list(
-        is = dplyr::coalesce(fileFormat, "")
+        is = fileFormat
     ),
     genusSpecies = list(
-        is = dplyr::coalesce(genusSpecies, "")
+        is = genusSpecies
     ),
     instrumentManufacturerModel = list(
-        is = dplyr::coalesce(instrumentManufacturerModel, "")
+        is = instrumentManufacturerModel
     ),
     organ = list(
-        is = dplyr::coalesce(organ, "")
-    ),
+        is = organ
+    )
   )
   
   base_url <- "https://service.dev.singlecell.gi.ucsc.edu"
@@ -361,12 +391,17 @@ projects <- function(assayType = character(),
   query_results <- hca_base_call(r_filter = r_filter,
                                  base_url = base_url,
                                  endpoint = endpoint,
-                                 params = mouse_brain_params)
+                                 params = params)
+  print(query_results)
   ## transform the results into a tibble with 1 row per project, 
-  ## and addiitonal information about each project, e.g., genusSpecies,
+  ## and additional information about each project, e.g., genusSpecies,
   ## as columns
   ## tibble(projectTitle = ..., genusSpecies = ..., ...)
+  output <- sapply(query_results$content[["hits"]], extract_proj_details)
 }
+
+fin <- projects(genusSpecies = "Homo sapiens")
+fin
 ```
 
 ~end~
