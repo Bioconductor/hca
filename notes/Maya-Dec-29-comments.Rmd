@@ -1,6 +1,6 @@
 ---
 title: "December 31 Comments"
-author: "Martin mrogan"
+author: "Martin Morgan"
 date: "12/31/2020"
 output: html_document
 ---
@@ -187,8 +187,8 @@ for (hit_ind in 1:num_hits) {
 but actually the elements of the list can be indexed directly
 
 ```{r}
-lst <- list(1, "foo", pi)
-for (elt in lst)
+my_list <- list(1, "foo", pi)
+for (elt in my_list)
     print(elt)
 ```
 
@@ -305,18 +305,18 @@ In the following examples where the elements of the list are the same
 length, simplification is possible
 
 ```{r}
-lst <- list(1, 2, 3, 4, 5, 6)
-sapply(lst, function(i) sqrt(i)) # numeric vector
-lst <- list(1:3, 4:6)
-sapply(lst, function(i) sqrt(i)) # numeric *matrix*
+my_list <- list(1, 2, 3, 4, 5, 6)
+sapply(my_list, function(i) sqrt(i)) # numeric vector
+my_list <- list(1:3, 4:6)
+sapply(my_list, function(i) sqrt(i)) # numeric *matrix*
 ```
 
 but here the elements are of different lengths, and `sapply()` is
 unsure what data represention is appropriate and so returns a list
 
 ```{r}
-lst <- list(1:2, 4:6)
-sapply(lst, function(i) sqrt(i))
+my_list <- list(1:2, 4:6)
+sapply(my_list, function(i) sqrt(i))
 ```
 
 ### `sapply()` versus `vapply()`
@@ -466,7 +466,7 @@ So we see that `FUN` just passes its two arguments to `[[`, and we can
 remove the middle man
 
 ```{r}
-projects <- lst$hits[[1]]
+projects <- lst$hits[[1]]$projects
 proj_titles <- lapply(projects, `[[`, "projectTitle")
 ```
 
@@ -550,7 +550,7 @@ the 'end user'.
 project_titles <-
     function(lst)
 {
-    lapply(lst$hits, projects_elt, "projectTitle")
+    lapply(lst$hits, .projects_elt, "projectTitle")
 }
 ```
 
@@ -837,3 +837,172 @@ index_projects(filter)
 ```
 
 to 'just work'
+
+# From list-of-lists to tibble
+
+Again, your solution looks great; I did it the following way, thinking
+of the process of 'querying' the list-of-lists for particular
+components (e.g., all "projectTitle") and then assembling the
+components into a tibble. I repeatedly visit each 'leaf' node to
+extract a single piece of information. This is kind of the inverse of
+what you do, which is to visit each leaf node once, extracting
+multiple pieces of information.
+
+## Setup
+
+```{r}
+library(tidyr) # tidyr::unnest()
+```
+
+Some mock data
+
+```{r}
+content <- list(
+    hits = list(
+        list(
+            projects = list(
+                list(
+                    projectTitle = "First project",
+                    genusSpecies = "Homo sapiens"
+                ),
+                list(
+                    projectTitle = "Second project",
+                    genusSpecies = "Mus musculus"
+                )
+            )
+        ),
+        list(
+            projects = list(
+                list(
+                    projectTitle = "Third project",
+                    genusSpecies = "Homo sapiens"
+                )
+            )
+        )
+    )
+)
+```
+
+Modified from ealier
+
+```{r}
+## extract a single element from a hit; returns a vector
+.projects_elt <-
+    function(hit, element)
+{
+    vapply(hit$projects, `[[`, character(1), element)
+}
+
+## extract a single element from all hits; returns a list-of-vectors
+.content_elt <-
+    function(content, element)
+{
+    lapply(content$hits, .projects_elt, element)
+}
+```
+
+First approach: create a tibble by extracting each element.
+
+```{r}
+tbl <- tibble(
+    projectTitle = .content_elt(content, "projectTitle"),
+    genusSpecies = .content_elt(content, "genusSpecies")
+)
+```
+
+`tbl` contains nested columns; unnest them with `tidyr::unnest()`
+
+```{r}
+tbl %>%
+    unnest(c("projectTitle", "genusSpecies"))
+```
+
+As a function:
+
+```{r}
+#' @importFrom tidyr unnest
+.content_tibble <-
+    function(content)
+{
+    tbl <- tibble(
+        projectTitle = .content_elt(content, "projectTitle"),
+        genusSpecies = .content_elt(content, "genusSpecies")
+    )
+    tbl %>%
+        unnest(c("projectTitle", "genusSpecies"))
+}
+
+.content_tibble(content)
+```
+
+Add (`mutate()`) columns that reflect the 'geometry' of the results --
+the hit index as an integer vector, and the project index within each
+hit, as a list of integer vectors. Unnest the list columns
+
+```{r}
+#' @importFrom tidyr unnest
+.content_tibble <-
+    function(content)
+{
+    tbl <-
+        ## create tibble
+        tibble(
+            projectTitle = .content_elt(content, "projectTitle"),
+            genusSpecies = .content_elt(content, "genusSpecies")
+        ) %>%
+        ## add hit and project index
+        mutate(
+            hit_index = seq_along(projectTitle),
+            project_index = lapply(lengths(projectTitle), seq_len)
+        ) %>%
+        ## unnest list columns
+        unnest(c("projectTitle", "genusSpecies", "project_index"))
+
+    tbl
+}
+
+.content_tibble(content)
+```
+
+Here's a more compact version where a vector of `elts` is used to
+iterate on `.content_elt()`. The `lapply()` includes a named argument
+`content = content`; the calls in the `lapply()` have the form
+`.content_elt("projectTitle", content = content)`, and _R_'s rules for
+argument matching mean that the iteration ends up being assigned ot
+the `element=` argument, as desired.
+
+```{r}
+#' @importFrom tibble as_tibble
+#'
+#' @importFrom dplyr %>% mutate
+#'
+#' @importFrom tidyr unnest
+#'
+#' @importFrom tidyselect all_of
+.content_tibble <-
+    function(content)
+{
+    ## use a loop (`lapply()`) to extract each element of interest
+    elts <- c("projectTitle", "genusSpecies")
+    value <- lapply(elts, .content_elt, content = content)
+    ## adding names here creates column names in the tibble
+    names(value) <- elts
+
+    tbl <-
+        ## coerce named list to tibble
+        as_tibble(value) %>%
+        ## add hit and project indexes
+        mutate(
+            hit_index = seq_along(projectTitle),
+            project_index = lapply(lengths(projectTitle), seq_len)
+        ) %>%
+        ## unnest all list columns; `all_of()` tells the tidyverse to
+        ## look for `elts` in the calling environment, rather than as
+        ## a column of the incoming tibble.
+        unnest(all_of(c(elts, "project_index")))
+
+    tbl
+}
+
+.content_tibble(content)
+```
