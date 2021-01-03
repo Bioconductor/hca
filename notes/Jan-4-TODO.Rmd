@@ -1,0 +1,107 @@
+---
+title: "TODO: January 4"
+author: "Martin Morgan"
+date: "1/4/2021"
+output: html_document
+---
+
+First, you're doing great!
+
+- Review my comments and maybe re-work some of your solutions to
+  become familiar with what I'm trying to communicate
+  
+I've updated the master branch with three R files R/filters.R,
+R/projects.R, and R/hca.R. These outline what I think might be a
+useful start to the package proper. I think the following might be
+done as pull requests to the master branch (maybe one for each bullet
+point?), which I can then review.
+
+- Start with filters.R and implement `filters()`. The idea is that
+  this function takes R inputs that represent filters, validates them,
+  and then creates an 'S3' object to represent the JSON and validated
+  filters. I think the implementation should be based on
+  `projects_filter()` from the comments. I don't think the 'user'
+  needs to know anything other than `filters()`, so it should be the
+  only exported function. Please add additional helper functions to
+  this file, using the convention that the function name starts with
+  `.filters_` (e.g., `.filters_validate()`) with the `.` indicating
+  'not exported' and the `filters_` indicating both the file that the
+  function is defined in / related to, and to provide a bit of name
+  mangling.
+  
+  There are a couple of things new here. The function signature is
+  `...`, which means 'any number of arguments'. I convert these to a
+  list on the first line of `filters()` and I've guessed at how it
+  would be used in the examples section of the documentation.
+  
+  The function returns an 'S3' class, which is the simplest class
+  system in R. An S3 class is basically any object that has `class()`
+  assigned, s at the end of the function -- there's no formal class
+  definition, etc., just an attribute that says 'hey, this is an
+  object of class x'. The object can be accessed using standard R
+  commands, but 'pest practice' is to define and use 'accessors' to
+  separate the interface to the object from its implementation. I
+  implemented two non-exported accessors (e.g., `.filters_json()`,
+  thinking generally that the user is not really intersted in the
+  content of the filters object.
+  
+  S3 classes have simple linear inheritance, and `c("filters",
+  "HCAccess")` says that the `filters` class is a subclass of
+  `HCAccess`. It doesn't matter that `HCAcces` is not defined
+  anywhere.
+  
+  The S3 system attaches _methods_ to _generics_, rather than to the
+  class definition. For example, `print` is a generic, and you can
+  tell because the body of the function contains a statement that says
+  'when invoking `print()`, look for a method for the class of the
+  first argument `x`. This is the `UseMethod("print")` call
+  
+  ```{r}
+  print
+  ```
+  
+  A _method_ is defined by constructing a function that joins the name
+  of the generic with the name of the class for which the method is
+  appropriate. In the `filters.R` file, we define methods
+  `print.filters()` and `length.filters()`.
+  
+  In the dplyr / roxygen2 world, when the interface is modified (e.g.,
+  adding a `@export` tag the workflow is to run the following two commands
+  
+  ```
+  devtools::document()  # updates the NAMESPACE file
+  devtools::load_all()  # reloads updated code into the R session
+  ```
+  
+- implement unit tests on `filters()` in the file
+  `tests/testthat/test_filters.R`. Tests should check things like the
+  null constructor `.filters_json(filters())` returns an apporpriate
+  representation `sa.character(toJSON(setNames(list(),
+  character())))`?? and likewise (suitable representation) for each of
+  the examples in the roxgen `@examples`. The tests should also check
+  that validation fails for invalid inputs, e.g., unnamed arguments,
+  invalid relations (from the [swagger][] I think these are "is",
+  "within", "contains", "intersects").
+  
+[swagger]: https://service.azul.data.humancellatlas.org/#/Index/get_index_projects
+
+- implement `.hca_GET()` I think for the moment this should be very
+  straight-forward, just returning the `content()` of the
+  request. It's useful when developing this part to keep track of
+  problems you encounter, and try to formalize these as unit tests (in
+  `tests/testthat/test_hca.R`). It can be useful to use
+  `devtools::with_mock(GET = function(...) "some value",
+  .hca_GET(...))` so that the unit test does not actually involve a
+  call to the endpoint.
+  
+- implement the functionality in `R/projects.R`, based on your
+  previous work and my comments. I think it would be best just to have
+  a single function exposed to the user, taking an optional `filters=`
+  argument (the default is a null filter, which should return all
+  projects), but the functionality implemented is quite complicated so
+  should make use of helper functions perhaps along the lines I
+  outline.
+  
+Hope that provides enough guidance; to me this sounds like a lot of
+work for the time available, but would be great to see pull requests
+as they become available.
