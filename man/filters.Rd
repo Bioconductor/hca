@@ -4,7 +4,7 @@
 \alias{filters}
 \alias{length.filters}
 \alias{print.filters}
-\title{FIXME}
+\title{HCA Filter Construction}
 \usage{
 filters(...)
 
@@ -13,8 +13,8 @@ filters(...)
 \method{print}{filters}(x, ...)
 }
 \arguments{
-\item{...}{named arguments, each of which is a \code{list()} specifying
-... FIXME}
+\item{...}{named arguments, each of which is a \code{list()} specifying a query
+facet and its corresponding value to be used in the query}
 
 \item{x}{for \code{length()} and \code{print()}, an object of class \code{filters}.}
 }
@@ -24,7 +24,9 @@ validated filters in a format suitable for use in \code{projects()}
 and related functions.
 }
 \description{
-Functions for the creat
+This set of functions takes user input to be used as query
+filters, ideally in the form of nested lists. This input is then validated,
+reformatted to JSON, and encoded into a properly formatted URL.
 }
 \examples{
 filters()

@@ -32,3 +32,11 @@ denoted with curly braces `{}`
 - I've sketched out that the current functionality of the packages can be
 encapsulated into 5 main function file, containing the main function and any
 helper functions
+
+---
+- to test the functions use
+```
+organ = list(is = "pancreas")
+
+out <- filters(organ = list(is = "pancreas"))
+```

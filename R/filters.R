@@ -33,13 +33,10 @@
 #' @importFrom utils URLencode
 #'
 #' @export
-filters <-
-    function(...)
-{
-    filters <- list(...)
-
+filters <- function(...){
+    filters_list <- list(...)
     ## validate list of filters
-    valid_filters <- .filters_validate(filters)
+    valid_filters <- .filters_validate(filters_list)
 
     ## transform to json, via toJSON()
     ## do elements of `filters` need to be wrapped in `list()`?
@@ -66,19 +63,20 @@ filters <-
 
 ## other helper functions
 .filters_validate <- function(x) {
+    ## print(names(x))
     stopifnot(
         ## 'filter' must be a list
-        is.list(filters),
+        is.list(x),
         ## length 0 or elements must have names
-        length(filters) == 0L || !is.null(names(filters))
+        length(x) == 0L || !is.null(names(x))
     )
 
     ## make sure zero-length filters have names
-    if (length(filters) == 0L) {
-        names(filters) <- character()
+    if (length(x) == 0L) {
+        names(x) <- character()
     }
 
-    filters
+    x
 }
 
 ## @rdname is used to document more than one function in the same file
