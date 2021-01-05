@@ -1,0 +1,34 @@
+---
+title: "Notes for Jan. 5, 2021"
+author: "Maya Reed McDaniel"
+date: "1/5/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+- In R, it is more efficient to use the `apply()` family of functions than to
+use for loops
+    - more on `lapply()`, `sapply()` and `vapply()` [here](https://ademos.people.uic.edu/Chapter4.html)
+    
+- R has several different ways of accessing list and vector data detailed in
+[this article](https://rpubs.com/tomhopper/brackets)
+    - `[` for subsets,
+    - `[[` for extracting items, and
+    - `$` for extracting by name.
+
+- The R equivalent of a dictionary in many other languages is a 
+[`hash`](https://www.rdocumentation.org/packages/hash/versions/3.0.1/topics/hash)
+denoted with curly braces `{}`
+
+- An overview of object-oriented programming in R can be found
+[here](https://adv-r.hadley.nz/oo.html)
+    - Basic details on `S3` [here](http://adv-r.had.co.nz/S3.html)
+    - the [`sloop`](https://rdrr.io/cran/sloop/) package is helpful when
+    learning OOP in R
+
+- I've sketched out that the current functionality of the packages can be
+encapsulated into 5 main function file, containing the main function and any
+helper functions

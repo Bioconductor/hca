@@ -24,5 +24,6 @@ construct_query_filter(
 character(1) url for API call
 }
 \description{
-function for constructing the query url; defaults to querying Human Cell Atlas API
+function for constructing the query url; defaults to querying
+Human Cell Atlas API
 }

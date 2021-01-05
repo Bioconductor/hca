@@ -24,7 +24,7 @@ validated filters in a format suitable for use in \code{projects()}
 and related functions.
 }
 \description{
-FIXME
+Functions for the creat
 }
 \examples{
 filters()

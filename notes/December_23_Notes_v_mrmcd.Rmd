@@ -11,7 +11,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # [Human Cell Atlas](https://data.humancellatlas.org/)
 ## Biological Background
-- Possible to isolate an individual cell, measure level of expression of each gene in that cell
+- Possible to isolate an individual cell,
+measure level of expression of each gene in that cell
 - The result is a matrix:
     - rows = genes (~ N=30k)
     - columns = cells (~ M = 10k - 1mil)
@@ -22,12 +23,15 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Workflow
 - Pipeline:
     - extract short DNA sequences from cells (millions per cell)
-    - From DNA sequences (about 100 nucleotide base pairs long) they are analyzed and output to FASTQ files
+    - From DNA sequences (about 100 nucleotide base pairs long)
+    they are analyzed and output to FASTQ files
     - FASTQ files are often transformed to BAM or CRAM formats
     - BAM or CRAM files are summarized into the matrices
         - `.csv` file (standard)
-        - `.loom` (based on `hdf5` *which is NOT hadoop*, but rather astrophysics derived file format for large data)
-        - `.mtx` for sparse text-based matrix representation with 3 columns: 1. row index, 2. column index, and 3. non-zero value 
+        - `.loom` (based on `hdf5` *which is NOT hadoop*, but rather
+        astrophysics derived file format for large data)
+        - `.mtx` for sparse text-based matrix representation with
+        3 columns: 1. row index, 2. column index, and 3. non-zero value 
 
 ## Projects
 - Focus on a relatively small number of samples ex. 4 humans
@@ -39,11 +43,16 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## [API](https://service.azul.data.humancellatlas.org/)
 - [swagger (old name) or openAPI (newer name)](https://swagger.io/docs/specification/about/)
-    - JSON specification of an API; define endpoints and the parameters used to invoke the endpoint
+    - JSON specification of an API; define endpoints and the parameters used
+    to invoke the endpoint
     - gives an overview and description of the API
-    - GUI for testing some of the API functionality using the **Try it Out** button and executing
-        - ex. `GET` request on endpoint `/index/projects` with catalog of `dcp2` and filter of `{"organ" : {"is" : ["pancreas"]}}`
-        - provides you with the `curl` command to make the API call from your own terminal, and the request URL if you want to navigate there via the browser
+    - GUI for testing some of the API functionality using the **Try it Out**
+    button and executing
+        - ex. `GET` request on endpoint `/index/projects` with catalog of `dcp2`
+        and filter of `{"organ" : {"is" : ["pancreas"]}}`
+        - provides you with the `curl` command to make the API call from 
+        your own terminal, and the request URL if you want to navigate 
+        there via the browser
         - result returned as JSON
         
 ## Accessing API from R
@@ -61,9 +70,10 @@ r_filter <- list(
     )
 )
 
-# takes list and makes it json
+## takes list and makes it json
 json_filter <- toJSON(r_filter)
-# need to encode url so that curly braces are not escaped, but treated as legal characters
+## need to encode url so that curly braces are not escaped,
+## but treated as legal characters
 encoded_filter <- utils::URLencode(json_filter, reserved = TRUE)
 encoded_filter
 ```
@@ -85,7 +95,7 @@ params <- list(
 - futher process the params
 
 ```{r}
-# do names(params) to get parameter key names
+## do names(params) to get parameter key names
 names(params)
 param_key_value <- paste(names(params), params, sep="=")
 param_key_value
@@ -99,7 +109,7 @@ query
 
 - form the URL for the GET query
 ```{r}
-# paste with no sep
+## paste with no sep
 url <- paste0(
     base_url,
     endpoint,
@@ -122,7 +132,8 @@ TODO
     - what are the `projectTitle` of the projects with "pancreas" as the organ
 3. formulate additional filters
     - projects using homo sapien samples i.e. `genusSpecies = "Homo sapiens"`
-4. incorporate these kinds of queries into an R package i.e. different types of functions
+4. incorporate these kinds of queries into an
+R package i.e. different types of functions
 ```
 project <-function(organ = character()){
     # query for appropriate projects

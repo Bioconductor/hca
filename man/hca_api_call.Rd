@@ -10,8 +10,10 @@ hca_api_call(url = "")
 \item{url}{character(1) url string for API call}
 }
 \value{
-list() response headers and content from call, error message outpt if needed
+list() response headers and content from call, error message outpt if
+needed
 }
 \description{
-function makes a GET request to the Human Cell Atlas API using the provided url string
+function makes a GET request to the Human Cell Atlas API using
+the provided url string
 }

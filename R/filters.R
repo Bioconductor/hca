@@ -1,11 +1,13 @@
 #' @rdname filters
 #'
-#' @title FIXME
+#' @title HCA Filter Construction
 #'
-#' @description FIXME
+#' @description This set of functions takes user input to be used as query
+#' filters, ideally in the form of nested lists. This input is then validated,
+#' reformatted to JSON, and encoded into a properly formatted URL.
 #'
-#' @param ... named arguments, each of which is a `list()` specifying
-#'     ... FIXME
+#' @param ... named arguments, each of which is a `list()` specifying a query
+#' facet and its corresponding value to be used in the query
 #'
 #' @return `filters()` returns a `filters` object representing
 #'     validated filters in a format suitable for use in `projects()`
@@ -28,6 +30,7 @@
 #' )
 #'
 #' @importFrom jsonlite toJSON
+#' @importFrom utils URLencode
 #'
 #' @export
 filters <-
@@ -35,43 +38,73 @@ filters <-
 {
     filters <- list(...)
 
-    ## FIXME: validate list of filters
+    ## validate list of filters
+    valid_filters <- .filters_validate(filters)
 
-    ## FIXME: transform to json, via toJSON()
+    ## transform to json, via toJSON()
     ## do elements of `filters` need to be wrapped in `list()`?
     ## ??? filters <- lapply(filters list) ???
-    json <- character()
+    json <- toJSON(valid_filters)
+    URLencode(json, reserved = TRUE)
+
+    result <- list(json = json, filters = valid_filters)
 
     ## create a 'filters' object (S3 for now)
-    result <- list(json = json, filters = filters)
+    ## S3 classes have simple linear inheritance, and `c("filters","HCAccess")`
+    ## says that the `filters` class is a subclass of `HCAccess`.
+    ## It doesn't matter that `HCAcces` is not defined anywhere.
     class(result) <- c("filters", "HCAccess")
 
     ## return result
     result
 }
 
-## accessors, not exported
+## class accessors, not exported
 .filters_json <- function(x) x$json
 
 .filters_filters <- function(x) x$filters
+
+## other helper functions
+.filters_validate <- function(x) {
+    stopifnot(
+        ## 'filter' must be a list
+        is.list(filters),
+        ## length 0 or elements must have names
+        length(filters) == 0L || !is.null(names(filters))
+    )
+
+    ## make sure zero-length filters have names
+    if (length(filters) == 0L) {
+        names(filters) <- character()
+    }
+
+    filters
+}
+
+## @rdname is used to document more than one function in the same file
+## the syntax convention for naming class methods is <generic>.<class>
+## where a generic function is just an intermediary which determines which
+## implementation of a function to call based on the class of its input
 
 #' @rdname filters
 #'
 #' @param x for `length()` and `print()`, an object of class `filters`.
 #'
 #' @export
-length.filters <-
-    function(x)
-{
+length.filters <- function(x){
+    ## length() is a generic which chooses its implementation based on the class
+    ## of its input
     length(.filters_filters(x))
 }
 
 #' @rdname filters
 #'
 #' @export
-print.filters <-
-    function(x, ...)
-{
+print.filters <- function(x, ...){
+    ## cat() is an internal function which concatenates inputs and prints
+    ## print() is also a generic which chooses its implementation based
+    ## on the class of its input
+
     cat(
         "class: ", paste(class(x), collapse = ", "), "\n",
         "length: ", length(x), "\n",

@@ -21,9 +21,11 @@ hca_base_call(
 \item{params}{list() additional query parameters formatted as a nested list}
 }
 \value{
-list() response headers and content from call, error message outpt if needed
+list() response headers and content from call, error message output
+if needed
 }
 \description{
 function is composed of the construct_query_filter() and
-hca_api_call() functions, taking in API call parameters and returning a response
+hca_api_call() functions, taking in API call parameters and returning a
+response
 }
