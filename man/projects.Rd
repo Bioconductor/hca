@@ -13,7 +13,8 @@ projects(filters = filters(), n = Inf, FIXME)
 all projects mathcing \code{filter}.}
 }
 \value{
-FIXME
+\code{projects()} returns a tibble with each row representing an
+HCA project, and columns summarizing the project.
 }
 \description{
 FIXME
