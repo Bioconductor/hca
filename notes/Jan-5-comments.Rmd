@@ -1,0 +1,89 @@
+---
+title: "Comments: January 6"
+author: "Martin Morgan"
+date: "1/6/2021"
+output: html_document
+---
+
+Looks like good progress Maya.
+
+I think you should aim for a pull request that is just the 'filters()'
+stuff, so start a new branch from the current master
+
+    ```
+    git checkout master
+    git pull
+    git checkout -b filters
+    ```
+    
+and then add your edits to R/filters.R, either using fancy git stuff
+or more simply, e.g, by separately saving the R/filters.R files
+'somewhere else' and moving it back into HCAccess/R after checking out
+the new branch.
+
+I added some explicit unit tests in tests/testhat/test_filters.R; you
+should be able to run them with
+
+    ```
+    devtools::test()
+    ```
+    
+or just step through the content of each test after doing something
+like
+
+    ```
+    library(testthat)
+    devtools::load_all()
+    ```
+    
+I think the unit tests are more-or-less correct, but that they fail
+because of problems with your function. The things I saw were
+
+- Your validity test expects named arguments, but when there are no
+  arguments provided, the `filters_list` variable is unnamed. So I did
+
+    ```
+    filters <- function(...){
+        filters_list <- list(...)
+        if (length(filters_list) == 0L)
+            names(filters_list) <- character()
+        ...
+    ```
+
+- The unit tests expect that `.filters_json()` returns a URL-encoded
+  representation. Your code is
+
+    ```
+    json <- toJSON(valid_filters)
+    URLencode(json, reserved = TRUE)
+    
+    result <- list(json = json, filters = valid_filters)
+    ```
+
+  but because R is a functional language the `URLencode()` result
+  needs to be captured, along the lines of
+  
+  ```
+  encoded <- URLencode(json, reserved = TRUE)
+  result <- list(json = json, filters = valid_filters)
+  ```
+  
+In the less important department
+
+- I think that generally functions should be defined before used, even
+  if not necessary, so start with `.filters_validate <- ...` and then
+  `filters <- ...`
+  
+- Please insert a space before `{`, so
+
+    ```
+    filters <- function(...) {
+        ...
+    ```
+    
+  rather than 
+    
+    ```
+    filters <- function(...}(
+        ...
+    ```
