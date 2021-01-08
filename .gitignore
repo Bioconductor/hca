@@ -46,5 +46,5 @@ docs/
 po/*~
 
 # other stuff
-notes/*
+notes/
 .DS_Store
