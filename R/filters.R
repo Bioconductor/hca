@@ -68,14 +68,13 @@ filters <- function(...) {
     ## do elements of `filters` need to be wrapped in `list()`?
     ## ??? filters <- lapply(filters list) ???
     json <- toJSON(valid_filters)
-    encoded <- URLencode(json, reserved = TRUE)
-
-    result <- list(json = encoded, filters = valid_filters)
+    encoding <- URLencode(json, reserved = TRUE)
 
     ## create a 'filters' object (S3 for now)
     ## S3 classes have simple linear inheritance, and `c("filters","HCAccess")`
     ## says that the `filters` class is a subclass of `HCAccess`.
     ## It doesn't matter that `HCAcces` is not defined anywhere.
+    result <- list(encoding = encoding, filters = valid_filters)
     class(result) <- c("filters", "HCAccess")
 
     ## return result
@@ -83,9 +82,15 @@ filters <- function(...) {
 }
 
 ## class accessors, not exported
-.filters_json <- function(x) x$json
+.filters_encoding <- function(x) x$encoding
 
 .filters_filters <- function(x) x$filters
+
+.filters_json <-
+    function(x)
+{
+    toJSON(.filters_filters(x), pretty = TRUE)
+}
 
 ## @rdname is used to document more than one function in the same file
 ## the syntax convention for naming class methods is <generic>.<class>
@@ -111,10 +116,16 @@ print.filters <- function(x, ...) {
     ## print() is also a generic which chooses its implementation based
     ## on the class of its input
 
+    json <- paste(
+        strsplit(as.character(.filters_json(x)), "\n")[[1]],
+        collapse = "\n  "
+    )
+
     cat(
         "class: ", paste(class(x), collapse = ", "), "\n",
         "length: ", length(x), "\n",
-        "json: ", .filters_json(x), "\n",
+        "json:\n",
+        "  ", json, "\n",
         sep = ""
     )
 }

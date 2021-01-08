@@ -5,7 +5,7 @@ test_that("'filters()' works", {
     expect_equal(length(object), 0)
     expect_equal(.filters_filters(object), setNames(list(), character()))
     expect_equal(
-        .filters_json(object),
+        .filters_encoding(object),
         URLencode('{}', reserved = TRUE)
     )
 
@@ -14,7 +14,7 @@ test_that("'filters()' works", {
     expect_equal(length(object), 1L)
     expect_equal(.filters_filters(object), list(organ = list(is = "pancreas")))
     expect_equal(
-        as.character(.filters_json(object)),
+        as.character(.filters_encoding(object)),
         URLencode('{"organ":{"is":["pancreas"]}}', reserved = TRUE)
     )
 
@@ -22,7 +22,7 @@ test_that("'filters()' works", {
     object <- filters(fileFormat = list(is = c("fastq", "fastq.gz")))
     expect_equal(length(object), 1L)
     expect_equal(
-        as.character(.filters_json(object)),
+        as.character(.filters_encoding(object)),
         URLencode('{"fileFormat":{"is":["fastq","fastq.gz"]}}', reserved = TRUE)
     )
 
@@ -40,7 +40,7 @@ test_that("'filters()' works", {
         )
     )
     expect_equal(
-        as.character(.filters_json(object)),
+        as.character(.filters_encoding(object)),
         URLencode(
             '{"organ":{"is":["pancreas"]},"genusSpecies":{"is":["Homo sapiens"]}}',
             reserved = TRUE
