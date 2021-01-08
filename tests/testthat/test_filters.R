@@ -5,7 +5,7 @@ test_that("'filters()' works", {
     expect_equal(length(object), 0)
     expect_equal(.filters_filters(object), setNames(list(), character()))
     expect_equal(
-        .filters_json(object),
+        .filters_encoding(object),
         URLencode('{}', reserved = TRUE)
     )
 
@@ -14,7 +14,7 @@ test_that("'filters()' works", {
     expect_equal(length(object), 1L)
     expect_equal(.filters_filters(object), list(organ = list(is = "pancreas")))
     expect_equal(
-        as.character(.filters_json(object)),
+        as.character(.filters_encoding(object)),
         URLencode('{"organ":{"is":["pancreas"]}}', reserved = TRUE)
     )
 
@@ -22,7 +22,7 @@ test_that("'filters()' works", {
     object <- filters(fileFormat = list(is = c("fastq", "fastq.gz")))
     expect_equal(length(object), 1L)
     expect_equal(
-        as.character(.filters_json(object)),
+        as.character(.filters_encoding(object)),
         URLencode('{"fileFormat":{"is":["fastq","fastq.gz"]}}', reserved = TRUE)
     )
 
@@ -40,7 +40,7 @@ test_that("'filters()' works", {
         )
     )
     expect_equal(
-        as.character(.filters_json(object)),
+        as.character(.filters_encoding(object)),
         URLencode(
             '{"organ":{"is":["pancreas"]},"genusSpecies":{"is":["Homo sapiens"]}}',
             reserved = TRUE
@@ -51,10 +51,11 @@ test_that("'filters()' works", {
 
 test_that("'filters()' validates arguments", {
 
-    ## invalid arguments
-    expect_error(filters(organ = "bar"))         # incorrect format
-    expect_error(filters(organ = c(is = "bar"))) # not a list
-    expect_error(filters(organ = list(isnota = "bar"))) # invalid verb
+    ## not named lists
+    expect_error(filters(organ = "bar"), ".*named lists")
+    expect_error(filters(organ = c(is = "bar")), ".*named lists")
+    ## invalid verbs
+    expect_error(filters(organ = list(isnota = "bar")), ".*verbs must be")
 
     ## valid verbs: "is", "within", "contains", and "intersects"
     ## details don't need to be checked; these are satified in an
@@ -65,6 +66,6 @@ test_that("'filters()' validates arguments", {
     expect_s3_class(filters(organ = list(contains = "bar")), class)
     expect_s3_class(filters(organ = list(intersects = "bar")), class)
 
-    ## FIXME invalid / valid nouns ("organ", "enusSpecies", ...)
+    ## FIXME invalid / valid nouns ("organ", "genusSpecies", ...)
 
 })
