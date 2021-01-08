@@ -20,6 +20,7 @@ NULL
         is.list(x),
         ## length 0 or elements must have names
         length(x) == 0L || !is.null(names(x)),
+        ## Docs: Backticks are used for non-standard variable names.
         ## each element in the list must also be a list
         `'filters()' arguments must be named lists` =
             all(vapply(x, inherits, logical(1), "list")),
