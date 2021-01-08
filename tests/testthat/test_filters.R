@@ -58,8 +58,8 @@ test_that("'filters()' validates arguments", {
     expect_error(filters(organ = list(isnota = "bar")), ".*verbs must be")
 
     ## valid verbs: "is", "within", "contains", and "intersects"
-    ## details don't need to be checked; these are satified in an
-    ## earilier test
+    ## details don't need to be checked; these are satisfied in an
+    ## earlier test
     class <- c("filters", "HCAccess")
     expect_s3_class(filters(organ = list(is = "bar")), class)
     expect_s3_class(filters(organ = list(within = "bar")), class)
@@ -67,5 +67,6 @@ test_that("'filters()' validates arguments", {
     expect_s3_class(filters(organ = list(intersects = "bar")), class)
 
     ## FIXME invalid / valid nouns ("organ", "genusSpecies", ...)
-
+    ## valid facets checked in function validation
+    expect_error(filters(testing = list(is = "pancreas")), ".*facets must be")
 })

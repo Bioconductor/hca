@@ -15,6 +15,23 @@ NULL
 .filters_validate <- function(x) {
     ## allowed verbs
     verbs <- c("is", "within", "intersects", "contains")
+    ## allowed facets
+    facets <- c("arrayExpressAccessions", "assayType", "biologicalSex",
+                "bundleUuid", "bundleVersion", "cellCount", "cellLineType",
+                "contactName", "developmentStage", "donorCount", "donorDisease",
+                "effectiveOrgan", "entryId", "fileFormat", "fileId", "fileName",
+                "fileSize", "fileVersion", "genusSpecies",
+                "geoSeriesAccessions", "insdcProjectAccessions",
+                "insdcStudyAccessions", "institution",
+                "instrumentManufacturerModel", "laboratory",
+                "libraryConstructionApproach", "modelOrgan", "modelOrganPart",
+                "nucleicAcidSource", "organ", "organPart", "organismAge",
+                "organismAgeRange", "organismAgeUnit", "organismAgeValue",
+                "pairedEnd", "preservationMethod", "project",
+                "projectDescription", "projectId", "projectTitle",
+                "publicationTitle", "sampleDisease", "sampleEntityType",
+                "sampleId", "selectedCellType", "specimenDisease",
+                "specimenOrgan", "specimenOrganPart", "workflow")
     stopifnot(
         ## 'filter' must be a list
         is.list(x),
@@ -26,7 +43,10 @@ NULL
             all(vapply(x, inherits, logical(1), "list")),
         ## allowed verbs only
         `'filters()' verbs must be 'is', 'within', 'intersects' or 'contains'` =
-            all(vapply(x, names, character(1)) %in% verbs)
+            all(vapply(x, names, character(1)) %in% verbs),
+        ## allowed facets only
+        `'filters()' facets must be one of those in the permissble list` =
+            names(x) %in% facets
     )
 
     x
