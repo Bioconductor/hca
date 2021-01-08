@@ -13,8 +13,10 @@
         ## 'filter' must be a list
         is.list(x),
         ## length 0 or elements must have names
-        length(x) == 0L || !is.null(names(x))
+        length(x) == 0L || !is.null(names(x)),
         ## each element in the list must also be a list
+        `'filters()' arguments must be named lists` =
+            all(vapply(x, inherits, logical(1), "list")),
         ## appropriate verbs only
         ## i.e must be one of "is", "within", "intersects", or "contains"
     )
