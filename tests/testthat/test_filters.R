@@ -51,10 +51,11 @@ test_that("'filters()' works", {
 
 test_that("'filters()' validates arguments", {
 
-    ## invalid arguments
-    expect_error(filters(organ = "bar"))         # incorrect format
-    expect_error(filters(organ = c(is = "bar"))) # not a list
-    expect_error(filters(organ = list(isnota = "bar"))) # invalid verb
+    ## not named lists
+    expect_error(filters(organ = "bar"), ".*named lists")
+    expect_error(filters(organ = c(is = "bar")), ".*named lists")
+    ## invalid verbs
+    expect_error(filters(organ = list(isnota = "bar")), ".*verbs must be")
 
     ## valid verbs: "is", "within", "contains", and "intersects"
     ## details don't need to be checked; these are satified in an
@@ -65,6 +66,6 @@ test_that("'filters()' validates arguments", {
     expect_s3_class(filters(organ = list(contains = "bar")), class)
     expect_s3_class(filters(organ = list(intersects = "bar")), class)
 
-    ## FIXME invalid / valid nouns ("organ", "enusSpecies", ...)
+    ## FIXME invalid / valid nouns ("organ", "genusSpecies", ...)
 
 })
