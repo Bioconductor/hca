@@ -8,7 +8,8 @@
 
 ## other helper functions
 .filters_validate <- function(x) {
-    ## print(names(x))
+    ## allowed verbs
+    verbs <- c("is", "within", "intersects", "contains")
     stopifnot(
         ## 'filter' must be a list
         is.list(x),
@@ -17,8 +18,9 @@
         ## each element in the list must also be a list
         `'filters()' arguments must be named lists` =
             all(vapply(x, inherits, logical(1), "list")),
-        ## appropriate verbs only
-        ## i.e must be one of "is", "within", "intersects", or "contains"
+        ## allowed verbs only
+        `'filters()' verbs must be 'is', 'within', 'intersects' or 'contains'` =
+            all(vapply(x, names, character(1)) %in% verbs)
     )
 
     x
