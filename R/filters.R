@@ -1,10 +1,15 @@
 #' @rdname filters
 #'
+#' @name filters
+#'
 #' @title HCA Filter Construction
 #'
-#' @description This set of functions takes user input to be used as query
-#' filters, ideally in the form of nested lists. This input is then validated,
-#' reformatted to JSON, and encoded into a properly formatted URL.
+#' @description 'filters()` takes user input to be used as query
+#'     filters. Each named argument is a list with a name specifying a
+#'     verb (e.g., `"is"`) and a character vector of allowed values,
+#'     as in the examples. This input is then validated, reformatted
+#'     to JSON, and encoded into a properly formatted URL.
+NULL
 
 ## other helper functions
 .filters_validate <- function(x) {
@@ -26,8 +31,11 @@
     x
 }
 
-#' @param ... named arguments, each of which is a `list()` specifying a query
-#' facet and its corresponding value to be used in the query
+#' @rdname filters
+#'
+#' @param ... named arguments, each of which is a `list()` specifying
+#'     a query facet and its corresponding value to be used in the
+#'     query
 #'
 #' @return `filters()` returns a `filters` object representing
 #'     validated filters in a format suitable for use in `projects()`
