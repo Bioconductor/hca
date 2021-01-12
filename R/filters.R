@@ -1,37 +1,40 @@
+## @rdname is used to document more than one function in the same file
+## the syntax convention for naming class methods is <generic>.<class>
+## where a generic function is just an intermediary which determines which
+## implementation of a function to call based on the class of its input
 #' @rdname filters
 #'
 #' @name filters
 #'
 #' @title HCA Filter Construction
 #'
-#' @description 'filters()` takes user input to be used as query
+#' @description `filters()` takes user input to be used as query
 #'     filters. Each named argument is a list with a name specifying a
 #'     verb (e.g., `"is"`) and a character vector of allowed values,
 #'     as in the examples. This input is then validated, reformatted
 #'     to JSON, and encoded into a properly formatted URL.
-NULL
 
-## other helper functions
+## helper functions
+#' @return `get_facet_options()` returns a list of all permissible query facets
+#' for the HCA api.
+#'
+#' @importFrom jsonlite read_json
+#'
+#' @export
+get_facet_options <- function() {
+    api <- "https://service.azul.data.humancellatlas.org/openapi"
+    json <- jsonlite::read_json(api)
+    filter_parameter <- json$paths$`/index/projects`$get$parameters[[2]]
+    facets <- names(filter_parameter$content$`application/json`$schema$properties)
+}
+
+## internal only
 .filters_validate <- function(x) {
     ## allowed verbs
     verbs <- c("is", "within", "intersects", "contains")
     ## allowed facets
-    facets <- c("arrayExpressAccessions", "assayType", "biologicalSex",
-                "bundleUuid", "bundleVersion", "cellCount", "cellLineType",
-                "contactName", "developmentStage", "donorCount", "donorDisease",
-                "effectiveOrgan", "entryId", "fileFormat", "fileId", "fileName",
-                "fileSize", "fileVersion", "genusSpecies",
-                "geoSeriesAccessions", "insdcProjectAccessions",
-                "insdcStudyAccessions", "institution",
-                "instrumentManufacturerModel", "laboratory",
-                "libraryConstructionApproach", "modelOrgan", "modelOrganPart",
-                "nucleicAcidSource", "organ", "organPart", "organismAge",
-                "organismAgeRange", "organismAgeUnit", "organismAgeValue",
-                "pairedEnd", "preservationMethod", "project",
-                "projectDescription", "projectId", "projectTitle",
-                "publicationTitle", "sampleDisease", "sampleEntityType",
-                "sampleId", "selectedCellType", "specimenDisease",
-                "specimenOrgan", "specimenOrganPart", "workflow")
+    facets <- get_facet_options()
+    ## facets and verbs are the same for index/files and index/samples
     stopifnot(
         ## 'filter' must be a list
         is.list(x),
@@ -45,8 +48,8 @@ NULL
         `'filters()' verbs must be 'is', 'within', 'intersects' or 'contains'` =
             all(vapply(x, names, character(1)) %in% verbs),
         ## allowed facets only
-        `'filters()' facets must be one of those in the permissble list` =
-            names(x) %in% facets
+        `'filters()' facets must be one of those in the permissible list` =
+            all(names(x) %in% facets)
     )
 
     x
@@ -109,21 +112,15 @@ filters <- function(...) {
     result
 }
 
+## internal only
 ## class accessors, not exported
 .filters_encoding <- function(x) x$encoding
 
 .filters_filters <- function(x) x$filters
 
-.filters_json <-
-    function(x)
-{
+.filters_json <-  function(x) {
     toJSON(.filters_filters(x), pretty = TRUE)
 }
-
-## @rdname is used to document more than one function in the same file
-## the syntax convention for naming class methods is <generic>.<class>
-## where a generic function is just an intermediary which determines which
-## implementation of a function to call based on the class of its input
 
 #' @rdname filters
 #'

@@ -2,10 +2,13 @@
 % Please edit documentation in R/filters.R
 \name{filters}
 \alias{filters}
+\alias{get_facet_options}
 \alias{length.filters}
 \alias{print.filters}
 \title{HCA Filter Construction}
 \usage{
+get_facet_options()
+
 filters(...)
 
 \method{length}{filters}(x)
@@ -20,12 +23,17 @@ query}
 \item{x}{for \code{length()} and \code{print()}, an object of class \code{filters}.}
 }
 \value{
+\code{get_facet_options()} returns a list of all permissible query facets
+for the HCA api.
+
 \code{filters()} returns a \code{filters} object representing
 validated filters in a format suitable for use in \code{projects()}
 and related functions.
 }
 \description{
-'filters()\verb{takes user input to be used as query filters. Each named argument is a list with a name specifying a verb (e.g.,}"is"`) and a character vector of allowed values,
+\code{filters()} takes user input to be used as query
+filters. Each named argument is a list with a name specifying a
+verb (e.g., \code{"is"}) and a character vector of allowed values,
 as in the examples. This input is then validated, reformatted
 to JSON, and encoded into a properly formatted URL.
 }
