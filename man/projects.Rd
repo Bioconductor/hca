@@ -37,6 +37,6 @@ HCA project, and columns summarizing the project.
 HCA API for information about available projects.
 }
 \examples{
-projects()  # all projects
+projects(filters())
 
 }

@@ -16,9 +16,8 @@
 
     response <- GET(uri)
     stop_for_status(response)
-
-    resp <- list(
+    list(
         content = content(response),
-        status_code = status_code(response)
+        status_code = response$status_code
     )
 }

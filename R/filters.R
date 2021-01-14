@@ -26,9 +26,12 @@ facet_options <- function() {
     api <- .hca_path("/openapi")
     json <- jsonlite::read_json(api)
     parameters <- json$paths$`/index/projects`$get$parameters
-    parameter_names <- vapply(parameters, `[[`, "name")
-    filter_parameter_idx <- match(parameter_names, "filter")
+    parameter_names <- vapply(parameters, `[[`, character(1), "name")
+    ## print(parameter_names)
+    filter_parameter_idx <- which(!is.na(match(parameter_names, "filters")))
+    ## print(filter_parameter_idx)
     filter_parameter <- parameters[[filter_parameter_idx]]
+    ## print(filter_parameter)
     names(filter_parameter$content$`application/json`$schema$properties)
 }
 

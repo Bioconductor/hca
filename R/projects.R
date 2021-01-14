@@ -22,6 +22,51 @@ NULL # don't add next function to documentation
     paste0(.PROJECTS_PATH, "?", parameters_path)
 }
 
+## extract a single element from a hit; returns a vector
+.projects_elt <- function(hit, element) {
+    ## different elements are found at different levels of the nested JSON
+    ## using a switch statement
+    switch (element,
+        "projectTitle" = sapply(hit$projects,`[[`, "projectTitle"),
+        "genusSpecies" = lapply(hit$donorOrganisms, `[[`, "genusSpecies"),
+        "samplesOrgan" = lapply(hit$samples, `[[`, "organ"),
+        "specimenOrgan" = lapply(hit$specimen, `[[`, "organ")
+    )
+}
+
+## extract a single element from all hits; returns a list-of-vectors
+.content_elt <- function(content, element) {
+    lapply(content$hits, .projects_elt, element)
+}
+
+#' @importFrom tidyr unnest
+#'
+#' @importFrom dplyr %>% mutate
+#'
+#' @importFrom tibble tibble
+.projects_as_tibble <- function(content)
+{
+    tbl <-
+        ## create tibble
+        tibble(
+            projectTitle = .content_elt(content, "projectTitle"),
+            genusSpecies = .content_elt(content, "genusSpecies"),
+            ## will need to investigate when, if ever, these differ
+            samplesOrgan = .content_elt(content, "samplesOrgan"),
+            specimenOrgan = .content_elt(content, "specimenOrgan")
+        ) %>%
+        ## add hit and project index
+        mutate(
+            hit_index = seq_along(projectTitle),
+            project_index = lapply(lengths(projectTitle), seq_len)
+        ) %>%
+        ## unnest list columns
+        unnest(c("projectTitle", "genusSpecies", "samplesOrgan",
+                 "specimenOrgan", "project_index"))
+
+    tbl
+}
+
 #' @param filters filter object as defined in this package
 #'
 #' @param size integer(1) maximum number of results to return;
@@ -41,7 +86,7 @@ NULL # don't add next function to documentation
 #'     HCA project, and columns summarizing the project.
 #'
 #' @examples
-#' projects()  # all projects
+#' projects(filters())
 #'
 #' @export
 projects <-
@@ -72,12 +117,10 @@ projects <-
 
     projects_index_path <- .projects_index_path(parameters_path)
 
-    ## FIXME: invoke content <- .hca_GET(path) from hca.R to do initial processing
-
-    ## FIXME: invoke .projects_as_tibble(content)
+    resp <- .hca_GET(projects_index_path)
+    content <- resp$content
+    ## print("content is: ")
+    ## print(content)
+    .projects_as_tibble(content)
 }
 
-.projects_as_tibble <- function(content)
-{
-    ## FIXME
-}
