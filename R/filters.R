@@ -15,17 +15,21 @@
 #'     to JSON, and encoded into a properly formatted URL.
 
 ## helper functions
-#' @return `get_facet_options()` returns a list of all permissible query facets
-#' for the HCA api.
+
+#' @return `facet_options()` returns a vector of all permissible query
+#'     facets for the HCA api.
 #'
 #' @importFrom jsonlite read_json
 #'
 #' @export
-get_facet_options <- function() {
-    api <- "https://service.azul.data.humancellatlas.org/openapi"
+facet_options <- function() {
+    api <- .hca_path("/openapi")
     json <- jsonlite::read_json(api)
-    filter_parameter <- json$paths$`/index/projects`$get$parameters[[2]]
-    facets <- names(filter_parameter$content$`application/json`$schema$properties)
+    parameters <- json$paths$`/index/projects`$get$parameters
+    parameter_names <- vapply(parameters, `[[`, "name")
+    filter_parameter_idx <- match(parameter_names, "filter")
+    filter_parameter <- parameters[[filter_parameter_idx]]
+    names(filter_parameter$content$`application/json`$schema$properties)
 }
 
 ## internal only
@@ -33,7 +37,7 @@ get_facet_options <- function() {
     ## allowed verbs
     verbs <- c("is", "within", "intersects", "contains")
     ## allowed facets
-    facets <- get_facet_options()
+    facets <- facet_options()
     ## facets and verbs are the same for index/files and index/samples
     stopifnot(
         ## 'filter' must be a list

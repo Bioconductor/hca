@@ -1,22 +1,20 @@
 .BASE_URL <- "https://service.azul.data.humancellatlas.org"
-## internal only
-.hca_GET_validate <- function(x) {
+
+.hca_path <- function(path) {
     stopifnot(
-        length(x) == 1L,
-        is.character(x),
-        startsWith(x, "https://"),
-        httr::http_error(x) == FALSE
+        is.character(path),
+        length(path) == 1L,
+        startsWith(path, "/")
     )
-    x
+    paste0(.BASE_URL, path)
 }
 
 ## internal only
 #' @importFrom httr GET stop_for_status headers content
 .hca_GET <- function(path) {
-    uri <- paste0(.BASE_URL, path)
+    uri <- .hca_path(path)
 
-    valid_uri <- .hca_GET_validate(uri)
-    response <- GET(valid_uri)
+    response <- GET(uri)
     stop_for_status(response)
 
     resp <- list(
