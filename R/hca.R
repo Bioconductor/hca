@@ -9,6 +9,20 @@
     paste0(.BASE_URL, path)
 }
 
+## local cache of API specification, updated once / hour
+.hca_openapi <- local({
+    json <- NULL
+    timestamp <- NULL
+    function() {
+        if (is.null(timestamp) || Sys.time() > timestamp + 3600L) {
+            api <- .hca_path("/openapi")
+            json <<- jsonlite::read_json(api)
+            timestamp <<- Sys.time()
+        }
+        json
+    }
+})
+
 ## internal only
 #' @importFrom httr GET stop_for_status headers content
 .hca_GET <- function(path) {
