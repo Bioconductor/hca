@@ -5,7 +5,7 @@
 \title{HCA Project Querying}
 \usage{
 projects(
-  filters = filters(),
+  filters = NULL,
   size = 1000L,
   sort = "projectTitle",
   order = c("asc", "desc"),
@@ -13,7 +13,8 @@ projects(
 )
 }
 \arguments{
-\item{filters}{filter object as defined in this package}
+\item{filters}{filter object created by \code{filters()}, or \code{NULL}
+(default; all projects).}
 
 \item{size}{integer(1) maximum number of results to return;
 default: all projects matching \code{filter}. The default (10000) is

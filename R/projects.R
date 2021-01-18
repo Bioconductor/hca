@@ -67,7 +67,8 @@ NULL # don't add next function to documentation
     tbl
 }
 
-#' @param filters filter object as defined in this package
+#' @param filters filter object created by `filters()`, or `NULL`
+#'     (default; all projects).
 #'
 #' @param size integer(1) maximum number of results to return;
 #'     default: all projects matching `filter`. The default (10000) is
@@ -83,19 +84,23 @@ NULL # don't add next function to documentation
 #'     version 2 of the HCA Data Coordinating Platform.
 #'
 #' @return `projects()` returns a tibble with each row representing an
-#'     HCA project, and columns summarizing the project.
+#'     HCA project, and columns summarizing the project. Each `.hit`
+#'     is a single result; a result may contain several projects, as
+#'     indexed by `.project`.
 #'
 #' @examples
 #' projects(filters())
 #'
 #' @export
 projects <-
-    function(filters = filters(),
+    function(filters = NULL,
              size = 1000L,
              sort = "projectTitle",
              order = c("asc", "desc"),
              catalog = c("dcp2", "it2", "dcp1", "it1"))
 {
+    if (is.null(filters))
+        filters <- filters()
     ## validate
     size <- as.integer(size)
     sort <- match.arg(sort, facet_options())
