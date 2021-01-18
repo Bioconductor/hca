@@ -31,7 +31,9 @@ version 2 of the HCA Data Coordinating Platform.}
 }
 \value{
 \code{projects()} returns a tibble with each row representing an
-HCA project, and columns summarizing the project.
+HCA project, and columns summarizing the project. Each \code{.hit}
+is a single result; a result may contain several projects, as
+indexed by \code{.project}.
 }
 \description{
 \code{projects()} takes user input to be used to query the

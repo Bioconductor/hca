@@ -57,12 +57,14 @@ NULL # don't add next function to documentation
         ) %>%
         ## add hit and project index
         mutate(
-            hit_index = seq_along(projectTitle),
-            project_index = lapply(lengths(projectTitle), seq_len)
+            .hit = seq_along(projectTitle),
+            .project = lapply(lengths(projectTitle), seq_len)
         ) %>%
         ## unnest list columns
-        unnest(c("projectTitle", "genusSpecies", "samplesOrgan",
-                 "specimenOrgan", "project_index"))
+        unnest(c(
+            "projectTitle", "genusSpecies", "samplesOrgan", "specimenOrgan",
+            ".project"
+        ))
 
     tbl
 }
@@ -122,10 +124,8 @@ projects <-
 
     projects_index_path <- .projects_index_path(parameters_path)
 
-    resp <- .hca_GET(projects_index_path)
-    content <- resp$content
-    ## print("content is: ")
-    ## print(content)
-    .projects_as_tibble(content)
+    response <- .hca_GET(projects_index_path)
+
+    .projects_as_tibble(response$content)
 }
 
