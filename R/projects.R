@@ -57,8 +57,8 @@ NULL # don't add next function to documentation
         ) %>%
         ## add hit and project index
         mutate(
-            .hit = seq_along(projectTitle),
-            .project = lapply(lengths(projectTitle), seq_len)
+            .hit = seq_along(.data$projectTitle),
+            .project = lapply(lengths(.data$projectTitle), seq_len)
         ) %>%
         ## unnest list columns
         unnest(c(
