@@ -1,8 +1,6 @@
 .SUMMARY_PATH <- "/index/summary"
 
-.summary_as_integer <-
-    function(x)
-{
+.summary_as_integer <- function(x) {
     if (max(x) > .Machine$integer.max) {
         x
     } else {
@@ -15,18 +13,14 @@
 #' @importFrom tidyr unnest_longer
 #'
 #' @importFrom dplyr .data filter
-.summary_overview <-
-    function(content)
-{
+.summary_overview <- function(content) {
     enframe(content) %>%
         filter(grepl("(Size|Count)$", .data$name)) %>%
         unnest_longer("value") %>%
         mutate(value = .summary_as_integer(.data$value))
 }
 
-.summary_fileTypeSummaries <-
-    function(content)
-{
+.summary_fileTypeSummaries <- function(content) {
     records <- content$fileTypeSummaries
     tibble(
         fileType = vapply(records, `[[`, character(1), "fileType"),
@@ -35,18 +29,14 @@
     )
 }
 
-.summary_organTypes <-
-    function(content)
-{
+.summary_organTypes <- function(content) {
     records <- content$organTypes
     tibble(
         organTypes = vapply(records, `[[`, character(1), 1L)
     )
 }
 
-.summary_cellCountSummaries <-
-    function(content)
-{
+.summary_cellCountSummaries <- function(content) {
     records <- content$cellCountSummaries
     tibble(
         organType = lapply(records, `[[`, "organType"),
@@ -91,17 +81,15 @@
 #' summary(filter)
 #' summary(filter, "fileTypeSummaries")
 #' summary(filter, "cellCountSummaries")
-#' 
+#'
 #' @export
-summary <-
-    function(filters = NULL,
+summary <- function(filters = NULL,
              type = c(
                  "overview",
                  "fileTypeSummaries", "cellCountSummaries", "organTypes",
                  "list"
              ),
-             catalog = c("dcp2", "it2", "dcp1", "it1"))
-{
+             catalog = c("dcp2", "it2", "dcp1", "it1")) {
     if (is.null(filters))
         filters <- filters()
     catalog <- match.arg(catalog)

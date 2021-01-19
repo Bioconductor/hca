@@ -12,14 +12,14 @@ NULL # don't add next function to documentation
 
 ## helper functions
 ## internal only
-.projects_parameters_path <- function(...) {
+.parameters_path <- function(...) {
     params <- list(...)
     paste(names(params), unname(params), sep = "=", collapse = "&")
 }
 
 #' @importFrom jsonlite read_json
-.projects_index_path <- function(parameters_path) {
-    paste0(.PROJECTS_PATH, "?", parameters_path)
+.index_path <- function(base_path, parameters_path) {
+    paste0(base_path, "?", parameters_path)
 }
 
 ## extract a single element from a hit; returns a vector
@@ -35,8 +35,8 @@ NULL # don't add next function to documentation
 }
 
 ## extract a single element from all hits; returns a list-of-vectors
-.content_elt <- function(content, element) {
-    lapply(content$hits, .projects_elt, element)
+.content_elt <- function(content, func, element) {
+    lapply(content$hits, func, element)
 }
 
 #' @importFrom tidyr unnest
@@ -49,14 +49,16 @@ NULL # don't add next function to documentation
     tbl <-
         ## create tibble
         tibble(
-            projectTitle = .content_elt(content, "projectTitle"),
-            genusSpecies = .content_elt(content, "genusSpecies"),
+            projectTitle = .content_elt(content, .projects_elt, "projectTitle"),
+            genusSpecies = .content_elt(content, .projects_elt, "genusSpecies"),
             ## will need to investigate when, if ever, these differ
-            samplesOrgan = .content_elt(content, "samplesOrgan"),
-            specimenOrgan = .content_elt(content, "specimenOrgan")
+            samplesOrgan = .content_elt(content, .projects_elt, "samplesOrgan"),
+            specimenOrgan = .content_elt(content, .projects_elt,
+                                         "specimenOrgan")
         ) %>%
         ## add hit and project index
         mutate(
+            ## .data is the data frame being passed
             .hit = seq_along(.data$projectTitle),
             .project = lapply(lengths(.data$projectTitle), seq_len)
         ) %>%
@@ -94,13 +96,11 @@ NULL # don't add next function to documentation
 #' projects(filters())
 #'
 #' @export
-projects <-
-    function(filters = NULL,
+projects <- function(filters = NULL,
              size = 1000L,
              sort = "projectTitle",
              order = c("asc", "desc"),
-             catalog = c("dcp2", "it2", "dcp1", "it1"))
-{
+             catalog = c("dcp2", "it2", "dcp1", "it1")) {
     if (is.null(filters))
         filters <- filters()
     ## validate
@@ -117,12 +117,12 @@ projects <-
     filters <- .filters_encoding(filters)
 
     ## parameters-as-list
-    parameters_path <- .projects_parameters_path(
+    parameters_path <- .parameters_path(
         filters = filters, size = size, sort = sort, order = order,
         catalog = catalog
     )
 
-    projects_index_path <- .projects_index_path(parameters_path)
+    projects_index_path <- .index_path(.PROJECTS_PATH, parameters_path)
 
     response <- .hca_GET(projects_index_path)
 

@@ -1,8 +1,9 @@
 test_that("'.hca_GET()' works", {
     ## valid path
     test_filter <- filters(organ = list(is = "pancreas"))
-    test_parameters <- .projects_parameters_path(filters = test_filter$encoding)
-    test_url_path <- .projects_index_path(parameters = test_parameters)
+    test_parameters <- .parameters_path(filters = test_filter$encoding)
+    test_url_path <- .index_path(base_path = "/index/projects",
+                                 parameters = test_parameters)
     resp <- .hca_GET(test_url_path)
     expect_equal(resp$status_code, 200)
     ## add test to ensure content is as expected

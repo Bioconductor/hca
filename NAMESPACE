@@ -3,6 +3,7 @@
 S3method(length,filters)
 S3method(print,filters)
 export(facet_options)
+export(files)
 export(filters)
 export(projects)
 export(summary)

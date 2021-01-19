@@ -22,9 +22,7 @@
 #' @importFrom jsonlite read_json
 #'
 #' @export
-facet_options <-
-    function()
-{
+facet_options <- function() {
     json <- .hca_openapi()
     parameters <- json$paths$`/index/projects`$get$parameters
     parameter_names <- vapply(parameters, `[[`, character(1), "name")
