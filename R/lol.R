@@ -73,13 +73,15 @@ NULL
 #' @param filter character(1) regular expression matching paths to be
 #'     returned. Must be NA if `simplify` is FALSE.
 #'
-#' @return `lol_find()` returns a named vector when `simplify =
-#'     TRUE`. The names represent the paths to each node matching
-#'     `key`, and the elements correspond to the value of the node.
+#' @return `lol_find()` returns a named character vector when
+#'     `simplify = TRUE`. The names represent the paths to each node
+#'     matching `key`, and the elements correspond to the value of the
+#'     node.
 #'
 #'     `lol_find()` returns a list-of-lists when `simplify =
 #'     FALSE`. The list-of-lists reflects the list structure of `x`,
-#'     but trimmed to only include paths leading to `key`.
+#'     but trimmed to only include paths leading to `key`, and the
+#'     value of the key.
 #'
 #' @examples
 #' lol <- list(a = list(b = 1), a = list(b = 2))
@@ -108,8 +110,13 @@ lol_find <-
 
     result <- .lol_visit(x, identity, key, not_in)
 
-    if (length(result) && simplify)
-        result <- unlist(result)
+    if (simplify) {
+        if (length(result)) {
+            result <- unlist(result)
+        } else {
+            result <- setNames(character(0), character())
+        }
+    }
     if (!is.na(filter))
         result <- result[grepl(filter, names(result))]
 

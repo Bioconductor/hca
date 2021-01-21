@@ -37,10 +37,13 @@ structure of the data leading to each \code{key}. See examples.}
 returned. Must be NA if \code{simplify} is FALSE.}
 }
 \value{
-\code{lol_find()} returns a named vector when \code{simplify = TRUE}. The names represent the paths to each node matching
-\code{key}, and the elements correspond to the value of the node.\preformatted{`lol_find()` returns a list-of-lists when `simplify =
+\code{lol_find()} returns a named character vector when
+\code{simplify = TRUE}. The names represent the paths to each node
+matching \code{key}, and the elements correspond to the value of the
+node.\preformatted{`lol_find()` returns a list-of-lists when `simplify =
 FALSE`. The list-of-lists reflects the list structure of `x`,
-but trimmed to only include paths leading to `key`.
+but trimmed to only include paths leading to `key`, and the
+value of the key.
 }
 
 \code{lol_count()} returns an integer(1) count of the number of

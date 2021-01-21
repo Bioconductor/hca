@@ -1,21 +1,22 @@
 test_that("'lol_find()' works", {
+    named_character <- setNames(character(), character())
+
     ## unnamed lists
-    expect_identical(lol_find(), list())
-    expect_identical(lol_find(list(list(), list())), list())
+    expect_identical(lol_find(), named_character)
+    expect_identical(lol_find(list(list(), list())), named_character)
 
     ## named lists
-    named_list <- setNames(list(), character())
-    object <- lol_find(named_list)
-    expect_identical(object, named_list)
+    object <- lol_find(named_character)
+    expect_identical(object, named_character)
 
-    expect_identical(lol_find(list(list(b = 1))), list())
-    expect_identical(lol_find(list(list(b = 1))), list())
-    expect_identical(lol_find(list(a = list(b = 1))), named_list)
+    expect_identical(lol_find(list(list(b = 1))), named_character)
+    expect_identical(lol_find(list(list(b = 1))), named_character)
+    expect_identical(lol_find(list(a = list(b = 1))), named_character)
 
     x <- list(list(a = 1), list(a = 2), list(b = 3))
     expect_identical(lol_find(x, "a"), c(a = 1, a = 2))
     expect_identical(lol_find(x, "b"), c(b = 3))
-    expect_identical(lol_find(x, "c"), list())
+    expect_identical(lol_find(x, "c"), named_character)
 
     x <- list(a = list(list(b = 1)), a = list(list(b = 2)))
     expect_identical(lol_find(x, "a"), c(a.b = 1, a.b = 2))
@@ -55,8 +56,8 @@ test_that("'lol_find(not_in=)' works", {
     x <- list(a = list(b = 1), c = list(b = 2), a = list(b = 3))
     expect_identical(lol_find(x, "b", "a"), c(c.b = 2))
     expect_identical(lol_find(x, "b", "c"), c(a.b = 1, a.b = 3))
-    named_list <- setNames(list(), character())
-    expect_identical(lol_find(x, "b", c("a", "c")), named_list)
+    named_character <- setNames(character(), character())
+    expect_identical(lol_find(x, "b", c("a", "c")), named_character)
 })
 
 test_that("'lol_find(filter=)' works", {
