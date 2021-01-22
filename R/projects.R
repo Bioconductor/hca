@@ -12,15 +12,6 @@ NULL # don't add next function to documentation
 
 ## helper functions
 ## internal only
-.parameters_path <- function(...) {
-    params <- list(...)
-    paste(names(params), unname(params), sep = "=", collapse = "&")
-}
-
-#' @importFrom jsonlite read_json
-.index_path <- function(base_path, parameters_path) {
-    paste0(base_path, "?", parameters_path)
-}
 
 ## extract a single element from a hit; returns a vector
 .projects_elt <- function(hit, element) {
@@ -96,35 +87,22 @@ NULL # don't add next function to documentation
 #' projects(filters())
 #'
 #' @export
-projects <- function(filters = NULL,
+projects <-
+    function(filters,
              size = 1000L,
              sort = "projectTitle",
-             order = c("asc", "desc"),
-             catalog = c("dcp2", "it2", "dcp1", "it1")) {
+             order = NULL,
+             catalog = NULL) {
+
     if (is.null(filters))
         filters <- filters()
-    ## validate
-    size <- as.integer(size)
-    sort <- match.arg(sort, facet_options())
-    order <- match.arg(order) # defaults from argument
-    catalog <- match.arg(catalog) # defults from argument
-    stopifnot(
-        `use 'filters()' to create 'filter=' argument` =
-            inherits(filters, "filters"),
-        length(size) == 1L
-        ## sort, order, catalog already validated by match.arg
-    )
-    filters <- .filters_encoding(filters)
 
-    ## parameters-as-list
-    parameters_path <- .parameters_path(
-        filters = filters, size = size, sort = sort, order = order,
-        catalog = catalog
-    )
-
-    projects_index_path <- .index_path(.PROJECTS_PATH, parameters_path)
-
-    response <- .hca_GET(projects_index_path)
+    response <- .index_GET(filters = filters,
+                           size = size,
+                           sort = sort,
+                           order = order,
+                           catalog = catalog,
+                           base_path = .PROJECTS_PATH)
 
     .projects_as_tibble(response$content)
 }

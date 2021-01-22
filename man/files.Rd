@@ -5,16 +5,16 @@
 \title{HCA File Querying}
 \usage{
 files(
-  projectTitles = NULL,
+  filters,
   size = 1000L,
   sort = "projectTitle",
-  order = c("asc", "desc"),
-  catalog = c("dcp2", "it2", "dcp1", "it1")
+  order = NULL,
+  catalog = NULL
 )
 }
 \arguments{
-\item{projectTitles}{a vector of one or more strings corresponding to project
-titles for which you want to review files}
+\item{filters}{filter object created by \code{filters()}, or \code{NULL}
+(default; all projects).}
 
 \item{size}{integer(1) maximum number of results to return;
 default: all projects matching \code{filter}. The default (10000) is
@@ -39,8 +39,10 @@ Each \code{.hit} is a single result; ....
 to be used to query the HCA API for information about available files.
 }
 \examples{
-files(c("Tabula Muris: Transcriptomic characterization of 20 organs and
-tissues from Mus musculus at single cell resolution", "A Single-Cell
-Transcriptomic Map of the Human and Mouse Pancreas Reveals Inter- and
-Intra-cell Population Structure"))
+files(filters = filters(
+    projectTitle = list(
+        is = c("Tabula Muris: Transcriptomic characterization of 20 organs
+        and tissues from Mus musculus at single cell resolution")
+   )
+))
 }

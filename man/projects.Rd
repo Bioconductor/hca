@@ -5,11 +5,11 @@
 \title{HCA Project Querying}
 \usage{
 projects(
-  filters = NULL,
+  filters,
   size = 1000L,
   sort = "projectTitle",
-  order = c("asc", "desc"),
-  catalog = c("dcp2", "it2", "dcp1", "it1")
+  order = NULL,
+  catalog = NULL
 )
 }
 \arguments{

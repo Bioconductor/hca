@@ -65,8 +65,9 @@ NULL # don't add next function to documentation
     tbl
 }
 
-#' @param projectTitles a vector of one or more strings corresponding to project
-#'     titles for which you want to review files
+#' @param filters filter object created by `filters()`, or `NULL`
+#'     (default; all projects).
+#'
 #' @param size integer(1) maximum number of results to return;
 #'     default: all projects matching `filter`. The default (10000) is
 #'     meant to be large enough to return all results.
@@ -86,42 +87,28 @@ NULL # don't add next function to documentation
 #' @export
 #'
 #' @examples
-#' files(c("Tabula Muris: Transcriptomic characterization of 20 organs and
-#' tissues from Mus musculus at single cell resolution", "A Single-Cell
-#' Transcriptomic Map of the Human and Mouse Pancreas Reveals Inter- and
-#' Intra-cell Population Structure"))
-files <- function(projectTitles = NULL,
-                  size = 1000L,
-                  sort = "projectTitle",
-                  order = c("asc", "desc"),
-                  catalog = c("dcp2", "it2", "dcp1", "it1")) {
-    ## validate
-    size <- as.integer(size)
-    sort <- match.arg(sort, facet_options())
-    order <- match.arg(order) # defaults from argument
-    catalog <- match.arg(catalog) # defaults from argument
+#' files(filters = filters(
+#'     projectTitle = list(
+#'         is = c("Tabula Muris: Transcriptomic characterization of 20 organs
+#'         and tissues from Mus musculus at single cell resolution")
+#'    )
+#' ))
+files <-
+    function(filters,
+             size = 1000L,
+             sort = "projectTitle",
+             order = NULL,
+             catalog = NULL) {
 
-    stopifnot(
-        ## 'projectTitles' must be a vector
-        is.vector(projectTitles),
-        ## 'projectTitles' must have at least one entry
-        length(projectTitles) > 0L
-    )
+        if (is.null(filters))
+            filters <- filters()
 
-    file_filters <- filters(projectTitle = list(is = projectTitles))
+        response <- .index_GET(filters = filters,
+                               size = size,
+                               sort = sort,
+                               order = order,
+                               catalog = catalog,
+                               base_path = .FILES_PATH)
 
-    file_filters <- .filters_encoding(file_filters)
-
-    ## parameters-as-list
-    files_parameters_path <- .parameters_path(
-        filters = file_filters, size = size, sort = sort, order = order,
-        catalog = catalog
-    )
-
-    files_index_path <- .index_path("/index/files", files_parameters_path)
-
-    response <- .hca_GET(files_index_path)
-
-    .files_as_tibble(response$content)
-
-}
+        .files_as_tibble(response$content)
+    }
