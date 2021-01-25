@@ -4,13 +4,9 @@
     function(filters,
             size,
             sort,
-            order = c("asc", "desc"),
-            catalog = c("dcp2", "it2", "dcp1", "it1")) {
-    ## validate
-    size <- as.integer(size)
-    sort <- match.arg(sort, facet_options())
-    order <- match.arg(order) # defaults from argument
-    catalog <- match.arg(catalog) # defaults from argument
+            order,
+            catalog)
+{
     stopifnot(
         `use 'filters()' to create 'filter=' argument` =
             inherits(filters, "filters"),
@@ -31,9 +27,15 @@
 .index_GET <- function(filters,
                        size,
                        sort,
-                       order,
-                       catalog,
-                       base_path) {
+                       order = c("asc", "desc"),
+                       catalog = c("dcp2", "it2", "dcp1", "it1"),
+                       base_path)
+{
+    ## validate
+    size <- as.integer(size)
+    sort <- match.arg(sort, facet_options())
+    order <- match.arg(order) # defaults from argument
+    catalog <- match.arg(catalog) # defaults from argument
 
     ## validate
     .index_validate(filters = filters,

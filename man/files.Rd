@@ -5,11 +5,11 @@
 \title{HCA File Querying}
 \usage{
 files(
-  filters,
+  filters = NULL,
   size = 1000L,
   sort = "projectTitle",
-  order = NULL,
-  catalog = NULL
+  order = c("asc", "desc"),
+  catalog = c("dcp2", "it2", "dcp1", "it1")
 )
 }
 \arguments{
