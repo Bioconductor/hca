@@ -114,19 +114,21 @@ files <-
              catalog = c("dcp2", "it2", "dcp1", "it1"),
              as = c("tibble", "lol"))
 {
-        if (is.null(filters))
-            filters <- filters()
+    if (is.null(filters))
+        filters <- filters()
 
-        response <- .index_GET(filters = filters,
-                               size = size,
-                               sort = sort,
-                               order = order,
-                               catalog = catalog,
-                               base_path = .FILES_PATH)
+    response <- .index_GET(
+        filters = filters,
+        size = size,
+        sort = sort,
+        order = order,
+        catalog = catalog,
+        base_path = .FILES_PATH
+    )
 
-        switch(
-            as,
-            tibble = .files_as_tibble(response$content),
-            lol = response$content
-        )
-    }
+    switch(
+        as,
+        tibble = .files_as_tibble(response$content),
+        lol = response$content
+    )
+}

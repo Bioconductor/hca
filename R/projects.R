@@ -110,12 +110,14 @@ projects <-
         filters <- filters()
     as <- match.arg(as)
 
-    response <- .index_GET(filters = filters,
-                           size = size,
-                           sort = sort,
-                           order = order,
-                           catalog = catalog,
-                           base_path = .PROJECTS_PATH)
+    response <- .index_GET(
+        filters = filters,
+        size = size,
+        sort = sort,
+        order = order,
+        catalog = catalog,
+        base_path = .PROJECTS_PATH
+    )
 
     switch(
         as,
