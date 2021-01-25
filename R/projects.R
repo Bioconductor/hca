@@ -78,10 +78,21 @@ NULL # don't add next function to documentation
 #' @param catalog character(1) source of data. Default: `"dcp2"`,
 #'     version 2 of the HCA Data Coordinating Platform.
 #'
-#' @return `projects()` returns a tibble with each row representing an
-#'     HCA project, and columns summarizing the project. Each `.hit`
-#'     is a single result; a result may contain several projects, as
-#'     indexed by `.project`.
+#' @param as character(1) return format. Default: `"tibble"`, a tibble
+#'     summarizing essential elements of HCA projects. `"lol"`: a
+#'     list-of-lists containing detailed project information
+#'
+#' @seealso `lol_find()` and `lol_lfind()` for working with
+#'     list-of-lists data structures.
+#'
+#' @return When `as = "tibble"`, `projects()` returns a tibble with
+#'     each row representing an HCA project, and columns summarizing
+#'     the project. Each `.hit` is a single result; a result may
+#'     contain several projects, as indexed by `.project`.
+#'
+#'     When `as = "lol"`, `projects()` returns a list-of-lists data
+#'     structure representing detailed information on each project
+#'     (`hit`).
 #'
 #' @examples
 #' projects(filters())
@@ -92,10 +103,12 @@ projects <-
              size = 1000L,
              sort = "projectTitle",
              order = c("asc", "desc"),
-             catalog = c("dcp2", "it2", "dcp1", "it1"))
+             catalog = c("dcp2", "it2", "dcp1", "it1"),
+             as = c("tibble", "lol"))
 {
     if (is.null(filters))
         filters <- filters()
+    as <- match.arg(as)
 
     response <- .index_GET(filters = filters,
                            size = size,
@@ -104,6 +117,9 @@ projects <-
                            catalog = catalog,
                            base_path = .PROJECTS_PATH)
 
-    .projects_as_tibble(response$content)
+    switch(
+        as,
+        tibble = .projects_as_tibble(response$content),
+        lol = response$content
+    )
 }
-

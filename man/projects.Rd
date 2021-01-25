@@ -9,7 +9,8 @@ projects(
   size = 1000L,
   sort = "projectTitle",
   order = c("asc", "desc"),
-  catalog = c("dcp2", "it2", "dcp1", "it1")
+  catalog = c("dcp2", "it2", "dcp1", "it1"),
+  as = c("tibble", "lol")
 )
 }
 \arguments{
@@ -28,12 +29,19 @@ sort result; default: \code{"projectTitle"}.}
 
 \item{catalog}{character(1) source of data. Default: \code{"dcp2"},
 version 2 of the HCA Data Coordinating Platform.}
+
+\item{as}{character(1) return format. Default: \code{"tibble"}, a tibble
+summarizing essential elements of HCA projects. \code{"lol"}: a
+list-of-lists containing detailed project information}
 }
 \value{
-\code{projects()} returns a tibble with each row representing an
-HCA project, and columns summarizing the project. Each \code{.hit}
-is a single result; a result may contain several projects, as
-indexed by \code{.project}.
+When \code{as = "tibble"}, \code{projects()} returns a tibble with
+each row representing an HCA project, and columns summarizing
+the project. Each \code{.hit} is a single result; a result may
+contain several projects, as indexed by \code{.project}.\preformatted{When `as = "lol"`, `projects()` returns a list-of-lists data
+structure representing detailed information on each project
+(`hit`).
+}
 }
 \description{
 \code{projects()} takes user input to be used to query the
@@ -42,4 +50,8 @@ HCA API for information about available projects.
 \examples{
 projects(filters())
 
+}
+\seealso{
+\code{lol_find()} and \code{lol_lfind()} for working with
+list-of-lists data structures.
 }

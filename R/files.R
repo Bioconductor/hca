@@ -81,9 +81,22 @@ NULL # don't add next function to documentation
 #' @param catalog character(1) source of data. Default: `"dcp2"`,
 #'     version 2 of the HCA Data Coordinating Platform.
 #'
-#' @return `files()` returns a tibble with each row representing a file for one
-#'     of the specified HCA project, and columns summarizing the file.
-#'     Each `.hit` is a single result; ....
+#' @param as character(1) return format. Default: `"tibble"`, a tibble
+#'     summarizing essential elements of HCA files. `"lol"`: a
+#'     list-of-lists containing detailed file information.
+#'
+#' @seealso `lol_find()` and `lol_lfind()` for working with
+#'     list-of-lists data structures.
+#'
+#' @return When `as = "tibble"`, `files()` returns a tibble with each
+#'     row representing a file for one of the specified HCA project,
+#'     and columns summarizing the file.  Each `.hit` is a single
+#'     result; ....
+#'
+#'     When `as = "lol"`, `files()` returns a list-of-lists data
+#'     structure representing detailed information on each file
+#'     (`hit`).
+#'
 #' @export
 #'
 #' @examples
@@ -98,7 +111,8 @@ files <-
              size = 1000L,
              sort = "projectTitle",
              order = c("asc", "desc"),
-             catalog = c("dcp2", "it2", "dcp1", "it1"))
+             catalog = c("dcp2", "it2", "dcp1", "it1"),
+             as = c("tibble", "lol"))
 {
         if (is.null(filters))
             filters <- filters()
@@ -110,5 +124,9 @@ files <-
                                catalog = catalog,
                                base_path = .FILES_PATH)
 
-        .files_as_tibble(response$content)
+        switch(
+            as,
+            tibble = .files_as_tibble(response$content),
+            lol = response$content
+        )
     }

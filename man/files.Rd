@@ -9,7 +9,8 @@ files(
   size = 1000L,
   sort = "projectTitle",
   order = c("asc", "desc"),
-  catalog = c("dcp2", "it2", "dcp1", "it1")
+  catalog = c("dcp2", "it2", "dcp1", "it1"),
+  as = c("tibble", "lol")
 )
 }
 \arguments{
@@ -28,11 +29,19 @@ sort result; default: \code{"projectTitle"}.}
 
 \item{catalog}{character(1) source of data. Default: \code{"dcp2"},
 version 2 of the HCA Data Coordinating Platform.}
+
+\item{as}{character(1) return format. Default: \code{"tibble"}, a tibble
+summarizing essential elements of HCA files. \code{"lol"}: a
+list-of-lists containing detailed file information.}
 }
 \value{
-\code{files()} returns a tibble with each row representing a file for one
-of the specified HCA project, and columns summarizing the file.
-Each \code{.hit} is a single result; ....
+When \code{as = "tibble"}, \code{files()} returns a tibble with each
+row representing a file for one of the specified HCA project,
+and columns summarizing the file.  Each \code{.hit} is a single
+result; ....\preformatted{When `as = "lol"`, `files()` returns a list-of-lists data
+structure representing detailed information on each file
+(`hit`).
+}
 }
 \description{
 \code{files()} takes a list of user provided project titles
@@ -45,4 +54,8 @@ files(filters = filters(
         and tissues from Mus musculus at single cell resolution")
    )
 ))
+}
+\seealso{
+\code{lol_find()} and \code{lol_lfind()} for working with
+list-of-lists data structures.
 }
