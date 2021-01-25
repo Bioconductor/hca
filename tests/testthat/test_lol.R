@@ -50,6 +50,13 @@ test_that("'lol_find()' works for less-usual cases", {
     ## named / unnamed lists
     x <- list(a = list(list(b = 1)), a = list(list(b = 2)))
     expect_identical(lol_find(x, "b"), c(a.b = 1, a.b = 2))
+
+    ## empty elements
+    x <- list(a = list(), a = list(1))
+    expect_identical(lol_find(x, "a"), c(a = NA, a = 1))
+
+    x <- list(a = list(b = 1), a = list(b = list()))
+    expect_identical(lol_find(x, "b"), c(a.b = 1, a.b = NA))
 })
 
 test_that("'lol_find(not_in=)' works", {

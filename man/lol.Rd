@@ -9,42 +9,28 @@
 \alias{lol_count}
 \title{Utilities for manipulating lists-of-lists}
 \usage{
-lol_find(
-  x = list(),
-  key = "",
-  not_in = character(),
-  simplify = TRUE,
-  filter = NA_character_
-)
+lol_find(x = list(), key = "", not_in = character(), filter = NA_character_)
 
 lol_count(x = list(), key = "", not_in = character(), filter = NA_character_)
 }
 \arguments{
 \item{x}{list(), possibly containing other lists.}
 
-\item{key}{character(1) desired node name.}
+\item{key}{character() desired node name, or word-sufffix of path
+to nodes of interest, e.g., \code{"a.b"} finds "b" nodes that are
+children of "a" nodes.}
 
 \item{not_in}{character() of node(s) whose descendants are excluded
 from matching \code{key}.}
-
-\item{simplify}{logical(1) when TRUE, \code{unlist()} the result to
-return a named character() vector, where elements correspond
-node values matching \code{key}, and names describe the named path
-to the node. When FALSE, a list-of-lists reflecting the
-structure of the data leading to each \code{key}. See examples.}
 
 \item{filter}{character(1) regular expression matching paths to be
 returned. Must be NA if \code{simplify} is FALSE.}
 }
 \value{
-\code{lol_find()} returns a named character vector when
-\code{simplify = TRUE}. The names represent the paths to each node
-matching \code{key}, and the elements correspond to the value of the
-node.\preformatted{`lol_find()` returns a list-of-lists when `simplify =
-FALSE`. The list-of-lists reflects the list structure of `x`,
-but trimmed to only include paths leading to `key`, and the
-value of the key.
-}
+\code{lol_find()} returns a named character vector. The names
+represent the paths to each node matching \code{key}, and the
+elements correspond to the value of the node. Named keys with
+empty elements are represented as \code{NA}.
 
 \code{lol_count()} returns an integer(1) count of the number of
 elements matching \code{key}, subject to other arguments of the
@@ -52,8 +38,11 @@ function.
 }
 \description{
 \code{lol_find()} searches a list-of-lists \code{x} for nodes
-with name \code{key}. The form and content of the output is
-determined by \code{simplify} and \code{filter}.
+with name \code{key}, returning a named vector of scalar-valued
+keys.
+
+\code{lol_lfind()} is like \code{lol_find()}, but useful for
+returning values from keys that are not scalar.
 
 \code{lol_count()} returns the number of nodes named \code{key},
 following the same rules as \code{lol_find()}.
@@ -66,8 +55,31 @@ lol_count(lol, "b")
 lol <- list(list(b = 1), a = list(b = 2))
 lol_find(lol, "b")
 lol_find(lol, "b", not_in = "a")
-lol_find(lol, "b", filter = "a.b")
 str( lol_find(lol, "b", simplify = FALSE) )
+
+## empty key
+lol_find(list(a = list(), a = list(1)), "a")  # c(NA, 1)
+
+## 'a.b': choose 'b' nodes that are children of 'a' nodes
+lol <- list(a = list(b = 1), c = list(b = 2))
+lol_find(lol, "a.b")
+lol_find(lol, "b", filter = "a.b")  # same as previous, but less robust
+lol <- list(a = list(b = c(1, 2)), a = list(b = 3))
+lol_find(lol, "b")  # names() mangled, length() of input and result differ
+lol_lfind(lol, "b")
+
+lol <- list(
+    person = list(
+        age = 32,
+        name = list(first = "Ima", last = "Person")
+    ),
+    person = list(
+        age = 27,
+        name = list(first = "Iman", last = "Other")
+    )
+)
+lol_lfind(lol, "name")  # simplify names to vectors, e.g., c("Ima", "Person")
+lol_lfind(lol, "name", simplify = FALSE)  # retain structure of each element
 
 lol <- list(list(b = 1), a = list(b = 2), c = list(b = 3))
 lol_count(lol, "a")
