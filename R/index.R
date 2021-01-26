@@ -17,10 +17,9 @@
 
 .index_path <- function(..., base_path) {
     params <- list(...)
-    parameters_path <- paste(names(params),
-                             unname(params),
-                             sep = "=",
-                             collapse = "&")
+    parameters_path <- paste(
+        names(params), unname(params), sep = "=", collapse = "&"
+    )
     paste0(base_path, "?", parameters_path)
 }
 
@@ -38,11 +37,13 @@
     catalog <- match.arg(catalog) # defaults from argument
 
     ## validate
-    .index_validate(filters = filters,
-                    size = size,
-                    sort = sort,
-                    order = order,
-                    catalog = catalog)
+    .index_validate(
+        filters = filters,
+        size = size,
+        sort = sort,
+        order = order,
+        catalog = catalog
+    )
 
     index_path <- .index_path(
         filters = .filters_encoding(filters),
