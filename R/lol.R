@@ -16,6 +16,7 @@ NULL
     UseMethod(".lol_visit")
 
 #' @importFrom stats setNames
+#' @importFrom utils head tail
 #'
 #' @export
 .lol_visit.list <-
@@ -82,7 +83,7 @@ NULL
 #' lol <- list(list(b = 1), a = list(b = 2))
 #' lol_find(lol, "b")
 #' lol_find(lol, "b", not_in = "a")
-#' str( lol_find(lol, "b", simplify = FALSE) )
+#' str( lol_find(lol, "b") )
 #'
 #' ## empty key
 #' lol_find(list(a = list(), a = list(1)), "a")  # c(NA, 1)
@@ -97,8 +98,8 @@ NULL
     function(x, keys, not_in)
 {
     stopifnot(
-        .is_character(keys),
-        .is_character(not_in)
+        is.character(keys),
+        is.character(not_in)
     )
 
     if (nzchar(keys))

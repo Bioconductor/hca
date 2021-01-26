@@ -108,6 +108,7 @@ projects <-
 {
     if (is.null(filters))
         filters <- filters()
+
     as <- match.arg(as)
 
     response <- .index_GET(

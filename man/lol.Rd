@@ -41,9 +41,6 @@ function.
 with name \code{key}, returning a named vector of scalar-valued
 keys.
 
-\code{lol_lfind()} is like \code{lol_find()}, but useful for
-returning values from keys that are not scalar.
-
 \code{lol_count()} returns the number of nodes named \code{key},
 following the same rules as \code{lol_find()}.
 }
@@ -55,7 +52,7 @@ lol_count(lol, "b")
 lol <- list(list(b = 1), a = list(b = 2))
 lol_find(lol, "b")
 lol_find(lol, "b", not_in = "a")
-str( lol_find(lol, "b", simplify = FALSE) )
+str( lol_find(lol, "b") )
 
 ## empty key
 lol_find(list(a = list(), a = list(1)), "a")  # c(NA, 1)
@@ -64,23 +61,6 @@ lol_find(list(a = list(), a = list(1)), "a")  # c(NA, 1)
 lol <- list(a = list(b = 1), c = list(b = 2))
 lol_find(lol, "a.b")
 lol_find(lol, "b", filter = "a.b")  # same as previous, but less robust
-lol <- list(a = list(b = c(1, 2)), a = list(b = 3))
-lol_find(lol, "b")  # names() mangled, length() of input and result differ
-lol_lfind(lol, "b")
-
-lol <- list(
-    person = list(
-        age = 32,
-        name = list(first = "Ima", last = "Person")
-    ),
-    person = list(
-        age = 27,
-        name = list(first = "Iman", last = "Other")
-    )
-)
-lol_lfind(lol, "name")  # simplify names to vectors, e.g., c("Ima", "Person")
-lol_lfind(lol, "name", simplify = FALSE)  # retain structure of each element
-
 lol <- list(list(b = 1), a = list(b = 2), c = list(b = 3))
 lol_count(lol, "a")
 lol_count(lol, "b")

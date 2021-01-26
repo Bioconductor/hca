@@ -1,13 +1,13 @@
-.FILES_PATH <- "/index/files"
+.SAMPLES_PATH <- "/index/samples"
 
-#' @rdname files
+#' @rdname samples
 #'
-#' @name files
+#' @name samples
 #'
 #' @title HCA File Querying
 #'
-#' @description `files()` takes a list of user provided project titles
-#'     to be used to query the HCA API for information about available files.
+#' @description `samples()` takes a list of user provided project titles
+#'     to be used to query the HCA API for information about available samples.
 
 NULL # don't add next function to documentation
 
@@ -15,18 +15,19 @@ NULL # don't add next function to documentation
 ## internal only
 
 ## extract a single element from a hit; returns a vector
-.files_elt <- function(hit, element) {
+.samples_elt <- function(hit, element) {
     ## different elements are found at different levels of the nested JSON
     ## using a switch statement
     switch (element,
             "projectTitle" = sapply(hit$projects,`[[`, "projectTitle"),
             "genusSpecies" = sapply(hit$donorOrganisms, `[[`, "genusSpecies"),
-            "samplesOrgan" = sapply(hit$samples, `[[`, "organ"),
-            "specimenOrgan" = sapply(hit$specimen, `[[`, "organ"),
-            "fileName" = lapply(hit$files,`[[`, "name"),
-            "libraryConstructionApproach" =
-                hit$protocols[[1]][["libraryConstructionApproach"]],
-            "uuid" = lapply(hit$files,`[[`, "uuid")
+            ## needed to return a list rather than single character
+            "samplesOrgan" = lapply(hit$samples, `[[`, "organ"),
+            "donorDisease" = sapply(hit$donorOrganisms, `[[`, "disease"),
+            "instrument" =
+                hit$protocols[[2]][["instrumentManufacturerModel"]],
+            "fileType" = sapply(hit$fileTypeSummaries, `[[`, "fileType"),
+            "entryId" = hit$entryId
     )
 }
 
@@ -35,19 +36,17 @@ NULL # don't add next function to documentation
 #' @importFrom dplyr %>% mutate
 #'
 #' @importFrom tibble tibble
-.files_as_tibble <- function(content) {
+.samples_as_tibble <- function(content) {
     tbl <-
         ## create tibble
         tibble(
-            projectTitle = .content_elt(content, .files_elt, "projectTitle"),
-            genusSpecies = .content_elt(content, .files_elt, "genusSpecies"),
-            ## will need to investigate when, if ever, these differ
-            samplesOrgan = .content_elt(content, .files_elt, "samplesOrgan"),
-            specimenOrgan = .content_elt(content, .files_elt, "specimenOrgan"),
-            fileName = .content_elt(content, .files_elt, "fileName"),
-            libraryConstructionApproach =
-                .content_elt(content,.files_elt, "libraryConstructionApproach"),
-            uuid = .content_elt(content, .files_elt, "uuid")
+            projectTitle = .content_elt(content, .samples_elt, "projectTitle"),
+            genusSpecies = .content_elt(content, .samples_elt, "genusSpecies"),
+            samplesOrgan = .content_elt(content, .samples_elt, "samplesOrgan"),
+            donorDisease = .content_elt(content, .samples_elt, "donorDisease"),
+            instrument = .content_elt(content, .samples_elt, "instrument"),
+            fileType = .content_elt(content, .samples_elt, "fileType"),
+            entryId = .content_elt(content, .samples_elt, "entryId")
 
         ) %>%
         ## add hit and project index
@@ -58,8 +57,8 @@ NULL # don't add next function to documentation
         ) %>%
         ## unnest list columns
         unnest(c(
-            "projectTitle", "fileName", "genusSpecies", "samplesOrgan",
-            "specimenOrgan", "libraryConstructionApproach", "uuid", ".project"
+            "projectTitle", "genusSpecies", "samplesOrgan",
+            "donorDisease", "instrument", "fileType", "entryId", ".project"
         ))
 
     tbl
@@ -82,31 +81,31 @@ NULL # don't add next function to documentation
 #'     version 2 of the HCA Data Coordinating Platform.
 #'
 #' @param as character(1) return format. Default: `"tibble"`, a tibble
-#'     summarizing essential elements of HCA files. `"lol"`: a
+#'     summarizing essential elements of HCA samples. `"lol"`: a
 #'     list-of-lists containing detailed file information.
 #'
 #' @seealso `lol_find()` and `lol_lfind()` for working with
 #'     list-of-lists data structures.
 #'
-#' @return When `as = "tibble"`, `files()` returns a tibble with each
+#' @return When `as = "tibble"`, `samples()` returns a tibble with each
 #'     row representing a file for one of the specified HCA project,
 #'     and columns summarizing the file.  Each `.hit` is a single
 #'     result; ....
 #'
-#'     When `as = "lol"`, `files()` returns a list-of-lists data
+#'     When `as = "lol"`, `samples()` returns a list-of-lists data
 #'     structure representing detailed information on each file
 #'     (`hit`).
 #'
 #' @export
 #'
 #' @examples
-#' files(filters = filters(
+#' samples(filters = filters(
 #'     projectTitle = list(
 #'         is = c("Tabula Muris: Transcriptomic characterization of 20 organs
 #'         and tissues from Mus musculus at single cell resolution")
 #'    )
 #' ))
-files <-
+samples <-
     function(filters = NULL,
              size = 1000L,
              sort = "projectTitle",
@@ -125,12 +124,12 @@ files <-
         sort = sort,
         order = order,
         catalog = catalog,
-        base_path = .FILES_PATH
+        base_path = .SAMPLES_PATH
     )
 
     switch(
         as,
-        tibble = .files_as_tibble(response$content),
+        tibble = .samples_as_tibble(response$content),
         lol = response$content
     )
 }
