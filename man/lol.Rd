@@ -19,11 +19,11 @@ lol_hits(x = list(hits = list()), key = "", not_in = character())
 \arguments{
 \item{x}{list(), possibly containing other lists.}
 
-\item{key}{character() desired node name, or word-sufffix of path
-to nodes of interest, e.g., \code{"a.b"} finds "b" nodes that are
-children of "a" nodes.}
+\item{key}{character() desired node name, or path to nodes of
+interest, e.g., \code{"a.b"} finds "b" nodes that are descendents
+(children or more distant) of "a" nodes.}
 
-\item{not_in}{character() of node(s) whose descendants are excluded
+\item{not_in}{character() node(s) whose descendants are excluded
 from matching \code{key}.}
 
 \item{filter}{character(1) regular expression matching paths to be
@@ -40,6 +40,9 @@ represent the paths to each node matching \code{key}, and the
 elements correspond to the value of the node. Named keys with
 empty elements are represented as \code{NA}.
 
+\code{lol_lfind()} returns an unnamed list of elements matching
+\code{key}.
+
 \code{lol_hits()} returns either a vector (if \code{key} evaluates to
 a 0- or 1-length value for each element of \code{hit} or
 list-of-vectors with each element matching \code{key}. In either
@@ -51,8 +54,8 @@ length of the return value.
 with name \code{key}, returning a named vector of scalar-valued
 keys.
 
-\code{lol_lfind()} is like \code{lol_find()}, but useful for
-returning values from keys that are not scalar.
+\code{lol_lfind()} is like \code{lol_find()}, but returns values
+as lists-of-lists.
 
 \code{lol_hits()} selects an element \code{hits} from x, and
 finds \code{key} values in each hit.

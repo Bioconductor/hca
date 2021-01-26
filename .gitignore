@@ -48,3 +48,4 @@ po/*~
 # other stuff
 notes/
 .DS_Store
+inst/doc
