@@ -19,3 +19,7 @@
 .is_scalar_character <- function(x, na.ok = FALSE) {
     is.character(x) && .is_scalar(x, na.ok)
 }
+
+.is_character <- function(x, na.ok = FALSE) {
+    is.character(x) && (na.ok || !anyNA(x))
+}

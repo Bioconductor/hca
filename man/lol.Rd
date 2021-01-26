@@ -6,25 +6,33 @@
 \alias{.lol_visit.list}
 \alias{.lol_visit.default}
 \alias{lol_find}
-\alias{lol_count}
+\alias{lol_lfind}
+\alias{lol_hits}
 \title{Utilities for manipulating lists-of-lists}
 \usage{
 lol_find(x = list(), key = "", not_in = character(), filter = NA_character_)
 
-lol_count(x = list(), key = "", not_in = character(), filter = NA_character_)
+lol_lfind(x = list(), key = "", not_in = character(), simplify = TRUE)
+
+lol_hits(x = list(hits = list()), key = "", not_in = character())
 }
 \arguments{
 \item{x}{list(), possibly containing other lists.}
 
-\item{key}{character() desired node name, or word-sufffix of path
-to nodes of interest, e.g., \code{"a.b"} finds "b" nodes that are
-children of "a" nodes.}
+\item{key}{character() desired node name, or path to nodes of
+interest, e.g., \code{"a.b"} finds "b" nodes that are descendents
+(children or more distant) of "a" nodes.}
 
-\item{not_in}{character() of node(s) whose descendants are excluded
+\item{not_in}{character() node(s) whose descendants are excluded
 from matching \code{key}.}
 
 \item{filter}{character(1) regular expression matching paths to be
-returned. Must be NA if \code{simplify} is FALSE.}
+returned.}
+
+\item{simplify}{logical(1). For \code{lol_lfind()}, when TRUE, unlist
+each value before adding, as a list element, to the list of
+found items. This is appropriate when the node values are
+vectors, or sets with homogenous scalar types. See examples.}
 }
 \value{
 \code{lol_find()} returns a named character vector. The names
@@ -32,17 +40,25 @@ represent the paths to each node matching \code{key}, and the
 elements correspond to the value of the node. Named keys with
 empty elements are represented as \code{NA}.
 
-\code{lol_count()} returns an integer(1) count of the number of
-elements matching \code{key}, subject to other arguments of the
-function.
+\code{lol_lfind()} returns an unnamed list of elements matching
+\code{key}.
+
+\code{lol_hits()} returns either a vector (if \code{key} evaluates to
+a 0- or 1-length value for each element of \code{hit} or
+list-of-vectors with each element matching \code{key}. In either
+case, the length of the \code{hits} component of \code{x} equaals the
+length of the return value.
 }
 \description{
 \code{lol_find()} searches a list-of-lists \code{x} for nodes
 with name \code{key}, returning a named vector of scalar-valued
 keys.
 
-\code{lol_count()} returns the number of nodes named \code{key},
-following the same rules as \code{lol_find()}.
+\code{lol_lfind()} is like \code{lol_find()}, but returns values
+as lists-of-lists.
+
+\code{lol_hits()} selects an element \code{hits} from x, and
+finds \code{key} values in each hit.
 }
 \examples{
 lol <- list(a = list(b = 1), a = list(b = 2))
@@ -52,7 +68,6 @@ lol_count(lol, "b")
 lol <- list(list(b = 1), a = list(b = 2))
 lol_find(lol, "b")
 lol_find(lol, "b", not_in = "a")
-str( lol_find(lol, "b") )
 
 ## empty key
 lol_find(list(a = list(), a = list(1)), "a")  # c(NA, 1)
@@ -61,10 +76,32 @@ lol_find(list(a = list(), a = list(1)), "a")  # c(NA, 1)
 lol <- list(a = list(b = 1), c = list(b = 2))
 lol_find(lol, "a.b")
 lol_find(lol, "b", filter = "a.b")  # same as previous, but less robust
-lol <- list(list(b = 1), a = list(b = 2), c = list(b = 3))
-lol_count(lol, "a")
-lol_count(lol, "b")
-lol_count(lol, "b", not_in = "a")
-lol_count(lol, "b", not_in = c("a", "c"))
+lol <- list(a = list(b = c(1, 2)), a = list(b = 3))
+lol_find(lol, "b")  # names() mangled, length() of input and result differ
+lol_lfind(lol, "b")
+
+lol <- list(
+    person = list(
+        age = 32,
+        name = list(first = "Ima", last = "Person")
+    ),
+    person = list(
+        age = 27,
+        name = list(first = "Iman", last = "Other")
+    )
+)
+lol_lfind(lol, "name")  # simplify names to vectors, e.g., c("Ima", "Person")
+lol_lfind(lol, "name", simplify = FALSE)  # retain structure of each element
+
+
+x <- list(
+    hits = list(
+        list(projects = list(projectTitle = "A title")),
+        list(projects = list(projectTitle = "Another title")),
+        list(files = list(projectTitle = "And another title"))
+    ),
+    termFacets = list(projects = list(projectTitle = c("A", "B", "C")))
+)
+lol_hits(x, "projects.projectTitle") # c("A title", "Another title")
 
 }
