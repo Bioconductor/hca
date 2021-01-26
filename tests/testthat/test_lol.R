@@ -6,8 +6,7 @@ test_that("'lol_find()' works", {
     expect_identical(lol_find(list(list(), list())), named_character)
 
     ## named lists
-    object <- lol_find(named_character)
-    expect_identical(object, named_character)
+    expect_identical(lol_find(setNames(list(), character())), named_character)
 
     expect_identical(lol_find(list(list(b = 1))), named_character)
     expect_identical(lol_find(list(list(b = 1))), named_character)
@@ -71,4 +70,126 @@ test_that("'lol_find(filter=)' works", {
     x <- list(a = list(b = 1), c = list(b = 2), a = list(b = 3))
     expect_identical(lol_find(x, "b", filter = "c.b"), c(c.b = 2))
     expect_identical(lol_find(x, "b", filter = "^a"), c(a.b = 1, a.b = 3))
+})
+
+test_that("'lol_find()' works with nested elements", {
+    x <- list(a = list(b = 1), a = list())
+    expect_identical(lol_find(x, "a.b"), c(a.b = 1, a = NA))
+
+    x <- list(a = list(b = 1), a = list(), a = list(c = 1))
+    expect_identical(lol_find(x, "a.b"), c(a.b = 1, a = NA, a = NA))
+
+    x <- list(a = list(c = list(b = 1)), a = list(), a = list(b = 2))
+    expect_identical(lol_find(x, "a.b"), c(a.c.b = 1, a = NA, a.b = 2))
+    expect_identical(lol_find(x, "a.c"), c(a.c.b = 1, a = NA, a = NA))
+
+    x <- list(
+        a = list(c = list(b = 1)),
+        a = list(c = list(d = 1)),
+        a = list(c = list(b = 2)),
+        a = list(b = 3)
+    )
+    expect_identical(
+        lol_find(x, "a.b"),
+        c(a.c.b = 1, a = NA, a.c.b = 2, a.b = 3)
+    )
+})
+
+test_that("'lol_lfind()' works", {
+    named_list <- setNames(list(), character())
+    expect_identical(lol_lfind(list()), named_list)
+
+    x <- list(a = list())
+    expect_identical(lol_lfind(x), named_list)
+    expect_identical(lol_lfind(x, "a"), list(a = NULL))
+
+    x <- list(a = list(b = 1))
+    expect_identical(lol_lfind(x, "a"), list(a = 1))
+
+    x <- list(a = list(b = 1), a = list(b = 2))
+    expect_identical(lol_lfind(x, "a"), list(a = 1, a = 2))
+
+    x <- list(a = list(b = 1), a = list(), a = list(b = 2))
+    expect_identical(lol_lfind(x, "a"), list(a = 1, a = NULL, a = 2))
+
+    x <- list(a = list(b = 1),  c = list(b = 2), a = list(b = 3))
+    expect_identical(lol_lfind(x, "a"), list(a = 1, a = 3))
+
+    x <- list(a = list(b = 1, b = 2), a = list(b = 3), a = list())
+    expect_identical(lol_lfind(x, "a"), list(a = c(1, 2), a = 3, a = NULL))
+})
+
+test_that("'lol_lfind(simplify = FALSE)' works", {
+    named_list <- setNames(list(), character())
+    expect_identical(lol_lfind(list(), simplify = FALSE), named_list)
+
+    x <- list(a = list())
+    expect_identical(lol_lfind(x, simplify = FALSE), named_list)
+    expect_identical(lol_lfind(x, "a", simplify = FALSE), x)
+
+    x <- list(a = list(b = 1))
+    expect_identical(lol_lfind(x, "a", simplify = FALSE), x)
+
+    x <- list(a = list(b = 1), a = list(b = 2))
+    expect_identical(lol_lfind(x, "a", simplify = FALSE), x)
+
+    x <- list(a = list(b = 1), a = list(), a = list(b = 2))
+    expect_identical(lol_lfind(x, "a", simplify = FALSE), x)
+
+    x <- list(a = list(b = 1),  c = list(b = 2), a = list(b = 3))
+    expect_identical(lol_lfind(x, "a", simplify = FALSE), x[c(1, 3)])
+})
+
+test_that("'lol_lfind()' works with nested elements", {
+    named_list <- setNames(list(), character())
+    x <- list(a = list())
+    expect_identical(lol_lfind(x, "a.b"), list(a = NULL))
+
+    x <- list(a = list(b = 1))
+    expect_identical(lol_lfind(x, "a.b"), list(a = 1))
+
+    x <- list(a = list(b = 1), a = list(b = 2), a = list(c = 3))
+    expect_identical(lol_lfind(x, "a.b"), list(a = 1, a = 2, a = NULL))
+
+    x <- list(
+        a = list(b = list(c = 1)),
+        a = list(c = 2, c = 3),
+        c = list(),
+        a = list()
+    )
+    expect_identical(lol_lfind(x, "a.c"), list(a = 1, a = c(2, 3),  a = NULL))
+
+    x <- list(
+        a = list(b = list(c = 1)),
+        a = list(b = list(c = 2), b = list(c = 3)),
+        c = list(),
+        a = list()
+    )
+    expect_identical(lol_lfind(x, "a.c"), list(a = 1, a = c(2, 3),  a = NULL))
+})
+
+test_that("'lol_hits()' works", {
+
+    x <- list(list(hits = list()))
+    expect_identical(lol_hits(x, "a"), list())
+
+    x <- list(
+        hits = list(
+            list(projects = list(projectTitle = "A title")),
+            list(projects = list(projectTitle = "Another title"))
+        )
+    )
+    expect_identical(lol_hits(x, "projectTitle"), c("A title", "Another title"))
+
+    ## preserve geometry of hits
+    x <- list(
+        hits = list(
+            list(a = list(b = c(1, 2))),
+            list(a = list()),
+            list(a = list(b = 3))
+        )
+    )
+    expect_identical(lol_hits(x, "a.b"), list(c(1, 2), NULL, 3))
+    expect_identical(lol_hits(x, "b"), list(c(1, 2), NULL, 3))
+
 })
