@@ -10,26 +10,6 @@
 #'     HCA API for information about available projects.
 NULL # don't add next function to documentation
 
-## helper functions
-## internal only
-
-## extract a single element from a hit; returns a vector
-.projects_elt <- function(hit, element) {
-    ## different elements are found at different levels of the nested JSON
-    ## using a switch statement
-    switch (element,
-        "projectTitle" = sapply(hit$projects,`[[`, "projectTitle"),
-        "genusSpecies" = lapply(hit$donorOrganisms, `[[`, "genusSpecies"),
-        "samplesOrgan" = lapply(hit$samples, `[[`, "organ"),
-        "specimenOrgan" = lapply(hit$specimen, `[[`, "organ")
-    )
-}
-
-## extract a single element from all hits; returns a list-of-vectors
-.content_elt <- function(content, func, element) {
-    lapply(content$hits, func, element)
-}
-
 #' @importFrom tidyr unnest
 #'
 #' @importFrom dplyr %>% mutate
@@ -37,29 +17,14 @@ NULL # don't add next function to documentation
 #' @importFrom tibble tibble
 .projects_as_tibble <- function(content)
 {
-    tbl <-
-        ## create tibble
-        tibble(
-            projectTitle = .content_elt(content, .projects_elt, "projectTitle"),
-            genusSpecies = .content_elt(content, .projects_elt, "genusSpecies"),
-            ## will need to investigate when, if ever, these differ
-            samplesOrgan = .content_elt(content, .projects_elt, "samplesOrgan"),
-            specimenOrgan = .content_elt(content, .projects_elt,
-                                         "specimenOrgan")
-        ) %>%
-        ## add hit and project index
-        mutate(
-            ## .data is the data frame being passed
-            .hit = seq_along(.data$projectTitle),
-            .project = lapply(lengths(.data$projectTitle), seq_len)
-        ) %>%
-        ## unnest list columns
-        unnest(c(
-            "projectTitle", "genusSpecies", "samplesOrgan", "specimenOrgan",
-            ".project"
-        ))
-
-    tbl
+    tibble(
+        projectId = lol_hits(content, "entryId"),
+        projectTitle = lol_hits(content, "projects.projectTitle"),
+        genusSpecies = lol_hits(content, "donorOrganisms.genusSpecies"),
+        ## will need to investigate when, if ever, these differ
+        samples.organ = lol_hits(content, "samples.organ"),
+        specimens.organ = lol_hits(content, "specimens.organ")
+    )
 }
 
 #' @param filters filter object created by `filters()`, or `NULL`

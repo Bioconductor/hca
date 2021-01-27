@@ -11,61 +11,20 @@
 
 NULL # don't add next function to documentation
 
-## helper functions
-## internal only
-.bundle_samples <- function(samples) {
-    samp_out <- c()
-
-}
-
-.bundle_files <- function(files) {
-
-}
-
-## extract a single element from a hit; returns a vector
-.bundles_elt <- function(hit, element) {
-    ## different elements are found at different levels of the nested JSON
-    ## using a switch statement
-    switch (element,
-            "projectTitle" = sapply(hit$projects,`[[`, "projectTitle"),
-            "genusSpecies" = sapply(hit$donorOrganisms, `[[`, "genusSpecies"),
-            "samples" = sapply(hit$samples, `[[`, "id"),
-            "files" = sapply(hit$files, `[[`, "name"),
-            "uuid" = sapply(hit$bundles,`[[`, "bundleUuid"),
-            "version" = sapply(hit$bundles,`[[`, "bundleVersion")
-    )
-}
-
 #' @importFrom tidyr unnest
 #'
 #' @importFrom dplyr %>% mutate
 #'
 #' @importFrom tibble tibble
 .bundles_as_tibble <- function(content) {
-    tbl <-
-        ## create tibble
-        tibble(
-            projectTitle = .content_elt(content, .bundles_elt, "projectTitle"),
-            genusSpecies = .content_elt(content, .bundles_elt, "genusSpecies"),
-            samples = .content_elt(content, .bundles_elt, "samples"),
-            files = .content_elt(content, .bundles_elt, "files"),
-            bundleUuid = .content_elt(content, .bundles_elt, "uuid"),
-            bundleVersion = .content_elt(content, .bundles_elt, "version")
-
-        ) %>%
-        ## add hit and project index
-        mutate(
-            ## .data is the data frame being passed
-            .hit = seq_along(.data$projectTitle),
-            .project = lapply(lengths(.data$projectTitle), seq_len)
-        ) %>%
-        ## unnest list columns
-        unnest(c(
-            "projectTitle", "bundleUuid", "bundleVersion", "genusSpecies",
-            "samples", "files", ".project"
-        ))
-
-    tbl
+    tibble(
+        projectTitle = lol_hits(content, "projects.projectTitle"),
+        genusSpecies = lol_hits(content, "donorOrganisms.genusSpecies"),
+        samples = lol_hits(content, "samples.id"),
+        files = lol_hits(content, "files.name"),
+        bundleUuid = lol_hits(content, "bundles.bundleUuid"),
+        bundleVersion = lol_hits(content, "bundles.bundleVersion")
+    )
 }
 
 #' @param filters filter object created by `filters()`, or `NULL`

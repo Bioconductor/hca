@@ -11,57 +11,24 @@
 
 NULL # don't add next function to documentation
 
-## helper functions
-## internal only
-
-## extract a single element from a hit; returns a vector
-.samples_elt <- function(hit, element) {
-    ## different elements are found at different levels of the nested JSON
-    ## using a switch statement
-    switch (element,
-            "projectTitle" = sapply(hit$projects,`[[`, "projectTitle"),
-            "genusSpecies" = sapply(hit$donorOrganisms, `[[`, "genusSpecies"),
-            ## needed to return a list rather than single character
-            "samplesOrgan" = lapply(hit$samples, `[[`, "organ"),
-            "donorDisease" = sapply(hit$donorOrganisms, `[[`, "disease"),
-            "instrument" =
-                hit$protocols[[2]][["instrumentManufacturerModel"]],
-            "fileType" = sapply(hit$fileTypeSummaries, `[[`, "fileType"),
-            "entryId" = hit$entryId
-    )
-}
-
 #' @importFrom tidyr unnest
 #'
 #' @importFrom dplyr %>% mutate
 #'
 #' @importFrom tibble tibble
 .samples_as_tibble <- function(content) {
-    tbl <-
-        ## create tibble
-        tibble(
-            projectTitle = .content_elt(content, .samples_elt, "projectTitle"),
-            genusSpecies = .content_elt(content, .samples_elt, "genusSpecies"),
-            samplesOrgan = .content_elt(content, .samples_elt, "samplesOrgan"),
-            donorDisease = .content_elt(content, .samples_elt, "donorDisease"),
-            instrument = .content_elt(content, .samples_elt, "instrument"),
-            fileType = .content_elt(content, .samples_elt, "fileType"),
-            entryId = .content_elt(content, .samples_elt, "entryId")
-
-        ) %>%
-        ## add hit and project index
-        mutate(
-            ## .data is the data frame being passed
-            .hit = seq_along(.data$projectTitle),
-            .project = lapply(lengths(.data$projectTitle), seq_len)
-        ) %>%
-        ## unnest list columns
-        unnest(c(
-            "projectTitle", "genusSpecies", "samplesOrgan",
-            "donorDisease", "instrument", "fileType", "entryId", ".project"
-        ))
-
-    tbl
+    tibble(
+        entryId = lol_hits(content, "entryId"),
+        projectTitle = lol_hits(content, "projects.projectTitle"),
+        genusSpecies = lol_hits(content, "donorOrganisms.genusSpecies"),
+        samples.organ = lol_hits(content, "samples.organ"),
+        donorOrganisms.disease = lol_hits(content, "donorOrganisms.disease"),
+        instrumentManufacturerModel =
+            lol_hits(content, "instrumentManufacturerModel"),
+        fileTypeSummaries.fileType =
+            lol_hits(content, "fileTypeSummaries.fileType"),
+        fileTypeSummaries.count = lol_hits(content, "fileTypeSummaries.count")
+    )
 }
 
 #' @param filters filter object created by `filters()`, or `NULL`
