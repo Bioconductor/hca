@@ -1,5 +1,16 @@
 .SAMPLES_PATH <- "/index/samples"
 
+.SAMPLES_COLUMNS <- c(
+    entryId = "entryId",
+    projectTitle = "projects.projectTitle",
+    genusSpecies = "donorOrganisms.genusSpecies",
+    samples.organ = "samples.organ",
+    disease = "donorOrganisms.disease",
+    instrumentManufacturerModel = "instrumentManufacturerModel",
+    fileType = "fileTypeSummaries.fileType",
+    count = "fileTypeSummaries.count"
+)
+
 #' @rdname samples
 #'
 #' @name samples
@@ -8,28 +19,7 @@
 #'
 #' @description `samples()` takes a list of user provided project titles
 #'     to be used to query the HCA API for information about available samples.
-
 NULL # don't add next function to documentation
-
-#' @importFrom tidyr unnest
-#'
-#' @importFrom dplyr %>% mutate
-#'
-#' @importFrom tibble tibble
-.samples_as_tibble <- function(content) {
-    tibble(
-        entryId = lol_hits(content, "entryId"),
-        projectTitle = lol_hits(content, "projects.projectTitle"),
-        genusSpecies = lol_hits(content, "donorOrganisms.genusSpecies"),
-        samples.organ = lol_hits(content, "samples.organ"),
-        donorOrganisms.disease = lol_hits(content, "donorOrganisms.disease"),
-        instrumentManufacturerModel =
-            lol_hits(content, "instrumentManufacturerModel"),
-        fileTypeSummaries.fileType =
-            lol_hits(content, "fileTypeSummaries.fileType"),
-        fileTypeSummaries.count = lol_hits(content, "fileTypeSummaries.count")
-    )
-}
 
 #' @param filters filter object created by `filters()`, or `NULL`
 #'     (default; all projects).
@@ -78,11 +68,11 @@ samples <-
              sort = "projectTitle",
              order = c("asc", "desc"),
              catalog = c("dcp2", "it2", "dcp1", "it1"),
-             as = c("tibble", "lol"))
+             as = c("tibble", "lol"),
+             columns = tibble_default_columns("samples", "character"))
 {
     if (is.null(filters))
         filters <- filters()
-
     as <- match.arg(as) # defaults from argument
 
     response <- .index_GET(
@@ -96,7 +86,7 @@ samples <-
 
     switch(
         as,
-        tibble = .samples_as_tibble(response$content),
+        tibble = .as_tibble(response$content, columns),
         lol = response$content
     )
 }

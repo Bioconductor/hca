@@ -11,7 +11,8 @@ files(
   sort = "projectTitle",
   order = c("asc", "desc"),
   catalog = c("dcp2", "it2", "dcp1", "it1"),
-  as = c("tibble", "lol")
+  as = c("tibble", "lol"),
+  columns = tibble_default_columns("files", "character")
 )
 
 files_download(tbl, destination = tempdir())

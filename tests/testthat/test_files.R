@@ -34,5 +34,6 @@ test_that("'.index_GET()' works for files", {
     expect_equal(files_resp$status_code, 200)
 
     files_content <- files_resp$content
-    expect_true(tibble::is_tibble(.files_as_tibble(files_content)))
+    columns <- tibble_default_columns("files", "character")
+    expect_true(tibble::is_tibble(.as_tibble(files_content, columns)))
 })

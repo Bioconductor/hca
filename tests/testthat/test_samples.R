@@ -26,6 +26,7 @@ test_that("'.samples_as_tibble()' works", {
                                     base_path = "/index/samples")
 
     samples_content <- samples_resp$content
-    expect_true(tibble::is_tibble(.samples_as_tibble(samples_content)))
+    columns <- tibble_default_columns("samples", "character")
+    expect_true(tibble::is_tibble(.as_tibble(samples_content, columns)))
 })
 

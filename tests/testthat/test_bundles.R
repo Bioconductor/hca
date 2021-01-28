@@ -26,5 +26,6 @@ test_that("'.bundles_as_tibble()' works", {
                                base_path = "/index/bundles")
 
     bundles_content <- bundles_resp$content
-    expect_true(tibble::is_tibble(.bundles_as_tibble(bundles_content)))
+    columns <- tibble_default_columns("bundles", "character")
+    expect_true(tibble::is_tibble(.as_tibble(bundles_content, columns)))
 })

@@ -1,5 +1,14 @@
 .FILES_PATH <- "/index/files"
 
+.FILES_COLUMNS <- c(
+    fileId = "files.uuid",
+    name = "files.name",
+    size = "files.size",
+    version = "files.version",
+    projectTitle = lol_hits(content, "projects.projectTitle"),
+    url = "files.url"
+)
+
 #' @rdname files
 #'
 #' @name files
@@ -8,26 +17,7 @@
 #'
 #' @description `files()` takes a list of user provided project titles
 #'     to be used to query the HCA API for information about available files.
-
 NULL # don't add next function to documentation
-
-#' @importFrom tidyr unnest
-#'
-#' @importFrom dplyr %>% mutate filter rowwise
-#'
-#' @importFrom tibble tibble
-.files_as_tibble <- function(content) {
-    tibble(
-        fileId = lol_hits(content, "files.uuid"),
-        name = lol_hits(content, "files.name"),
-        size = lol_hits(content, "files.size"),
-        version = lol_hits(content, "files.version"),
-        libraryConstructionApproach =
-            lol_hits(content, "libraryConstructionApproach"),
-        projectTitle = lol_hits(content, "projects.projectTitle"),
-        url = lol_hits(content, "url")
-    )
-}
 
 #' @param filters filter object created by `filters()`, or `NULL`
 #'     (default; all files).
@@ -76,12 +66,11 @@ files <-
              sort = "projectTitle",
              order = c("asc", "desc"),
              catalog = c("dcp2", "it2", "dcp1", "it1"),
-             as = c("tibble", "lol"))
+             as = c("tibble", "lol"),
+             columns = tibble_default_columns("files", "character"))
 {
     if (is.null(filters))
         filters <- filters()
-    as <- match.arg(as)
-
     as <- match.arg(as) # defaults from argument
 
     response <- .index_GET(
@@ -95,7 +84,7 @@ files <-
 
     switch(
         as,
-        tibble = .files_as_tibble(response$content),
+        tibble = .as_tibble(response$content, columns),
         lol = response$content
     )
 }

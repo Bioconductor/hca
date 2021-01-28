@@ -1,5 +1,13 @@
 .PROJECTS_PATH <- "/index/projects"
 
+.PROJECTS_COLUMNS <- c(
+    "entryId",
+    projectTilte = "projects.projectTitle",
+    genusSpecies = "donorOrganisms.genusSpecies",
+    "samples.organ",
+    "specimens.organ"
+)
+
 #' @rdname projects
 #'
 #' @name projects
@@ -14,19 +22,6 @@ NULL # don't add next function to documentation
 #'
 #' @importFrom dplyr %>% mutate
 #'
-#' @importFrom tibble tibble
-.projects_as_tibble <- function(content)
-{
-    tibble(
-        projectId = lol_hits(content, "entryId"),
-        projectTitle = lol_hits(content, "projects.projectTitle"),
-        genusSpecies = lol_hits(content, "donorOrganisms.genusSpecies"),
-        ## will need to investigate when, if ever, these differ
-        samples.organ = lol_hits(content, "samples.organ"),
-        specimens.organ = lol_hits(content, "specimens.organ")
-    )
-}
-
 #' @param filters filter object created by `filters()`, or `NULL`
 #'     (default; all projects).
 #'
@@ -69,7 +64,8 @@ projects <-
              sort = "projectTitle",
              order = c("asc", "desc"),
              catalog = c("dcp2", "it2", "dcp1", "it1"),
-             as = c("tibble", "lol"))
+             as = c("tibble", "lol"),
+             columns = tibble_default_columns("projects", "character"))
 {
     if (is.null(filters))
         filters <- filters()
@@ -87,7 +83,7 @@ projects <-
 
     switch(
         as,
-        tibble = .projects_as_tibble(response$content),
+        tibble = .as_tibble(response$content, columns),
         lol = response$content
     )
 }

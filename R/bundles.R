@@ -1,5 +1,14 @@
 .BUNDLES_PATH <- "/index/bundles"
 
+.BUNDLES_COLUMNS <- c(
+    projectTitle = "projects.projectTitle",
+    genusSpecies = "donorOrganisms.genusSpecies",
+    samples = "samples.id",
+    files = "files.name",
+    bundleUuid = "bundles.bundleUuid",
+    bundleVersion = "bundles.bundleVersion"
+)
+
 #' @rdname bundles
 #'
 #' @name bundles
@@ -8,24 +17,7 @@
 #'
 #' @description `bundles()` takes a list of user provided project titles
 #'     to be used to query the HCA API for information about available bundles.
-
 NULL # don't add next function to documentation
-
-#' @importFrom tidyr unnest
-#'
-#' @importFrom dplyr %>% mutate
-#'
-#' @importFrom tibble tibble
-.bundles_as_tibble <- function(content) {
-    tibble(
-        projectTitle = lol_hits(content, "projects.projectTitle"),
-        genusSpecies = lol_hits(content, "donorOrganisms.genusSpecies"),
-        samples = lol_hits(content, "samples.id"),
-        files = lol_hits(content, "files.name"),
-        bundleUuid = lol_hits(content, "bundles.bundleUuid"),
-        bundleVersion = lol_hits(content, "bundles.bundleVersion")
-    )
-}
 
 #' @param filters filter object created by `filters()`, or `NULL`
 #'     (default; all projects).
@@ -46,6 +38,11 @@ NULL # don't add next function to documentation
 #' @param as character(1) return format. Default: `"tibble"`, a tibble
 #'     summarizing essential elements of HCA bundles. `"lol"`: a
 #'     list-of-lists containing detailed file information.
+#'
+#' @param columns named character() indicating the paths to be used
+#'     for parsing the 'lol' returned from the HCA to a tibble. The
+#'     names of `columns` are used as column names in the returned
+#'     tibble.
 #'
 #' @seealso `lol_find()` and `lol_lfind()` for working with
 #'     list-of-lists data structures.
@@ -74,11 +71,11 @@ bundles <-
              sort = "projectTitle",
              order = c("asc", "desc"),
              catalog = c("dcp2", "it2", "dcp1", "it1"),
-             as = c("tibble", "lol"))
+             as = c("tibble", "lol"),
+             columns = tibble_default_columns("bundles", "character"))
 {
     if (is.null(filters))
         filters <- filters()
-
     as <- match.arg(as) # defaults from argument
 
     response <- .index_GET(
@@ -92,7 +89,7 @@ bundles <-
 
     switch(
         as,
-        tibble = .bundles_as_tibble(response$content),
+        tibble = .as_tibble(response$content, columns),
         lol = response$content
     )
 }
