@@ -1,8 +1,8 @@
 .PROJECTS_PATH <- "/index/projects"
 
 .PROJECTS_COLUMNS <- c(
-    "entryId",
-    projectTilte = "projects.projectTitle",
+    projectId = "entryId",
+    projectTitle = "projects.projectTitle",
     genusSpecies = "donorOrganisms.genusSpecies",
     "samples.organ",
     "specimens.organ"

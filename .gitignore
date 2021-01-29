@@ -49,3 +49,5 @@ po/*~
 notes/
 .DS_Store
 inst/doc
+doc
+Meta

@@ -5,7 +5,7 @@
     name = "files.name",
     size = "files.size",
     version = "files.version",
-    projectTitle = lol_hits(content, "projects.projectTitle"),
+    projectTitle = "projects.projectTitle",
     url = "files.url"
 )
 
@@ -111,14 +111,14 @@ files <-
 #' location as arguments to download the files of the tibble into the specified
 #' directory.
 #'
-#' @param files_tib tibble of files (result of `files()`)
+#' @param tbl tibble of files (result of `files()`)
 #'
 #' @param destination character() vector name of temporary directory to use
 #' for file downloads
 #'
 #'
 #' @return file_destinations vector of file destinations
-#' @importFrom dplyr %>% mutate filter rowwise
+#' @importFrom dplyr %>% mutate filter
 #'
 #' @export
 #'

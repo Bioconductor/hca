@@ -17,7 +17,7 @@ lol_lfind(x = list(), key = "", not_in = character(), simplify = TRUE)
 
 lol_hits(x = list(hits = list()), key = "", not_in = character())
 
-lol_hits_path(x = list(hist = list()), all = FALSE)
+lol_hits_path(x = list(hits = list()), all = FALSE)
 }
 \arguments{
 \item{x}{list(), possibly containing other lists.}

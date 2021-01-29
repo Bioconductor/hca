@@ -34,6 +34,11 @@ version 2 of the HCA Data Coordinating Platform.}
 \item{as}{character(1) return format. Default: \code{"tibble"}, a tibble
 summarizing essential elements of HCA bundles. \code{"lol"}: a
 list-of-lists containing detailed file information.}
+
+\item{columns}{named character() indicating the paths to be used
+for parsing the 'lol' returned from the HCA to a tibble. The
+names of \code{columns} are used as column names in the returned
+tibble.}
 }
 \value{
 When \code{as = "tibble"}, \code{bundles()} returns a tibble with each
