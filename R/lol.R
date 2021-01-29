@@ -283,3 +283,71 @@ lol_hits <-
 
     results
 }
+
+.lol_path_abbreviation <-
+    function(path)
+{
+    parts <- strsplit(path, ".", fixed = TRUE)
+    abbrev <- character(length(parts))
+
+    while (any(lengths(parts))) {
+        ## update current abbreviations
+        idx <- lengths(parts) > 0L
+        value <- vapply(parts[idx], tail, character(1L), 1L)
+        abbrev[idx] <-
+            paste0(value, ifelse(nzchar(abbrev[idx]), ".", ""), abbrev[idx])
+        parts[idx] <- lapply(parts[idx], head, -1L)
+
+        ## any new values used just once?
+        uabbrev <- unique(abbrev)
+        uid <- match(abbrev, uabbrev)
+        unique_values <- uabbrev[tabulate(uid) == 1L]
+
+        ## trim parts with unique abbreviations to nothing
+        parts[abbrev %in% unique_values] <- list(character())
+    }
+
+    abbrev
+}
+
+.lol_path_root <-
+    function(path)
+{
+    sub("\\..*", "", path)
+}
+
+#' @rdname lol
+#'
+#' @md
+#'
+#' @examples
+#' projects_lol <- projects(as = "lol")
+#' lol_hits_path(projects_lol)
+#'
+#' @importFrom dplyr .data count arrange select everything
+#'
+#' @export
+lol_hits_path <-
+    function(x = list(hits = list()), all = FALSE)
+{
+    hits <- .lol_select(x, "hits", character())
+    path <- names(unlist(hits))
+
+    ## trim 'hits' and trailing digits
+    path <- substring(path, 6L)
+    path <- sub("[[:digit:]]+$", "", path)
+
+    tbl <-
+        tibble(path = path) %>%
+        count(.data$path) %>%
+        arrange(desc(.data$n))
+
+    if (!all)
+        tbl <- filter(tbl, n == length(hits[[1]]))
+
+    tbl %>%
+        ## add abbreviation -- shortest path to uniquely identify the element
+        mutate(abbrev = .lol_path_abbreviation(.data$path)) %>%
+        select("abbrev", everything())
+
+}

@@ -8,6 +8,7 @@
 \alias{lol_find}
 \alias{lol_lfind}
 \alias{lol_hits}
+\alias{lol_hits_path}
 \title{Utilities for manipulating lists-of-lists}
 \usage{
 lol_find(x = list(), key = "", not_in = character(), filter = NA_character_)
@@ -15,6 +16,8 @@ lol_find(x = list(), key = "", not_in = character(), filter = NA_character_)
 lol_lfind(x = list(), key = "", not_in = character(), simplify = TRUE)
 
 lol_hits(x = list(hits = list()), key = "", not_in = character())
+
+lol_hits_path(x = list(hist = list()), all = FALSE)
 }
 \arguments{
 \item{x}{list(), possibly containing other lists.}
@@ -102,5 +105,8 @@ x <- list(
     termFacets = list(projects = list(projectTitle = c("A", "B", "C")))
 )
 lol_hits(x, "projects.projectTitle") # c("A title", "Another title")
+
+projects_lol <- projects(as = "lol")
+lol_hits_path(projects_lol)
 
 }

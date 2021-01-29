@@ -193,3 +193,13 @@ test_that("'lol_hits()' works", {
     expect_identical(lol_hits(x, "b"), list(c(1, 2), NULL, 3))
 
 })
+
+test_that("'.lol_path_abbreviation()' works", {
+    expect_identical(.lol_path_abbreviation(character()), character())
+    expect_identical(.lol_path_abbreviation(letters), letters)
+
+    expect_identical(.lol_path_abbreviation(c("x.a", "y.a")), c("x.a", "y.a"))
+    expect_identical(.lol_path_abbreviation(c("x.a.b", "y.b")), c("a.b", "y.b"))
+
+    expect_identical(.lol_path_abbreviation(c("a.b", "b.c")), c("a.b", "c"))
+})
