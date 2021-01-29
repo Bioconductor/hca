@@ -73,7 +73,7 @@ NULL
                         .lol_select(x[[i]], key, not_in, nms[[i]], FALSE)
                     }
             } else {
-                x0 <- as.list(setNames(x, nsm))
+                x0 <- as.list(setNames(x, nms))
                 result <<- append(result, x0)
             }
         }
@@ -109,7 +109,6 @@ NULL
 #' @examples
 #' lol <- list(a = list(b = 1), a = list(b = 2))
 #' lol_find(lol, "b")
-#' lol_count(lol, "b")
 #'
 #' lol <- list(list(b = 1), a = list(b = 2))
 #' lol_find(lol, "b")
@@ -238,7 +237,7 @@ lol_lfind <-
 #' @md
 #'
 #' @description `lol_hits()` selects an element `hits` from x, and
-#'     finds `key` values in each hit. 
+#'     finds `key` values in each hit.
 #'
 #' @return `lol_hits()` returns either a vector (if `key` evaluates to
 #'     a 0- or 1-length value for each element of `hit` or

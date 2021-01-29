@@ -13,7 +13,7 @@ NULL # don't add next function to documentation
 
 #' @importFrom tidyr unnest
 #'
-#' @importFrom dplyr %>% mutate
+#' @importFrom dplyr %>% mutate filter rowwise
 #'
 #' @importFrom tibble tibble
 .files_as_tibble <- function(content) {
@@ -30,10 +30,10 @@ NULL # don't add next function to documentation
 }
 
 #' @param filters filter object created by `filters()`, or `NULL`
-#'     (default; all projects).
+#'     (default; all files).
 #'
 #' @param size integer(1) maximum number of results to return;
-#'     default: all projects matching `filter`. The default (10000) is
+#'     default: all files matching `filter`. The default (10000) is
 #'     meant to be large enough to return all results.
 #'
 #' @param sort character(1) project facet (see `facet_options()`) to
@@ -98,4 +98,56 @@ files <-
         tibble = .files_as_tibble(response$content),
         lol = response$content
     )
+}
+## helper function for downloading files
+#' @importFrom httr progress GET stop_for_status content write_disk
+.single_file_download <- function(url, name, base_destination) {
+    response <- GET(url)
+    stop_for_status(response)
+
+    content <- content(response)
+    content$Status # ?? how to use
+
+    url <- content$Location
+    destination <- file.path(base_destination, name)
+    response <- GET(url, write_disk(destination, overwrite = TRUE), progress())
+    stop_for_status(response)
+
+    destination
+}
+
+#' @rdname files
+#'
+#' @name download_files
+#'
+#' @description `download_files()` takes a tibble of files and a directory
+#' location as arguments to download the files of the tibble into the specified
+#' directory.
+#'
+#' @param files_tib tibble of files (result of `files()`)
+#'
+#' @param destination
+#'
+#'
+#' @return file_destinations vector of file destinations
+#' @importFrom dplyr %>% mutate filter rowwise
+#'
+#' @export
+#'
+#' @examples
+#' download_files(file_tib = files(filter = filters(
+#' projectId = list(is = projectId),
+#' fileFormat = list(is = "loom"))), destination = tempdir())
+download_files <- function (files_tib = files(), destination = tempdir()) {
+    # I couldn't quite figure out a smoother way to apply
+    # a function rowwise in R
+    file_destinations <- c()
+    for(i in 1:nrow(files_tib)){
+        new_dest <- .single_file_download(files_tib$url[[i]],
+                                          files_tib$name[[i]],
+                                          destination)
+        file_destinations <- append(file_destinations, new_dest)
+    }
+    print(file_destinations)
+    file_destinations
 }

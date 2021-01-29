@@ -2,6 +2,7 @@
 % Please edit documentation in R/files.R
 \name{files}
 \alias{files}
+\alias{download_files}
 \title{HCA File Querying}
 \usage{
 files(
@@ -12,13 +13,15 @@ files(
   catalog = c("dcp2", "it2", "dcp1", "it1"),
   as = c("tibble", "lol")
 )
+
+download_files(files_tib = files(), destination = tempdir())
 }
 \arguments{
 \item{filters}{filter object created by \code{filters()}, or \code{NULL}
-(default; all projects).}
+(default; all files).}
 
 \item{size}{integer(1) maximum number of results to return;
-default: all projects matching \code{filter}. The default (10000) is
+default: all files matching \code{filter}. The default (10000) is
 meant to be large enough to return all results.}
 
 \item{sort}{character(1) project facet (see \code{facet_options()}) to
@@ -33,6 +36,10 @@ version 2 of the HCA Data Coordinating Platform.}
 \item{as}{character(1) return format. Default: \code{"tibble"}, a tibble
 summarizing essential elements of HCA files. \code{"lol"}: a
 list-of-lists containing detailed file information.}
+
+\item{files_tib}{tibble of files (result of \code{files()})}
+
+\item{destination}{}
 }
 \value{
 When \code{as = "tibble"}, \code{files()} returns a tibble with each
@@ -42,10 +49,16 @@ result; ....\preformatted{When `as = "lol"`, `files()` returns a list-of-lists d
 structure representing detailed information on each file
 (`hit`).
 }
+
+file_destinations vector of file destinations
 }
 \description{
 \code{files()} takes a list of user provided project titles
 to be used to query the HCA API for information about available files.
+
+\code{download_files()} takes a tibble of files and a directory
+location as arguments to download the files of the tibble into the specified
+directory.
 }
 \examples{
 files(filters = filters(
@@ -54,6 +67,9 @@ files(filters = filters(
         and tissues from Mus musculus at single cell resolution")
    )
 ))
+download_files(file_tib = files(filter = filters(
+projectId = list(is = projectId),
+fileFormat = list(is = "loom"))), destination = tempdir())
 }
 \seealso{
 \code{lol_find()} and \code{lol_lfind()} for working with

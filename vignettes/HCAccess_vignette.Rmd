@@ -15,23 +15,122 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
+# [Human Cell Atlas](https://data.humancellatlas.org/)
+## Biological Background
+- It is possible to isolate an individual cell and measure level of expression
+of each gene in that cell
+- The result is a matrix where:
+    - rows = genes (~ N=30k)
+    - columns = cells (~ M = 10k - 1mil)
+    - matrix cells = expression values
+- Experiments on the order of 10ks of cells and typically about 30k genes
+- Matrices of expression values tend to be sparse i.e. 95% of cells may be zeros
+
+## Experiment Workflow (pipeline)
+1. Extract short DNA sequences from cells (millions per cell)
+2. The short DNA sequences (about 100 nucleotide base pairs long) are analyzed
+and output to FASTQ files
+  - FASTQ files are often transformed to BAM or CRAM formats
+  - BAM or CRAM files are summarized into the matrices
+    - `.csv` file (standard)
+    - `.loom` (based on `hdf5` *which is NOT hadoop*, but rather astrophysics
+    derived file format for large data)
+    - `.mtx` for sparse text-based matrix representation with 3 columns:
+      1. row index
+      2. column index, and
+      3. non-zero value 
+
+## HCA Projects
+- HCA projects focus on a relatively small number of samples ex. 4 humans
+- Each "project" is an experiment that is an entry in the overall database
+    - some fields include the tissue organ type, species, etc.
+    
+## Motivation
+- This R package was created to make the querying of the HCA's Data Portal via
+their provided API easier and more accessible to researchers
 
 ```{r setup}
+# install from Bioconductor if you haven't already
+#BiocManager::install("httr")
+#BiocManager::install("dplyr")
+#BiocManager::install("LoomExperiment")
+#BiocManager::install("HCAccess")
+
+library(httr)
+library(dplyr)
+library(LoomExperiment)
 library(HCAccess)
+
 ```
 
-```{r}
-projects()
-```
+# Example 1
+- A useful workflow is to download and import the 'loom' file for the project
+'Single cell transcriptome analysis of human pancreas reveals transcriptional signatures of aging and somatic mutation patterns'.
+- The project and loom file are in the 'dcp1' catalog.
+
+1. Discover projects from the 'dcp1' (Data Coordinating Center, version 1) catalog, with 'loom' files.
+
+    ```{r}
+      project_filter <- filters(fileFormat = list(is = "loom"))
+      project_tibble <- projects(project_filter, catalog = "dcp1")
+      project_tibble
+    ```
+
+2. Extracting the `projectId` for a project I'm interested in
+(`projectTitle` is "Single cell trans...")
+
+    ```{r}
+      project_tibble %>%
+          filter(startsWith(projectTitle, "Single cell trans"))
+      
+      projectId <-
+          project_tibble %>%
+          filter(startsWith(projectTitle, "Single cell trans")) %>%
+          pull(projectId)
+    ```
+
+3. File info
+
+    ```{r}
+      file_filter <- filters(
+          projectId = list(is = projectId),
+          fileFormat = list(is = "loom")
+      )
+      file_tibble <- files(file_filter, catalog = "dcp1")
+    ```
+    
+4. Download the loom file(s)
+
+    ```{r}
+      file_tibble %>%
+          download_files() %>%
+          LoomExperiment::import()
+    ```
+    
+
+# Example 2
+- This puts together the steps above, and provides an example of a case when
+there is more than one file to download
 
 ```{r}
-files()
-```
+  project_filter <- filters(fileFormat = list(is = "bam"))
+  project_tibble <- projects(project_filter, catalog = "dcp1")
+  
+  project_tibble %>%
+    filter(startsWith(projectTitle, "Structural Remodeling of the Human"))
 
-```{r}
-samples()
-```
-
-```{r}
-bundles()
+  projectId <-
+    project_tibble %>%
+    filter(startsWith(projectTitle, "Structural Remodeling of the Human")) %>%
+    pull(projectId)
+  
+  file_filter <- filters(
+    projectId = list(is = projectId),
+    fileFormat = list(is = "bam")
+  )
+  file_tibble <- files(file_filter, catalog = "dcp1", size = 2)
+  
+  ## takes about an hour to run
+  file_tibble %>%
+    download_files()
 ```

@@ -63,7 +63,6 @@ finds \code{key} values in each hit.
 \examples{
 lol <- list(a = list(b = 1), a = list(b = 2))
 lol_find(lol, "b")
-lol_count(lol, "b")
 
 lol <- list(list(b = 1), a = list(b = 2))
 lol_find(lol, "b")
