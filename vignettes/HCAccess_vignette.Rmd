@@ -16,7 +16,9 @@ knitr::opts_chunk$set(
 )
 ```
 # [Human Cell Atlas](https://data.humancellatlas.org/)
+
 ## Biological Background
+
 - It is possible to isolate an individual cell and measure level of expression
 of each gene in that cell
 - The result is a matrix where:
@@ -27,6 +29,7 @@ of each gene in that cell
 - Matrices of expression values tend to be sparse i.e. 95% of cells may be zeros
 
 ## Experiment Workflow (pipeline)
+
 1. Extract short DNA sequences from cells (millions per cell)
 2. The short DNA sequences (about 100 nucleotide base pairs long) are analyzed
 and output to FASTQ files
@@ -41,29 +44,32 @@ and output to FASTQ files
       3. non-zero value 
 
 ## HCA Projects
+
 - HCA projects focus on a relatively small number of samples ex. 4 humans
 - Each "project" is an experiment that is an entry in the overall database
     - some fields include the tissue organ type, species, etc.
     
 ## Motivation
+
 - This R package was created to make the querying of the HCA's Data Portal via
 their provided API easier and more accessible to researchers
 
-```{r setup}
-# install from Bioconductor if you haven't already
-#BiocManager::install("httr")
-#BiocManager::install("dplyr")
-#BiocManager::install("LoomExperiment")
-#BiocManager::install("HCAccess")
+```{r install, eval = FALSE}
+## install from Bioconductor if you haven't already
+pkgs <- c("httr", "dplyr", "LoomExperiment", "HCAccess")
+pkgs_needed <- pkgs[!pkgs %in% rownames(installed.packages())]
+BiocManager::install(pkgs_needed)
+```
 
+```{r setup, message = FALSE}
 library(httr)
 library(dplyr)
 library(LoomExperiment)
 library(HCAccess)
-
 ```
 
 # Example 1
+
 - A useful workflow is to download and import the 'loom' file for the project
 'Single cell transcriptome analysis of human pancreas reveals transcriptional signatures of aging and somatic mutation patterns'.
 - The project and loom file are in the 'dcp1' catalog.
@@ -71,19 +77,20 @@ library(HCAccess)
 1. Discover projects from the 'dcp1' (Data Coordinating Center, version 1) catalog, with 'loom' files.
 
     ```{r}
-      project_filter <- filters(fileFormat = list(is = "loom"))
-      project_tibble <- projects(project_filter, catalog = "dcp1")
-      project_tibble
+    project_filter <- filters(fileFormat = list(is = "loom"))
+    project_tibble <- projects(project_filter, catalog = "dcp1")
+    project_tibble
     ```
 
 2. Extracting the `projectId` for a project I'm interested in
 (`projectTitle` is "Single cell trans...")
 
     ```{r}
-      project_tibble %>%
-        filter(startsWith(projectTitle, "Single cell trans"))
+    project_tibble %>%
+        filter(startsWith(projectTitle, "Single cell trans")) %>%
+        t()
       
-      projectId <-
+    projectId <-
         project_tibble %>%
         filter(startsWith(projectTitle, "Single cell trans")) %>%
         pull(projectId)
@@ -92,24 +99,25 @@ library(HCAccess)
 3. File info
 
     ```{r}
-      file_filter <- filters(
+    file_filter <- filters(
         projectId = list(is = projectId),
         fileFormat = list(is = "loom")
-      )
+    )
     
-      file_tibble <- files(file_filter, catalog = "dcp1")
+    file_tibble <- files(file_filter, catalog = "dcp1")
     ```
     
 4. Download the loom file(s)
 
     ```{r}
-      file_tibble %>%
-        download_files() %>%
+    file_tibble %>%
+        files_download() %>%
         LoomExperiment::import()
     ```
     
 
 # Example 2
+
 - This puts together the steps above, and provides an example of a case when
 there is more than one file to download
 
