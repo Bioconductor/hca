@@ -126,7 +126,8 @@ files <-
 #'
 #' @param files_tib tibble of files (result of `files()`)
 #'
-#' @param destination
+#' @param destination character() vector name of temporary directory to use
+#' for file downloads
 #'
 #'
 #' @return file_destinations vector of file destinations
@@ -135,9 +136,10 @@ files <-
 #' @export
 #'
 #' @examples
-#' download_files(file_tib = files(filter = filters(
-#' projectId = list(is = projectId),
-#' fileFormat = list(is = "loom"))), destination = tempdir())
+#' download_files(files_tib = files(filter = filters(
+#' projectId = list(is = "cddab57b-6868-4be4-806f-395ed9dd635a"),
+#' fileFormat = list(is = "loom")), catalog = "dcp1"),
+#' destination = tempdir())
 download_files <- function (files_tib = files(), destination = tempdir()) {
     # I couldn't quite figure out a smoother way to apply
     # a function rowwise in R

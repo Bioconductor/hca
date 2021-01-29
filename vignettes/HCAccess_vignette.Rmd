@@ -81,21 +81,22 @@ library(HCAccess)
 
     ```{r}
       project_tibble %>%
-          filter(startsWith(projectTitle, "Single cell trans"))
+        filter(startsWith(projectTitle, "Single cell trans"))
       
       projectId <-
-          project_tibble %>%
-          filter(startsWith(projectTitle, "Single cell trans")) %>%
-          pull(projectId)
+        project_tibble %>%
+        filter(startsWith(projectTitle, "Single cell trans")) %>%
+        pull(projectId)
     ```
 
 3. File info
 
     ```{r}
       file_filter <- filters(
-          projectId = list(is = projectId),
-          fileFormat = list(is = "loom")
+        projectId = list(is = projectId),
+        fileFormat = list(is = "loom")
       )
+    
       file_tibble <- files(file_filter, catalog = "dcp1")
     ```
     
@@ -103,8 +104,8 @@ library(HCAccess)
 
     ```{r}
       file_tibble %>%
-          download_files() %>%
-          LoomExperiment::import()
+        download_files() %>%
+        LoomExperiment::import()
     ```
     
 
@@ -112,25 +113,27 @@ library(HCAccess)
 - This puts together the steps above, and provides an example of a case when
 there is more than one file to download
 
-```{r}
-  project_filter <- filters(fileFormat = list(is = "bam"))
-  project_tibble <- projects(project_filter, catalog = "dcp1")
-  
-  project_tibble %>%
-    filter(startsWith(projectTitle, "Structural Remodeling of the Human"))
 
-  projectId <-
-    project_tibble %>%
-    filter(startsWith(projectTitle, "Structural Remodeling of the Human")) %>%
-    pull(projectId)
-  
-  file_filter <- filters(
-    projectId = list(is = projectId),
-    fileFormat = list(is = "bam")
-  )
-  file_tibble <- files(file_filter, catalog = "dcp1", size = 2)
-  
-  ## takes about an hour to run
-  file_tibble %>%
-    download_files()
-```
+<!-- ```{r} -->
+<!--   project_filter <- filters(fileFormat = list(is = "bam")) -->
+<!--   project_tibble <- projects(project_filter, catalog = "dcp1") -->
+
+<!--   project_tibble %>% -->
+<!--     filter(startsWith(projectTitle, "Structural Remodeling of the Human")) -->
+
+<!--   projectId <- -->
+<!--     project_tibble %>% -->
+<!--     filter(startsWith(projectTitle, "Structural Remodeling of the Human")) %>% -->
+<!--     pull(projectId) -->
+
+<!--   file_filter <- filters( -->
+<!--     projectId = list(is = projectId), -->
+<!--     fileFormat = list(is = "bam") -->
+<!--   ) -->
+<!--   file_tibble <- files(file_filter, catalog = "dcp1", size = 2) -->
+
+<!--   ## takes about an hour to run -->
+<!--   file_tibble %>% -->
+<!--     download_files() -->
+<!-- ``` -->
+

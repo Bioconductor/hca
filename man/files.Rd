@@ -39,7 +39,8 @@ list-of-lists containing detailed file information.}
 
 \item{files_tib}{tibble of files (result of \code{files()})}
 
-\item{destination}{}
+\item{destination}{character() vector name of temporary directory to use
+for file downloads}
 }
 \value{
 When \code{as = "tibble"}, \code{files()} returns a tibble with each
@@ -67,9 +68,10 @@ files(filters = filters(
         and tissues from Mus musculus at single cell resolution")
    )
 ))
-download_files(file_tib = files(filter = filters(
-projectId = list(is = projectId),
-fileFormat = list(is = "loom"))), destination = tempdir())
+download_files(files_tib = files(filter = filters(
+projectId = list(is = "cddab57b-6868-4be4-806f-395ed9dd635a"),
+fileFormat = list(is = "loom")), catalog = "dcp1"),
+destination = tempdir())
 }
 \seealso{
 \code{lol_find()} and \code{lol_lfind()} for working with
