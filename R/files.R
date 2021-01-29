@@ -118,9 +118,7 @@ files <-
 
 #' @rdname files
 #'
-#' @name download_files
-#'
-#' @description `download_files()` takes a tibble of files and a directory
+#' @description `files_download()` takes a tibble of files and a directory
 #' location as arguments to download the files of the tibble into the specified
 #' directory.
 #'
@@ -136,20 +134,28 @@ files <-
 #' @export
 #'
 #' @examples
-#' download_files(files_tib = files(filter = filters(
-#' projectId = list(is = "cddab57b-6868-4be4-806f-395ed9dd635a"),
-#' fileFormat = list(is = "loom")), catalog = "dcp1"),
-#' destination = tempdir())
-download_files <- function (files_tib = files(), destination = tempdir()) {
-    # I couldn't quite figure out a smoother way to apply
-    # a function rowwise in R
-    file_destinations <- c()
-    for(i in 1:nrow(files_tib)){
-        new_dest <- .single_file_download(files_tib$url[[i]],
-                                          files_tib$name[[i]],
-                                          destination)
-        file_destinations <- append(file_destinations, new_dest)
-    }
-    print(file_destinations)
-    file_destinations
+#' files_filter <- filters(
+#'     projectId = list(is = "cddab57b-6868-4be4-806f-395ed9dd635a"),
+#'     fileFormat = list(is = "loom")
+#' )
+#' files_tbl <- files(filter = files_filter)
+#' files_download(files_tbl, catalog = "dcp1", destination = tempdir())
+files_download <-
+    function (tbl, destination = tempdir())
+{
+    stopifnot(
+        inherits(tbl, "data.frame"),
+        `'tbl=' must contain columns "url", "name"` =
+            all(c("url", "name") %in% names(tbl)),
+        `'destination=' must be an existing directory` =
+            .is_scalar_character(destination) && dir.exists(destination),
+        `'destination=' must not contain files in tbl$name` =
+            !any(file.exists(file.path(destination, tbl$name)))
+    )
+
+    mapply(
+        .single_file_download,
+        tbl$url, tbl$name,
+        MoreArgs = list(base_destination = destination)
+    )
 }

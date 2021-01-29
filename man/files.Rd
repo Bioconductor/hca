@@ -2,7 +2,7 @@
 % Please edit documentation in R/files.R
 \name{files}
 \alias{files}
-\alias{download_files}
+\alias{files_download}
 \title{HCA File Querying}
 \usage{
 files(
@@ -14,7 +14,7 @@ files(
   as = c("tibble", "lol")
 )
 
-download_files(files_tib = files(), destination = tempdir())
+files_download(tbl, destination = tempdir())
 }
 \arguments{
 \item{filters}{filter object created by \code{filters()}, or \code{NULL}
@@ -37,10 +37,10 @@ version 2 of the HCA Data Coordinating Platform.}
 summarizing essential elements of HCA files. \code{"lol"}: a
 list-of-lists containing detailed file information.}
 
-\item{files_tib}{tibble of files (result of \code{files()})}
-
 \item{destination}{character() vector name of temporary directory to use
 for file downloads}
+
+\item{files_tib}{tibble of files (result of \code{files()})}
 }
 \value{
 When \code{as = "tibble"}, \code{files()} returns a tibble with each
@@ -57,7 +57,7 @@ file_destinations vector of file destinations
 \code{files()} takes a list of user provided project titles
 to be used to query the HCA API for information about available files.
 
-\code{download_files()} takes a tibble of files and a directory
+\code{files_download()} takes a tibble of files and a directory
 location as arguments to download the files of the tibble into the specified
 directory.
 }
@@ -68,10 +68,12 @@ files(filters = filters(
         and tissues from Mus musculus at single cell resolution")
    )
 ))
-download_files(files_tib = files(filter = filters(
-projectId = list(is = "cddab57b-6868-4be4-806f-395ed9dd635a"),
-fileFormat = list(is = "loom")), catalog = "dcp1"),
-destination = tempdir())
+files_filter <- filters(
+    projectId = list(is = "cddab57b-6868-4be4-806f-395ed9dd635a"),
+    fileFormat = list(is = "loom")
+)
+files_tbl <- files(filter = files_filter)
+files_download(files_tbl, catalog = "dcp1", destination = tempdir())
 }
 \seealso{
 \code{lol_find()} and \code{lol_lfind()} for working with
