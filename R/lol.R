@@ -287,24 +287,27 @@ lol_hits <-
 .lol_path_abbreviation <-
     function(path)
 {
+    ## pre-process split each path into parts; create a dictionary
+    ## mapping part to paths in which it is used
     parts <- strsplit(path, ".", fixed = TRUE)
-    abbrev <- character(length(parts))
+    dict <- split(rep(seq_along(parts), lengths(parts)), unlist(parts))
 
-    while (any(lengths(parts))) {
-        ## update current abbreviations
-        idx <- lengths(parts) > 0L
-        value <- vapply(parts[idx], tail, character(1L), 1L)
-        abbrev[idx] <-
-            paste0(value, ifelse(nzchar(abbrev[idx]), ".", ""), abbrev[idx])
-        parts[idx] <- lapply(parts[idx], head, -1L)
+    ## initialize abbreviation with leaf node; look up paths in which
+    ## the abbreviation is used
+    abbrev <- abbrev1 <- vapply(parts, tail, character(1), 1L)
+    abbrev_found_in <- dict[abbrev1]
 
-        ## any new values used just once?
-        uabbrev <- unique(abbrev)
-        uid <- match(abbrev, uabbrev)
-        unique_values <- uabbrev[tabulate(uid) == 1L]
-
-        ## trim parts with unique abbreviations to nothing
-        parts[abbrev %in% unique_values] <- list(character())
+    repeat {
+        ## remove trailing node from parts; identify paths that still
+        ## require abbreviation -- the abbreviation is not unique
+        parts <- lapply(parts, head, -1L)
+        idx <- lengths(abbrev_found_in) > 1L & lengths(parts) > 0L
+        if (!any(idx))
+            break
+        abbrev1 <- vapply(parts[idx], tail, character(1), 1L) # next candiate
+        abbrev[idx] <- paste0(abbrev1, ".", abbrev[idx])      # extend abbrev
+        abbrev_found_in[idx] <- # existing paths with abbrev1
+            mapply(intersect, abbrev_found_in[idx], dict[abbrev1])
     }
 
     abbrev
