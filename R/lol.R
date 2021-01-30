@@ -273,13 +273,31 @@ lol_hits <-
             length(hits) == 1L && identical(names(hits), "hits")
     )
     hits <- unlist(hits, recursive = FALSE, use.names = FALSE)
+    if (!length(hits))
+        return(list())
 
-    results <- lapply(hits, lol_lfind, key, not_in)
-    idx <- lengths(results) > 0L
-    results[idx] <- unlist(results[idx], recursive = FALSE, use.names = FALSE)
-    results[!idx] <- list(NULL)
-    if (length(results) && all(lengths(results) == 1L)) # simplify to vector?
-        results <- unlist(results)
+    paths <- lol_hits_path(x, TRUE)
+    is_edge <- key %in% c(paths$abbrev, paths$path)
+    if (is_edge) {
+        ## scalar, or list of scalars
+        results <- lapply(hits, lol_lfind, key, not_in)
+        idx <- lengths(results) > 0L
+        results[idx] <-
+            unlist(results[idx], recursive = FALSE, use.names = FALSE)
+        results[!idx] <- list(NULL)
+        if (all(lengths(results) == 1L))
+            results <- unlist(results, use.names = FALSE)
+    } else {
+        ## list-of-lists
+        results <- lapply(hits, lol_lfind, key, not_in, simplify = FALSE)
+        idx <- lengths(results) > 0L
+        results[idx] <-
+            unlist(results[idx], recursive = FALSE, use.names = FALSE)
+        idx <- lengths(results) > 0L
+        results[idx] <-
+            unlist(results[idx], recursive = FALSE, use.names = FALSE)
+        results[!idx] <- list(NULL)
+    }
 
     results
 }
