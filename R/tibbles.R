@@ -50,8 +50,12 @@ tibble_default_columns <-
 .as_tibble <-
     function(x, keys)
 {
-    idx <- !nzchar(names(keys))
-    names(keys)[idx] <- keys[idx]
+    if (is.null(names(keys))) {
+        names(keys) <- keys
+    } else {
+        idx <- !nzchar(names(keys))
+        names(keys)[idx] <- keys[idx]
+    }
     values <- lapply(keys, lol_hits, x = x)
     as_tibble(values)
 }
