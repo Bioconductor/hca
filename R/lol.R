@@ -325,7 +325,7 @@ lol_hits <-
         abbrev1 <- vapply(parts[idx], tail, character(1), 1L) # next candiate
         abbrev[idx] <- paste0(abbrev1, ".", abbrev[idx])      # extend abbrev
         abbrev_found_in[idx] <- # existing paths with abbrev1
-            mapply(intersect, abbrev_found_in[idx], dict[abbrev1])
+            Map(intersect, abbrev_found_in[idx], dict[abbrev1])
     }
 
     abbrev
