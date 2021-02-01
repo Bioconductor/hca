@@ -65,7 +65,7 @@ projects <-
              order = c("asc", "desc"),
              catalog = c("dcp2", "it2", "dcp1", "it1"),
              as = c("tibble", "lol"),
-             columns = tibble_default_columns("projects", "character"))
+             columns = projects_default_columns("character"))
 {
     if (is.null(filters))
         filters <- filters()
@@ -127,4 +127,28 @@ projects_terms <-
     catalog <- match.arg(catalog)
     lol <- projects(size = 1L, catalog = catalog, as = "lol")
     .term_facets(lol, facet)
+}
+
+#' @rdname projects
+#'
+#' @description `*_columns()` returns a tibble or named
+#'     character vector describing the content of the tibble returned
+#'     by `projects()`, `files()`, `samples()`, or `bundles().
+#'
+#' @return `*_columns()` returns a tibble with column `name`
+#'     containing the column name used in the tibble returned by
+#'     `projects()`, `files()`, `samples()`, or `bundles()`, and
+#'     `path` the path (see `lol_hits()`) to the data in the
+#'     list-of-lists by the same functions when `as = "lol"`. When `as
+#'     = "character"`, the return value is a named list with paths as
+#'     elements and abbreviations as names.
+#'
+#' @examples
+#' projects_columns("projects")
+#'
+#' @export
+projects_default_columns <-
+    function(as = c("tibble", "character"))
+{
+    .default_columns("projects", as)
 }

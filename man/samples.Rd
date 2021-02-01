@@ -12,7 +12,7 @@ samples(
   order = c("asc", "desc"),
   catalog = c("dcp2", "it2", "dcp1", "it1"),
   as = c("tibble", "lol"),
-  columns = tibble_default_columns("samples", "character")
+  columns = samples_default_columns("character")
 )
 
 samples_terms(facet = character(), catalog = c("dcp2", "it2", "dcp1", "it1"))

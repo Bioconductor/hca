@@ -67,7 +67,7 @@ files <-
              order = c("asc", "desc"),
              catalog = c("dcp2", "it2", "dcp1", "it1"),
              as = c("tibble", "lol"),
-             columns = tibble_default_columns("files", "character"))
+             columns = files_default_columns("character"))
 {
     if (is.null(filters))
         filters <- filters()
@@ -88,6 +88,16 @@ files <-
         lol = response$content
     )
 }
+
+#' @rdname files
+#'
+#' @export
+files_default_columns <-
+    function(as = c("tibble", "character"))
+{
+    .default_columns("files", as)
+}
+
 ## helper function for downloading files
 #' @importFrom httr progress GET stop_for_status content write_disk
 .single_file_download <- function(url, name, base_destination) {

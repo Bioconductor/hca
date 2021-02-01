@@ -2,6 +2,7 @@
 % Please edit documentation in R/files.R
 \name{files}
 \alias{files}
+\alias{files_default_columns}
 \alias{files_download}
 \alias{files_terms}
 \title{HCA File Querying}
@@ -13,8 +14,10 @@ files(
   order = c("asc", "desc"),
   catalog = c("dcp2", "it2", "dcp1", "it1"),
   as = c("tibble", "lol"),
-  columns = tibble_default_columns("files", "character")
+  columns = files_default_columns("character")
 )
+
+files_default_columns(as = c("tibble", "character"))
 
 files_download(tbl, destination = tempdir())
 

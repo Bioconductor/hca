@@ -12,7 +12,7 @@ bundles(
   order = c("asc", "desc"),
   catalog = c("dcp2", "it2", "dcp1", "it1"),
   as = c("tibble", "lol"),
-  columns = tibble_default_columns("bundles", "character")
+  columns = bundles_default_columns("character")
 )
 
 bundles_terms(facet = character(), catalog = c("dcp2", "it2", "dcp1", "it1"))

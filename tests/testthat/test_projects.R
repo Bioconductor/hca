@@ -24,6 +24,7 @@ test_that("'.index_GET()' works for projects", {
     expect_equal(test_resp$status_code, 200)
 
     test_content <- test_resp$content
-    columns <- tibble_default_columns("projects", "character")
-    expect_true(tibble::is_tibble(.as_tibble(test_content, columns)))
+    tbl <- projects_default_columns()
+    expect_true(tibble::is_tibble(tbl))
+    expect_true(nrow(tbl) > 0L && all(c("name", "path") %in% names(tbl)))
 })

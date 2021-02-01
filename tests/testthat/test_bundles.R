@@ -25,7 +25,7 @@ test_that("'.bundles_as_tibble()' works", {
                                catalog = "dcp2",
                                base_path = "/index/bundles")
 
-    bundles_content <- bundles_resp$content
-    columns <- tibble_default_columns("bundles", "character")
-    expect_true(tibble::is_tibble(.as_tibble(bundles_content, columns)))
+    tbl <- bundles_default_columns()
+    expect_true(tibble::is_tibble(tbl))
+    expect_true(nrow(tbl) > 0L && all(c("name", "path") %in% names(tbl)))
 })

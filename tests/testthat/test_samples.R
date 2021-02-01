@@ -25,8 +25,8 @@ test_that("'.samples_as_tibble()' works", {
                                     catalog = "dcp2",
                                     base_path = "/index/samples")
 
-    samples_content <- samples_resp$content
-    columns <- tibble_default_columns("samples", "character")
-    expect_true(tibble::is_tibble(.as_tibble(samples_content, columns)))
+    tbl <- samples_default_columns()
+    expect_true(tibble::is_tibble(tbl))
+    expect_true(nrow(tbl) > 0L && all(c("name", "path") %in% names(tbl)))
 })
 

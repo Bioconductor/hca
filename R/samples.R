@@ -69,7 +69,7 @@ samples <-
              order = c("asc", "desc"),
              catalog = c("dcp2", "it2", "dcp1", "it1"),
              as = c("tibble", "lol"),
-             columns = tibble_default_columns("samples", "character"))
+             columns = samples_default_columns("character"))
 {
     if (is.null(filters))
         filters <- filters()
@@ -109,4 +109,11 @@ samples_terms <-
     catalog <- match.arg(catalog)
     lol <- samples(size = 1L, catalog = catalog, as = "lol")
     .term_facets(lol, facet)
+}
+
+#' @export
+samples_default_columns <-
+    function(as = c("tibble", "character"))
+{
+    .default_columns("samples", as)
 }
