@@ -2,6 +2,7 @@
 % Please edit documentation in R/projects.R, R/tibbles.R
 \name{projects}
 \alias{projects}
+\alias{projects_terms}
 \alias{tibble_default_columns}
 \title{HCA Project Querying}
 \usage{
@@ -14,6 +15,8 @@ projects(
   as = c("tibble", "lol"),
   columns = tibble_default_columns("projects", "character")
 )
+
+projects_terms(facet = character(), catalog = c("dcp2", "it2", "dcp1", "it1"))
 
 tibble_default_columns(
   view = c("projects", "files", "samples", "bundles"),
@@ -41,6 +44,10 @@ version 2 of the HCA Data Coordinating Platform.}
 summarizing essential elements of HCA projects. \code{"lol"}: a
 list-of-lists containing detailed project information}
 
+\item{facet}{character() of valid facet names. Summary results (see
+'Value', below) are returned when missing or length greater
+than 1; details are returned when a single facet is specified.}
+
 \item{view}{character(1) one of \code{"projects"}, \code{"files"},
 \code{"samples"}, or \code{"bundles"}, corresponding to the name of the
 function for which default values are desired.}
@@ -54,6 +61,18 @@ structure representing detailed information on each project
 (`hit`).
 }
 
+\code{projects_terms()} invoked with no \verb{facet=} argument returns a
+tibble summarizing terms available as \code{projects()} return
+values, and for use in filters. The tibble contains columns\preformatted{- `facet`: the name of the facet.
+- `n_terms`: the number of distinct values the facet can take.
+- `n_values`: the number of occurrences of the facet term in the
+   entire catalog.
+
+`projects_terms()` invoked with a scalar value for `facet=`
+returns a tibble summarizing terms used in the facet, and the
+number of occurrences of the term in the entire catalog.
+}
+
 \code{tibble_default_columns()} returns a tibble with column
 \code{name} containing the column name used in the tibble returned
 by \code{projects()}, \code{files()}, \code{samples()}, or \code{bundles()}, and
@@ -64,12 +83,18 @@ list-of-lists by the same functions when \code{as = "lol"}.
 \code{projects()} takes user input to be used to query the
 HCA API for information about available projects.
 
+\code{projects_terms()} summarizes facets and terms used by
+all records in the projects index.
+
 \code{tibble_default_columns()} returns a tibble describing
 the content of the tibble returned by \code{projects()}, \code{files()},
 \code{samples()}, and `bundles().
 }
 \examples{
 projects(filters())
+
+projects_terms()
+projects_terms("genusSpecies")
 
 tibble_default_columns("projects")
 

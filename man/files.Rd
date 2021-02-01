@@ -3,6 +3,7 @@
 \name{files}
 \alias{files}
 \alias{files_download}
+\alias{files_terms}
 \title{HCA File Querying}
 \usage{
 files(
@@ -16,6 +17,8 @@ files(
 )
 
 files_download(tbl, destination = tempdir())
+
+files_terms(facet = character(), catalog = c("dcp2", "it2", "dcp1", "it1"))
 }
 \arguments{
 \item{filters}{filter object created by \code{filters()}, or \code{NULL}
@@ -38,10 +41,10 @@ version 2 of the HCA Data Coordinating Platform.}
 summarizing essential elements of HCA files. \code{"lol"}: a
 list-of-lists containing detailed file information.}
 
+\item{tbl}{tibble of files (result of \code{files()})}
+
 \item{destination}{character() vector name of temporary directory to use
 for file downloads}
-
-\item{files_tib}{tibble of files (result of \code{files()})}
 }
 \value{
 When \code{as = "tibble"}, \code{files()} returns a tibble with each
@@ -75,6 +78,9 @@ files_filter <- filters(
 )
 files_tbl <- files(filter = files_filter)
 files_download(files_tbl, catalog = "dcp1", destination = tempdir())
+files_terms()
+files_terms("fileFormat")
+
 }
 \seealso{
 \code{lol_find()} and \code{lol_lfind()} for working with

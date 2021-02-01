@@ -351,6 +351,11 @@ lol_hits <-
 lol_hits_path <-
     function(x = list(hits = list()), all = FALSE)
 {
+    stopifnot(
+        is.list(x), "hits" %in% names(x),
+        .is_scalar_logical(all)
+    )
+
     hits <- .lol_select(x, "hits", character())
     path <- names(unlist(hits))
 

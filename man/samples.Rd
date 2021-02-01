@@ -2,6 +2,7 @@
 % Please edit documentation in R/samples.R
 \name{samples}
 \alias{samples}
+\alias{samples_terms}
 \title{HCA File Querying}
 \usage{
 samples(
@@ -13,6 +14,8 @@ samples(
   as = c("tibble", "lol"),
   columns = tibble_default_columns("samples", "character")
 )
+
+samples_terms(facet = character(), catalog = c("dcp2", "it2", "dcp1", "it1"))
 }
 \arguments{
 \item{filters}{filter object created by \code{filters()}, or \code{NULL}
@@ -55,6 +58,8 @@ samples(filters = filters(
         and tissues from Mus musculus at single cell resolution")
    )
 ))
+samples_terms()
+
 }
 \seealso{
 \code{lol_find()} and \code{lol_lfind()} for working with

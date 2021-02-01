@@ -148,3 +148,25 @@ files_download <-
         MoreArgs = list(base_destination = destination)
     )
 }
+
+
+#' @rdname files
+#'
+#' @examples
+#' files_terms()
+#' files_terms("fileFormat")
+#'
+#' @export
+files_terms <-
+    function(
+        facet = character(),
+        catalog = c("dcp2", "it2", "dcp1", "it1")
+    )
+{
+    stopifnot(
+        is.character(facet), !anyNA(facet)
+    )
+    catalog <- match.arg(catalog)
+    lol <- files(size = 1L, catalog = catalog, as = "lol")
+    .term_facets(lol, facet)
+}

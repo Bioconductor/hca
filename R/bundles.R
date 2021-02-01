@@ -93,3 +93,23 @@ bundles <-
         lol = response$content
     )
 }
+
+#' @rdname bundles
+#'
+#' @examples
+#' bundles_terms()
+#'
+#' export
+bundles_terms <-
+    function(
+        facet = character(),
+        catalog = c("dcp2", "it2", "dcp1", "it1")
+    )
+{
+    stopifnot(
+        is.character(facet), !anyNA(facet)
+    )
+    catalog <- match.arg(catalog)
+    lol <- bundles(size = 1L, catalog = catalog, as = "lol")
+    .term_facets(lol, facet)
+}

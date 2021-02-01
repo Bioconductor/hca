@@ -2,6 +2,7 @@
 % Please edit documentation in R/bundles.R
 \name{bundles}
 \alias{bundles}
+\alias{bundles_terms}
 \title{HCA File Querying}
 \usage{
 bundles(
@@ -13,6 +14,8 @@ bundles(
   as = c("tibble", "lol"),
   columns = tibble_default_columns("bundles", "character")
 )
+
+bundles_terms(facet = character(), catalog = c("dcp2", "it2", "dcp1", "it1"))
 }
 \arguments{
 \item{filters}{filter object created by \code{filters()}, or \code{NULL}
@@ -60,6 +63,9 @@ bundles(filters = filters(
         and tissues from Mus musculus at single cell resolution")
    )
 ))
+bundles_terms()
+
+export
 }
 \seealso{
 \code{lol_find()} and \code{lol_lfind()} for working with
