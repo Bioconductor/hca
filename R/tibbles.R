@@ -26,7 +26,7 @@
 }
 
 #' @importFrom tibble as_tibble
-.as_tibble <-
+.as_hca_tibble <-
     function(x, keys)
 {
     if (is.null(names(keys))) {
@@ -36,5 +36,11 @@
         names(keys)[idx] <- keys[idx]
     }
     values <- lapply(keys, lol_hits, x = x)
-    as_tibble(values)
+    hca_tbl <- as_tibble(values)
+
+    attr(hca_tbl, "columns") <- keys
+    attr(hca_tbl, "pagination") <- x$pagination
+
+    hca_tbl
+
 }

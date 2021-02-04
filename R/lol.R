@@ -368,9 +368,13 @@ lol_hits_path <-
         count(.data$path) %>%
         arrange(desc(.data$n))
 
+    ## all indicates whether we want all attributes of a hit (T) or only those
+    ## that have a 1-to-1 relationship to the hit (F)
     if (!all)
-        # what is n?
-        tbl <- filter(tbl, n == length(hits[[1]]))
+        ## what is n? > column defined above when count is applied
+        ## dplyr knows to find the column n in tbl, R does not >
+        ## specify it's from .data
+        tbl <- filter(tbl, .data$n == length(hits[[1]]))
 
     tbl %>%
         ## add abbreviation -- shortest path to uniquely identify the element
