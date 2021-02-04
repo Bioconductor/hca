@@ -4,6 +4,7 @@
 \alias{projects}
 \alias{projects_terms}
 \alias{projects_default_columns}
+\alias{projects_detail}
 \title{HCA Project Querying}
 \usage{
 projects(
@@ -19,6 +20,8 @@ projects(
 projects_terms(facet = character(), catalog = c("dcp2", "it2", "dcp1", "it1"))
 
 projects_default_columns(as = c("tibble", "character"))
+
+projects_detail(uuid, catalog = c("dcp2", "it2", "dcp1", "it1"))
 }
 \arguments{
 \item{filters}{filter object created by \code{filters()}, or \code{NULL}
@@ -34,16 +37,22 @@ sort result; default: \code{"projectTitle"}.}
 \item{order}{character(1) sort order. One of \code{"asc"} (ascending) or
 \code{"desc"} (descending).}
 
-\item{catalog}{character(1) source of data. Default: \code{"dcp2"},
-version 2 of the HCA Data Coordinating Platform.}
+\item{catalog}{character() catalog project belongs to}
 
 \item{as}{character(1) return format. Default: \code{"tibble"}, a tibble
 summarizing essential elements of HCA projects. \code{"lol"}: a
 list-of-lists containing detailed project information}
 
+\item{columns}{named character() indicating the paths to be used
+for parsing the 'lol' returned from the HCA to a tibble. The
+names of \code{columns} are used as column names in the returned
+tibble.}
+
 \item{facet}{character() of valid facet names. Summary results (see
 'Value', below) are returned when missing or length greater
 than 1; details are returned when a single facet is specified.}
+
+\item{uuid}{character() unique project_id}
 }
 \value{
 When \code{as = "tibble"}, \code{projects()} returns a tibble with
@@ -72,6 +81,8 @@ containing the column name used in the tibble returned by
 \code{path} the path (see \code{lol_hits()}) to the data in the
 list-of-lists by the same functions when \code{as = "lol"}. When \code{as = "character"}, the return value is a named list with paths as
 elements and abbreviations as names.
+
+list-of-lists containing relevant details about the project
 }
 \description{
 \code{projects()} takes user input to be used to query the
@@ -82,7 +93,11 @@ all records in the projects index.
 
 \verb{*_columns()} returns a tibble or named
 character vector describing the content of the tibble returned
-by \code{projects()}, \code{files()}, \code{samples()}, or `bundles().
+by \code{projects()}, \code{files()}, \code{samples()}, or \code{bundles()}.
+
+\code{projects_detail()} takes a unique project_id and catalog for
+the project, and returns details about the specified project as a
+list-of-lists
 }
 \examples{
 projects(filters())
@@ -90,7 +105,12 @@ projects(filters())
 projects_terms()
 projects_terms("genusSpecies")
 
-projects_columns("projects")
+projects_default_columns()
+
+projects_detail(
+uuid = "4a95101c-9ffc-4f30-a809-f04518a23803",
+catalog = "dcp1"
+)
 
 }
 \seealso{

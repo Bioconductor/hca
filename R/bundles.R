@@ -19,30 +19,8 @@
 #'     to be used to query the HCA API for information about available bundles.
 NULL # don't add next function to documentation
 
-#' @param filters filter object created by `filters()`, or `NULL`
-#'     (default; all projects).
 #'
-#' @param size integer(1) maximum number of results to return;
-#'     default: all projects matching `filter`. The default (10000) is
-#'     meant to be large enough to return all results.
-#'
-#' @param sort character(1) project facet (see `facet_options()`) to
-#'     sort result; default: `"projectTitle"`.
-#'
-#' @param order character(1) sort order. One of `"asc"` (ascending) or
-#'     `"desc"` (descending).
-#'
-#' @param catalog character(1) source of data. Default: `"dcp2"`,
-#'     version 2 of the HCA Data Coordinating Platform.
-#'
-#' @param as character(1) return format. Default: `"tibble"`, a tibble
-#'     summarizing essential elements of HCA bundles. `"lol"`: a
-#'     list-of-lists containing detailed file information.
-#'
-#' @param columns named character() indicating the paths to be used
-#'     for parsing the 'lol' returned from the HCA to a tibble. The
-#'     names of `columns` are used as column names in the returned
-#'     tibble.
+#' @inheritParams projects
 #'
 #' @seealso `lol_find()` and `lol_lfind()` for working with
 #'     list-of-lists data structures.
@@ -99,7 +77,7 @@ bundles <-
 #' @examples
 #' bundles_terms()
 #'
-#' export
+#' @export
 bundles_terms <-
     function(
         facet = character(),
@@ -114,9 +92,39 @@ bundles_terms <-
     .term_facets(lol, facet)
 }
 
+#' @rdname bundles
+#'
 #' @export
 bundles_default_columns <-
     function(as = c("tibble", "character"))
 {
     .default_columns("bundles", as)
+}
+
+#' @rdname bundles
+#'
+#' @name bundles_detail
+#'
+#' @description `bundles_detail()` takes a unique bundle_id and catalog for
+#' the bundle, and returns details about the specified bundle as a
+#' list-of-lists
+#'
+#' @param uuid character() unique bundle_id
+#'
+#' @param catalog character() catalog bundle belongs to
+#'
+#' @return list-of-lists containing relevant details about the bundle
+#'
+#' @examples
+#' bundles_detail(
+#' uuid = "00aa6c53-71b5-4c12-98c4-54eb8173ffa5",
+#' catalog = "dcp2"
+#' )
+#'
+#' @export
+bundles_detail <-
+    function (uuid, catalog = c("dcp2", "it2", "dcp1", "it1"))
+{
+    catalog <- match.arg(catalog)
+    .details(uuid = uuid, catalog = catalog, view = "bundles")
 }

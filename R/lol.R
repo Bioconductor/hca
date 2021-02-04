@@ -369,6 +369,7 @@ lol_hits_path <-
         arrange(desc(.data$n))
 
     if (!all)
+        # what is n?
         tbl <- filter(tbl, n == length(hits[[1]]))
 
     tbl %>%

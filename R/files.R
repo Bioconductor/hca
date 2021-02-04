@@ -19,25 +19,9 @@
 #'     to be used to query the HCA API for information about available files.
 NULL # don't add next function to documentation
 
-#' @param filters filter object created by `filters()`, or `NULL`
-#'     (default; all files).
+
 #'
-#' @param size integer(1) maximum number of results to return;
-#'     default: all files matching `filter`. The default (10000) is
-#'     meant to be large enough to return all results.
-#'
-#' @param sort character(1) project facet (see `facet_options()`) to
-#'     sort result; default: `"projectTitle"`.
-#'
-#' @param order character(1) sort order. One of `"asc"` (ascending) or
-#'     `"desc"` (descending).
-#'
-#' @param catalog character(1) source of data. Default: `"dcp2"`,
-#'     version 2 of the HCA Data Coordinating Platform.
-#'
-#' @param as character(1) return format. Default: `"tibble"`, a tibble
-#'     summarizing essential elements of HCA files. `"lol"`: a
-#'     list-of-lists containing detailed file information.
+#' @inheritParams projects
 #'
 #' @seealso `lol_find()` and `lol_lfind()` for working with
 #'     list-of-lists data structures.
@@ -138,7 +122,7 @@ files_default_columns <-
 #'     fileFormat = list(is = "loom")
 #' )
 #' files_tbl <- files(filter = files_filter)
-#' files_download(files_tbl, catalog = "dcp1", destination = tempdir())
+#' files_download(files_tbl, destination = tempdir())
 files_download <-
     function (tbl, destination = tempdir())
 {
@@ -179,4 +163,32 @@ files_terms <-
     catalog <- match.arg(catalog)
     lol <- files(size = 1L, catalog = catalog, as = "lol")
     .term_facets(lol, facet)
+}
+
+#' @rdname files
+#'
+#' @name files_detail
+#'
+#' @description `files_detail()` takes a unique file_id and catalog for
+#' the file, and returns details about the specified file as a
+#' list-of-lists
+#'
+#' @param uuid character() unique file_id
+#'
+#' @param catalog character() catalog file belongs to
+#'
+#' @return list-of-lists containing relevant details about the file
+#'
+#' @examples
+#' files_detail(
+#' uuid = "bb4185da-c3da-4bb3-ab51-30aafbb60a0d",
+#' catalog = "dcp2"
+#' )
+#'
+#' @export
+files_detail <-
+    function (uuid, catalog = c("dcp2", "it2", "dcp1", "it1"))
+{
+    catalog <- match.arg(catalog)
+    .details(uuid = uuid, catalog = catalog, view = "files")
 }

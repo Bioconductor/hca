@@ -3,6 +3,8 @@
 \name{samples}
 \alias{samples}
 \alias{samples_terms}
+\alias{samples_default_columns}
+\alias{samples_detail}
 \title{HCA File Querying}
 \usage{
 samples(
@@ -16,6 +18,10 @@ samples(
 )
 
 samples_terms(facet = character(), catalog = c("dcp2", "it2", "dcp1", "it1"))
+
+samples_default_columns(as = c("tibble", "character"))
+
+samples_detail(uuid, catalog = c("dcp2", "it2", "dcp1", "it1"))
 }
 \arguments{
 \item{filters}{filter object created by \code{filters()}, or \code{NULL}
@@ -31,12 +37,22 @@ sort result; default: \code{"projectTitle"}.}
 \item{order}{character(1) sort order. One of \code{"asc"} (ascending) or
 \code{"desc"} (descending).}
 
-\item{catalog}{character(1) source of data. Default: \code{"dcp2"},
-version 2 of the HCA Data Coordinating Platform.}
+\item{catalog}{character() catalog sample belongs to}
 
 \item{as}{character(1) return format. Default: \code{"tibble"}, a tibble
-summarizing essential elements of HCA samples. \code{"lol"}: a
-list-of-lists containing detailed file information.}
+summarizing essential elements of HCA projects. \code{"lol"}: a
+list-of-lists containing detailed project information}
+
+\item{columns}{named character() indicating the paths to be used
+for parsing the 'lol' returned from the HCA to a tibble. The
+names of \code{columns} are used as column names in the returned
+tibble.}
+
+\item{facet}{character() of valid facet names. Summary results (see
+'Value', below) are returned when missing or length greater
+than 1; details are returned when a single facet is specified.}
+
+\item{uuid}{character() unique sample_id}
 }
 \value{
 When \code{as = "tibble"}, \code{samples()} returns a tibble with each
@@ -46,10 +62,16 @@ result; ....\preformatted{When `as = "lol"`, `samples()` returns a list-of-lists
 structure representing detailed information on each file
 (`hit`).
 }
+
+list-of-lists containing relevant details about the sample
 }
 \description{
 \code{samples()} takes a list of user provided project titles
 to be used to query the HCA API for information about available samples.
+
+\code{samples_detail()} takes a unique sample_id and catalog for
+the sample, and returns details about the specified sample as a
+list-of-lists
 }
 \examples{
 samples(filters = filters(
@@ -58,7 +80,13 @@ samples(filters = filters(
         and tissues from Mus musculus at single cell resolution")
    )
 ))
+
 samples_terms()
+
+samples_detail(
+uuid = "1dda6a28-cbaa-4506-be47-fa117e8f463c",
+catalog = "dcp2"
+)
 
 }
 \seealso{

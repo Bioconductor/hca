@@ -5,6 +5,7 @@
 \alias{files_default_columns}
 \alias{files_download}
 \alias{files_terms}
+\alias{files_detail}
 \title{HCA File Querying}
 \usage{
 files(
@@ -22,13 +23,15 @@ files_default_columns(as = c("tibble", "character"))
 files_download(tbl, destination = tempdir())
 
 files_terms(facet = character(), catalog = c("dcp2", "it2", "dcp1", "it1"))
+
+files_detail(uuid, catalog = c("dcp2", "it2", "dcp1", "it1"))
 }
 \arguments{
 \item{filters}{filter object created by \code{filters()}, or \code{NULL}
-(default; all files).}
+(default; all projects).}
 
 \item{size}{integer(1) maximum number of results to return;
-default: all files matching \code{filter}. The default (10000) is
+default: all projects matching \code{filter}. The default (10000) is
 meant to be large enough to return all results.}
 
 \item{sort}{character(1) project facet (see \code{facet_options()}) to
@@ -37,17 +40,27 @@ sort result; default: \code{"projectTitle"}.}
 \item{order}{character(1) sort order. One of \code{"asc"} (ascending) or
 \code{"desc"} (descending).}
 
-\item{catalog}{character(1) source of data. Default: \code{"dcp2"},
-version 2 of the HCA Data Coordinating Platform.}
+\item{catalog}{character() catalog file belongs to}
 
 \item{as}{character(1) return format. Default: \code{"tibble"}, a tibble
-summarizing essential elements of HCA files. \code{"lol"}: a
-list-of-lists containing detailed file information.}
+summarizing essential elements of HCA projects. \code{"lol"}: a
+list-of-lists containing detailed project information}
+
+\item{columns}{named character() indicating the paths to be used
+for parsing the 'lol' returned from the HCA to a tibble. The
+names of \code{columns} are used as column names in the returned
+tibble.}
 
 \item{tbl}{tibble of files (result of \code{files()})}
 
 \item{destination}{character() vector name of temporary directory to use
 for file downloads}
+
+\item{facet}{character() of valid facet names. Summary results (see
+'Value', below) are returned when missing or length greater
+than 1; details are returned when a single facet is specified.}
+
+\item{uuid}{character() unique file_id}
 }
 \value{
 When \code{as = "tibble"}, \code{files()} returns a tibble with each
@@ -59,6 +72,8 @@ structure representing detailed information on each file
 }
 
 file_destinations vector of file destinations
+
+list-of-lists containing relevant details about the file
 }
 \description{
 \code{files()} takes a list of user provided project titles
@@ -67,6 +82,10 @@ to be used to query the HCA API for information about available files.
 \code{files_download()} takes a tibble of files and a directory
 location as arguments to download the files of the tibble into the specified
 directory.
+
+\code{files_detail()} takes a unique file_id and catalog for
+the file, and returns details about the specified file as a
+list-of-lists
 }
 \examples{
 files(filters = filters(
@@ -80,9 +99,14 @@ files_filter <- filters(
     fileFormat = list(is = "loom")
 )
 files_tbl <- files(filter = files_filter)
-files_download(files_tbl, catalog = "dcp1", destination = tempdir())
+files_download(files_tbl, destination = tempdir())
 files_terms()
 files_terms("fileFormat")
+
+files_detail(
+uuid = "bb4185da-c3da-4bb3-ab51-30aafbb60a0d",
+catalog = "dcp2"
+)
 
 }
 \seealso{

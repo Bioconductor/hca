@@ -21,25 +21,8 @@
 #'     to be used to query the HCA API for information about available samples.
 NULL # don't add next function to documentation
 
-#' @param filters filter object created by `filters()`, or `NULL`
-#'     (default; all projects).
 #'
-#' @param size integer(1) maximum number of results to return;
-#'     default: all projects matching `filter`. The default (10000) is
-#'     meant to be large enough to return all results.
-#'
-#' @param sort character(1) project facet (see `facet_options()`) to
-#'     sort result; default: `"projectTitle"`.
-#'
-#' @param order character(1) sort order. One of `"asc"` (ascending) or
-#'     `"desc"` (descending).
-#'
-#' @param catalog character(1) source of data. Default: `"dcp2"`,
-#'     version 2 of the HCA Data Coordinating Platform.
-#'
-#' @param as character(1) return format. Default: `"tibble"`, a tibble
-#'     summarizing essential elements of HCA samples. `"lol"`: a
-#'     list-of-lists containing detailed file information.
+#' @inheritParams projects
 #'
 #' @seealso `lol_find()` and `lol_lfind()` for working with
 #'     list-of-lists data structures.
@@ -53,8 +36,6 @@ NULL # don't add next function to documentation
 #'     structure representing detailed information on each file
 #'     (`hit`).
 #'
-#' @export
-#'
 #' @examples
 #' samples(filters = filters(
 #'     projectTitle = list(
@@ -62,6 +43,8 @@ NULL # don't add next function to documentation
 #'         and tissues from Mus musculus at single cell resolution")
 #'    )
 #' ))
+#'
+#' @export
 samples <-
     function(filters = NULL,
              size = 1000L,
@@ -111,9 +94,39 @@ samples_terms <-
     .term_facets(lol, facet)
 }
 
+#' @rdname samples
+#'
 #' @export
 samples_default_columns <-
     function(as = c("tibble", "character"))
 {
     .default_columns("samples", as)
+}
+
+#' @rdname samples
+#'
+#' @name samples_detail
+#'
+#' @description `samples_detail()` takes a unique sample_id and catalog for
+#' the sample, and returns details about the specified sample as a
+#' list-of-lists
+#'
+#' @param uuid character() unique sample_id
+#'
+#' @param catalog character() catalog sample belongs to
+#'
+#' @return list-of-lists containing relevant details about the sample
+#'
+#' @examples
+#' samples_detail(
+#' uuid = "1dda6a28-cbaa-4506-be47-fa117e8f463c",
+#' catalog = "dcp2"
+#' )
+#'
+#' @export
+samples_detail <-
+    function (uuid, catalog = c("dcp2", "it2", "dcp1", "it1"))
+{
+    catalog <- match.arg(catalog)
+    .details(uuid = uuid, catalog = catalog, view = "samples")
 }

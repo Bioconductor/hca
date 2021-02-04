@@ -42,6 +42,11 @@ NULL # don't add next function to documentation
 #'     summarizing essential elements of HCA projects. `"lol"`: a
 #'     list-of-lists containing detailed project information
 #'
+#' @param columns named character() indicating the paths to be used
+#'     for parsing the 'lol' returned from the HCA to a tibble. The
+#'     names of `columns` are used as column names in the returned
+#'     tibble.
+#'
 #' @seealso `lol_find()` and `lol_lfind()` for working with
 #'     list-of-lists data structures.
 #'
@@ -133,7 +138,7 @@ projects_terms <-
 #'
 #' @description `*_columns()` returns a tibble or named
 #'     character vector describing the content of the tibble returned
-#'     by `projects()`, `files()`, `samples()`, or `bundles().
+#'     by `projects()`, `files()`, `samples()`, or `bundles()`.
 #'
 #' @return `*_columns()` returns a tibble with column `name`
 #'     containing the column name used in the tibble returned by
@@ -144,11 +149,39 @@ projects_terms <-
 #'     elements and abbreviations as names.
 #'
 #' @examples
-#' projects_columns("projects")
+#' projects_default_columns()
 #'
 #' @export
 projects_default_columns <-
     function(as = c("tibble", "character"))
 {
     .default_columns("projects", as)
+}
+
+#' @rdname projects
+#'
+#' @name projects_detail
+#'
+#' @description `projects_detail()` takes a unique project_id and catalog for
+#' the project, and returns details about the specified project as a
+#' list-of-lists
+#'
+#' @param uuid character() unique project_id
+#'
+#' @param catalog character() catalog project belongs to
+#'
+#' @return list-of-lists containing relevant details about the project
+#'
+#' @examples
+#' projects_detail(
+#' uuid = "4a95101c-9ffc-4f30-a809-f04518a23803",
+#' catalog = "dcp1"
+#' )
+#'
+#' @export
+projects_detail <-
+    function (uuid, catalog = c("dcp2", "it2", "dcp1", "it1"))
+{
+    catalog <- match.arg(catalog)
+    .details(uuid = uuid, catalog = catalog, view = "projects")
 }

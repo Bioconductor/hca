@@ -3,6 +3,8 @@
 \name{bundles}
 \alias{bundles}
 \alias{bundles_terms}
+\alias{bundles_default_columns}
+\alias{bundles_detail}
 \title{HCA File Querying}
 \usage{
 bundles(
@@ -16,6 +18,10 @@ bundles(
 )
 
 bundles_terms(facet = character(), catalog = c("dcp2", "it2", "dcp1", "it1"))
+
+bundles_default_columns(as = c("tibble", "character"))
+
+bundles_detail(uuid, catalog = c("dcp2", "it2", "dcp1", "it1"))
 }
 \arguments{
 \item{filters}{filter object created by \code{filters()}, or \code{NULL}
@@ -31,17 +37,22 @@ sort result; default: \code{"projectTitle"}.}
 \item{order}{character(1) sort order. One of \code{"asc"} (ascending) or
 \code{"desc"} (descending).}
 
-\item{catalog}{character(1) source of data. Default: \code{"dcp2"},
-version 2 of the HCA Data Coordinating Platform.}
+\item{catalog}{character() catalog bundle belongs to}
 
 \item{as}{character(1) return format. Default: \code{"tibble"}, a tibble
-summarizing essential elements of HCA bundles. \code{"lol"}: a
-list-of-lists containing detailed file information.}
+summarizing essential elements of HCA projects. \code{"lol"}: a
+list-of-lists containing detailed project information}
 
 \item{columns}{named character() indicating the paths to be used
 for parsing the 'lol' returned from the HCA to a tibble. The
 names of \code{columns} are used as column names in the returned
 tibble.}
+
+\item{facet}{character() of valid facet names. Summary results (see
+'Value', below) are returned when missing or length greater
+than 1; details are returned when a single facet is specified.}
+
+\item{uuid}{character() unique bundle_id}
 }
 \value{
 When \code{as = "tibble"}, \code{bundles()} returns a tibble with each
@@ -51,10 +62,16 @@ result; ....\preformatted{When `as = "lol"`, `bundles()` returns a list-of-lists
 structure representing detailed information on each file
 (`hit`).
 }
+
+list-of-lists containing relevant details about the bundle
 }
 \description{
 \code{bundles()} takes a list of user provided project titles
 to be used to query the HCA API for information about available bundles.
+
+\code{bundles_detail()} takes a unique bundle_id and catalog for
+the bundle, and returns details about the specified bundle as a
+list-of-lists
 }
 \examples{
 bundles(filters = filters(
@@ -65,7 +82,11 @@ bundles(filters = filters(
 ))
 bundles_terms()
 
-export
+bundles_detail(
+uuid = "00aa6c53-71b5-4c12-98c4-54eb8173ffa5",
+catalog = "dcp2"
+)
+
 }
 \seealso{
 \code{lol_find()} and \code{lol_lfind()} for working with
