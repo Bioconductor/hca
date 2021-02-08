@@ -1,21 +1,24 @@
 ---
-title: "HCAccess Vignette"
+title: "Accessing Human Cell Atlas Data"
 author: "Maya Reed McDaniel"
 date: "January 26th, 2021"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{HCAccess_vignette}
+  %\VignetteIndexEntry{Accessing Human Cell Atlas Data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
+  collapse = TRUE
 )
 ```
-# [Human Cell Atlas](https://data.humancellatlas.org/)
+# Human Cell Atlas
+
+Visit the [Human Cell Atlas][]
+
+[Human Cell Atlas]: https://data.humancellatlas.org/
 
 ## Biological Background
 
@@ -117,6 +120,131 @@ library(HCAccess)
     
 
 # Example 2
+
+This example illustrataes access to `h5ad` files stored in the HCA and
+created by the Python AnnData analysis software.
+
+## Projects facets and terms
+
+The first challenge is to understand what file formats are available
+from the HCA. Obtain a tibble describing the 'facets' fo the data, the
+number of terms used in each facet, and the number of distinct values
+used to describe projects.
+
+```{r}
+projects_terms()
+```
+
+Note the `fileFormat` facet, and repeat `projects_terms()` to
+discover detail about available file formats
+
+```{r}
+projects_terms(facet = "fileFormat")
+```
+
+Note that there are 8 uses of the `h5ad` file format. Use this as a
+filter to discover relevant projects.
+
+```{r}
+filters <- filters(fileFormat = list(is = "h5ad"))
+projects(filters)
+```
+
+## Projects columns
+
+The default tibble produced by `projects()` contains only some of the
+information available; the information is much richer.
+
+Instead of retrieving the result of `projects()` as a tibble, retrieve
+it as a 'list-of-lists'
+
+```{r}
+lol <- projects(as = "lol")
+```
+
+This is a complicated structure. We will use `lengths()`, `names()`,
+and standard _R_ list selection operations to navigate this a bit. At
+the top level there rae three elements.
+
+```{r}
+lengths(lol)
+```
+
+`hits` represents each project as a list, e.g,.
+
+```{r}
+lengths(lol$hits[[1]])
+```
+
+shows that there are 10 different ways in which the project is
+described. Each component is itself a list-of-lists, e.g.,
+
+```{r}
+lengths(lol$hits[[1]]$projects[[1]])
+lol$hits[[1]]$projects[[1]]$projectTitle
+```
+
+The function `lol_hits_path()` provides one way of summarizing these paths
+
+```{r}
+lol_hits_path(lol)
+```
+
+and the path or its abbreviation can be used to specify the columns of
+the tibble to be returned by the `projects()` query.
+
+Here we retrieve additional details of donor count and total cells by
+adding appropriate path abbreviations to a named character
+vector. Names on the character vector can be used to rename the path
+more consisely, but the paths must uniquely identify elements in the
+list-of-lists.
+
+```{r}
+columns <- c(
+    projectId = "entryId", "projectTitle", "donorCount", "totalCells",
+    genusSpecies = "donorOrganisms.genusSpecies", "specimens.organ"
+)
+projects <- projects(filters, columns = columns)
+projects
+```
+
+Select the following entry, augement the filter, and query available files
+
+```{r}
+projects %>%
+    filter(startsWith(projectTitle, "Reconstruct")) %>%
+    t()
+```
+
+## File download
+
+The relevant file can be selected and downloaded using the technique
+in the first example.
+
+```{r}
+filters <- filters(
+    projectId = list(is = "ad98d3cd-26fb-4ee3-99c9-8a2ab085e737"),
+    fileFormat = list(is = "h5ad")
+)
+files <- files(filters)
+files %>% t()
+```
+
+```{r, eval = FALSE}
+file_path <- files_download(files)
+```
+
+`"h5ad"` files can be read as SingleCellExperiment objects using the
+[zellkonverter][] package.
+
+```{r, eval = FALSE}
+sce <- zellkonverter::readH5AD(file_path, use_hdf5 = TRUE)
+sce
+```
+
+[zellkonverter]: https://bioconductor.org/packages/zellkonverter
+
+# Example 3
 
 - This puts together the steps above, and provides an example of a case when
 there is more than one file to download

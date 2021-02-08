@@ -92,7 +92,10 @@ files_default_columns <-
 
     url <- content$Location
     destination <- file.path(base_destination, name)
-    response <- GET(url, write_disk(destination, overwrite = TRUE), progress())
+    response <- GET(
+        url, write_disk(destination, overwrite = TRUE),
+        if (interactive()) progress()
+    )
     stop_for_status(response)
 
     destination
