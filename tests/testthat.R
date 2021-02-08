@@ -1,4 +1,4 @@
 library(testthat)
-library(HCAccess)
+library(hca)
 
-test_check("HCAccess")
+test_check("hca")

@@ -59,7 +59,7 @@ their provided API easier and more accessible to researchers
 
 ```{r install, eval = FALSE}
 ## install from Bioconductor if you haven't already
-pkgs <- c("httr", "dplyr", "LoomExperiment", "HCAccess")
+pkgs <- c("httr", "dplyr", "LoomExperiment", "hca")
 pkgs_needed <- pkgs[!pkgs %in% rownames(installed.packages())]
 BiocManager::install(pkgs_needed)
 ```
@@ -68,7 +68,7 @@ BiocManager::install(pkgs_needed)
 library(httr)
 library(dplyr)
 library(LoomExperiment)
-library(HCAccess)
+library(hca)
 ```
 
 # Example 1

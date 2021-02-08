@@ -105,11 +105,11 @@ filters <- function(...) {
     encoding <- URLencode(json, reserved = TRUE)
 
     ## create a 'filters' object (S3 for now)
-    ## S3 classes have simple linear inheritance, and `c("filters","HCAccess")`
-    ## says that the `filters` class is a subclass of `HCAccess`.
-    ## It doesn't matter that `HCAcces` is not defined anywhere.
+    ## S3 classes have simple linear inheritance, and `c("filters","hca")`
+    ## says that the `filters` class is a subclass of `hca`.
+    ## It doesn't matter that `hca` is not defined anywhere.
     result <- list(encoding = encoding, filters = valid_filters)
-    class(result) <- c("filters", "HCAccess")
+    class(result) <- c("filters", "hca")
 
     ## return result
     result

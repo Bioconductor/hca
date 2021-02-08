@@ -60,7 +60,7 @@ test_that("'filters()' validates arguments", {
     ## valid verbs: "is", "within", "contains", and "intersects"
     ## details don't need to be checked; these are satisfied in an
     ## earlier test
-    class <- c("filters", "HCAccess")
+    class <- c("filters", "hca")
     expect_s3_class(filters(organ = list(is = "bar")), class)
     expect_s3_class(filters(organ = list(within = "bar")), class)
     expect_s3_class(filters(organ = list(contains = "bar")), class)
