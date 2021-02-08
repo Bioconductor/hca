@@ -17,7 +17,7 @@ lol_lfind(x = list(), key = "", not_in = character(), simplify = TRUE)
 
 lol_hits(x = list(hits = list()), key = "", not_in = character())
 
-lol_hits_path(x = list(hits = list()), all = FALSE)
+lol_hits_path(x = list(hits = list()), all = TRUE)
 }
 \arguments{
 \item{x}{list(), possibly containing other lists.}
@@ -36,6 +36,11 @@ returned.}
 each value before adding, as a list element, to the list of
 found items. This is appropriate when the node values are
 vectors, or sets with homogenous scalar types. See examples.}
+
+\item{all}{logical(1) when TRUE (defualt), return \code{lol_hits_path()}
+returns a tibble with all paths into \code{x}. When FALSE, only the
+paths that appear to be 1:1 mappings between hits and leaf
+elements are returned.}
 }
 \value{
 \code{lol_find()} returns a named character vector. The names

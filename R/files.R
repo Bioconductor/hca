@@ -20,7 +20,6 @@
 NULL # don't add next function to documentation
 
 
-#'
 #' @inheritParams projects
 #'
 #' @seealso `lol_find()` and `lol_lfind()` for working with
@@ -173,16 +172,13 @@ files_terms <-
 #' the file, and returns details about the specified file as a
 #' list-of-lists
 #'
-#' @param uuid character() unique file_id
-#'
-#' @param catalog character() catalog file belongs to
-#'
-#' @return list-of-lists containing relevant details about the file
+#' @return `files_detail()` returns a list-of-lists containing
+#'     relevant details about the file.
 #'
 #' @examples
 #' files_detail(
-#' uuid = "bb4185da-c3da-4bb3-ab51-30aafbb60a0d",
-#' catalog = "dcp2"
+#'     uuid = "bb4185da-c3da-4bb3-ab51-30aafbb60a0d",
+#'     catalog = "dcp2"
 #' )
 #'
 #' @export

@@ -166,16 +166,17 @@ projects_default_columns <-
 #' the project, and returns details about the specified project as a
 #' list-of-lists
 #'
-#' @param uuid character() unique project_id
+#' @param uuid character() unique identifier (e.g., `projectId`) of
+#'     the object.
 #'
-#' @param catalog character() catalog project belongs to
+#' @param catalog character() catalog to use for query.
 #'
-#' @return list-of-lists containing relevant details about the project
+#' @return list-of-lists containing relevant details about the project.
 #'
 #' @examples
 #' projects_detail(
-#' uuid = "4a95101c-9ffc-4f30-a809-f04518a23803",
-#' catalog = "dcp1"
+#'     uuid = "4a95101c-9ffc-4f30-a809-f04518a23803",
+#'     catalog = "dcp1"
 #' )
 #'
 #' @export

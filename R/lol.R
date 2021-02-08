@@ -341,6 +341,11 @@ lol_hits <-
 #'
 #' @md
 #'
+#' @param all logical(1) when TRUE (defualt), return `lol_hits_path()`
+#'     returns a tibble with all paths into `x`. When FALSE, only the
+#'     paths that appear to be 1:1 mappings between hits and leaf
+#'     elements are returned.
+#'
 #' @examples
 #' projects_lol <- projects(as = "lol")
 #' lol_hits_path(projects_lol)
@@ -349,7 +354,7 @@ lol_hits <-
 #'
 #' @export
 lol_hits_path <-
-    function(x = list(hits = list()), all = FALSE)
+    function(x = list(hits = list()), all = TRUE)
 {
     stopifnot(
         is.list(x), "hits" %in% names(x),

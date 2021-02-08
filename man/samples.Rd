@@ -37,7 +37,7 @@ sort result; default: \code{"projectTitle"}.}
 \item{order}{character(1) sort order. One of \code{"asc"} (ascending) or
 \code{"desc"} (descending).}
 
-\item{catalog}{character() catalog sample belongs to}
+\item{catalog}{character() catalog to use for query.}
 
 \item{as}{character(1) return format. Default: \code{"tibble"}, a tibble
 summarizing essential elements of HCA projects. \code{"lol"}: a
@@ -52,7 +52,8 @@ tibble.}
 'Value', below) are returned when missing or length greater
 than 1; details are returned when a single facet is specified.}
 
-\item{uuid}{character() unique sample_id}
+\item{uuid}{character() unique identifier (e.g., \code{projectId}) of
+the object.}
 }
 \value{
 When \code{as = "tibble"}, \code{samples()} returns a tibble with each
@@ -63,7 +64,8 @@ structure representing detailed information on each file
 (`hit`).
 }
 
-list-of-lists containing relevant details about the sample
+\code{samples_detail()} returns a list-of-lists containing
+relevant details about the sample
 }
 \description{
 \code{samples()} takes a list of user provided project titles
@@ -84,8 +86,8 @@ samples(filters = filters(
 samples_terms()
 
 samples_detail(
-uuid = "1dda6a28-cbaa-4506-be47-fa117e8f463c",
-catalog = "dcp2"
+    uuid = "1dda6a28-cbaa-4506-be47-fa117e8f463c",
+    catalog = "dcp2"
 )
 
 }

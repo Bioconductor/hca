@@ -21,7 +21,6 @@
 #'     to be used to query the HCA API for information about available samples.
 NULL # don't add next function to documentation
 
-#'
 #' @inheritParams projects
 #'
 #' @seealso `lol_find()` and `lol_lfind()` for working with
@@ -111,16 +110,13 @@ samples_default_columns <-
 #' the sample, and returns details about the specified sample as a
 #' list-of-lists
 #'
-#' @param uuid character() unique sample_id
-#'
-#' @param catalog character() catalog sample belongs to
-#'
-#' @return list-of-lists containing relevant details about the sample
+#' @return `samples_detail()` returns a list-of-lists containing
+#'     relevant details about the sample
 #'
 #' @examples
 #' samples_detail(
-#' uuid = "1dda6a28-cbaa-4506-be47-fa117e8f463c",
-#' catalog = "dcp2"
+#'     uuid = "1dda6a28-cbaa-4506-be47-fa117e8f463c",
+#'     catalog = "dcp2"
 #' )
 #'
 #' @export

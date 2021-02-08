@@ -37,7 +37,7 @@ sort result; default: \code{"projectTitle"}.}
 \item{order}{character(1) sort order. One of \code{"asc"} (ascending) or
 \code{"desc"} (descending).}
 
-\item{catalog}{character() catalog project belongs to}
+\item{catalog}{character() catalog to use for query.}
 
 \item{as}{character(1) return format. Default: \code{"tibble"}, a tibble
 summarizing essential elements of HCA projects. \code{"lol"}: a
@@ -52,7 +52,8 @@ tibble.}
 'Value', below) are returned when missing or length greater
 than 1; details are returned when a single facet is specified.}
 
-\item{uuid}{character() unique project_id}
+\item{uuid}{character() unique identifier (e.g., \code{projectId}) of
+the object.}
 }
 \value{
 When \code{as = "tibble"}, \code{projects()} returns a tibble with
@@ -82,7 +83,7 @@ containing the column name used in the tibble returned by
 list-of-lists by the same functions when \code{as = "lol"}. When \code{as = "character"}, the return value is a named list with paths as
 elements and abbreviations as names.
 
-list-of-lists containing relevant details about the project
+list-of-lists containing relevant details about the project.
 }
 \description{
 \code{projects()} takes user input to be used to query the
@@ -108,8 +109,8 @@ projects_terms("genusSpecies")
 projects_default_columns()
 
 projects_detail(
-uuid = "4a95101c-9ffc-4f30-a809-f04518a23803",
-catalog = "dcp1"
+    uuid = "4a95101c-9ffc-4f30-a809-f04518a23803",
+    catalog = "dcp1"
 )
 
 }

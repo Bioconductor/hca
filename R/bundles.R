@@ -109,16 +109,13 @@ bundles_default_columns <-
 #' the bundle, and returns details about the specified bundle as a
 #' list-of-lists
 #'
-#' @param uuid character() unique bundle_id
-#'
-#' @param catalog character() catalog bundle belongs to
-#'
-#' @return list-of-lists containing relevant details about the bundle
+#' @return `bundles_detail()` returns a list-of-lists containing
+#'     relevant details about the bundle
 #'
 #' @examples
 #' bundles_detail(
-#' uuid = "00aa6c53-71b5-4c12-98c4-54eb8173ffa5",
-#' catalog = "dcp2"
+#'     uuid = "00aa6c53-71b5-4c12-98c4-54eb8173ffa5",
+#'     catalog = "dcp2"
 #' )
 #'
 #' @export

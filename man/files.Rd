@@ -40,7 +40,7 @@ sort result; default: \code{"projectTitle"}.}
 \item{order}{character(1) sort order. One of \code{"asc"} (ascending) or
 \code{"desc"} (descending).}
 
-\item{catalog}{character() catalog file belongs to}
+\item{catalog}{character() catalog to use for query.}
 
 \item{as}{character(1) return format. Default: \code{"tibble"}, a tibble
 summarizing essential elements of HCA projects. \code{"lol"}: a
@@ -60,7 +60,8 @@ for file downloads}
 'Value', below) are returned when missing or length greater
 than 1; details are returned when a single facet is specified.}
 
-\item{uuid}{character() unique file_id}
+\item{uuid}{character() unique identifier (e.g., \code{projectId}) of
+the object.}
 }
 \value{
 When \code{as = "tibble"}, \code{files()} returns a tibble with each
@@ -73,7 +74,8 @@ structure representing detailed information on each file
 
 file_destinations vector of file destinations
 
-list-of-lists containing relevant details about the file
+\code{files_detail()} returns a list-of-lists containing
+relevant details about the file.
 }
 \description{
 \code{files()} takes a list of user provided project titles
@@ -104,8 +106,8 @@ files_terms()
 files_terms("fileFormat")
 
 files_detail(
-uuid = "bb4185da-c3da-4bb3-ab51-30aafbb60a0d",
-catalog = "dcp2"
+    uuid = "bb4185da-c3da-4bb3-ab51-30aafbb60a0d",
+    catalog = "dcp2"
 )
 
 }
