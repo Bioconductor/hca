@@ -75,10 +75,10 @@ bundles <-
 #' @rdname bundles
 #'
 #' @examples
-#' bundles_terms()
+#' bundles_facets()
 #'
 #' @export
-bundles_terms <-
+bundles_facets <-
     function(
         facet = character(),
         catalog = c("dcp2", "it2", "dcp1", "it1")

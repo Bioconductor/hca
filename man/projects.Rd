@@ -2,7 +2,7 @@
 % Please edit documentation in R/projects.R
 \name{projects}
 \alias{projects}
-\alias{projects_terms}
+\alias{projects_facets}
 \alias{projects_default_columns}
 \alias{projects_detail}
 \title{HCA Project Querying}
@@ -17,7 +17,7 @@ projects(
   columns = projects_default_columns("character")
 )
 
-projects_terms(facet = character(), catalog = c("dcp2", "it2", "dcp1", "it1"))
+projects_facets(facet = character(), catalog = c("dcp2", "it2", "dcp1", "it1"))
 
 projects_default_columns(as = c("tibble", "character"))
 
@@ -64,14 +64,14 @@ structure representing detailed information on each project
 (`hit`).
 }
 
-\code{projects_terms()} invoked with no \verb{facet=} argument returns a
+\code{projects_facets()} invoked with no \verb{facet=} argument returns a
 tibble summarizing terms available as \code{projects()} return
 values, and for use in filters. The tibble contains columns\preformatted{- `facet`: the name of the facet.
 - `n_terms`: the number of distinct values the facet can take.
 - `n_values`: the number of occurrences of the facet term in the
    entire catalog.
 
-`projects_terms()` invoked with a scalar value for `facet=`
+`projects_facets()` invoked with a scalar value for `facet=`
 returns a tibble summarizing terms used in the facet, and the
 number of occurrences of the term in the entire catalog.
 }
@@ -89,7 +89,7 @@ list-of-lists containing relevant details about the project.
 \code{projects()} takes user input to be used to query the
 HCA API for information about available projects.
 
-\code{projects_terms()} summarizes facets and terms used by
+\code{projects_facets()} summarizes facets and terms used by
 all records in the projects index.
 
 \verb{*_columns()} returns a tibble or named
@@ -103,8 +103,8 @@ list-of-lists
 \examples{
 projects(filters())
 
-projects_terms()
-projects_terms("genusSpecies")
+projects_facets()
+projects_facets("genusSpecies")
 
 projects_default_columns()
 

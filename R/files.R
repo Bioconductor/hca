@@ -149,11 +149,11 @@ files_download <-
 #' @rdname files
 #'
 #' @examples
-#' files_terms()
-#' files_terms("fileFormat")
+#' files_facets()
+#' files_facets("fileFormat")
 #'
 #' @export
-files_terms <-
+files_facets <-
     function(
         facet = character(),
         catalog = c("dcp2", "it2", "dcp1", "it1")

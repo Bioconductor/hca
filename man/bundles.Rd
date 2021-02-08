@@ -2,7 +2,7 @@
 % Please edit documentation in R/bundles.R
 \name{bundles}
 \alias{bundles}
-\alias{bundles_terms}
+\alias{bundles_facets}
 \alias{bundles_default_columns}
 \alias{bundles_detail}
 \title{HCA File Querying}
@@ -17,7 +17,7 @@ bundles(
   columns = bundles_default_columns("character")
 )
 
-bundles_terms(facet = character(), catalog = c("dcp2", "it2", "dcp1", "it1"))
+bundles_facets(facet = character(), catalog = c("dcp2", "it2", "dcp1", "it1"))
 
 bundles_default_columns(as = c("tibble", "character"))
 
@@ -82,7 +82,7 @@ bundles(filters = filters(
         and tissues from Mus musculus at single cell resolution")
    )
 ))
-bundles_terms()
+bundles_facets()
 
 bundles_detail(
     uuid = "00aa6c53-71b5-4c12-98c4-54eb8173ffa5",

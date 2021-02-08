@@ -4,7 +4,7 @@
 \alias{files}
 \alias{files_default_columns}
 \alias{files_download}
-\alias{files_terms}
+\alias{files_facets}
 \alias{files_detail}
 \title{HCA File Querying}
 \usage{
@@ -22,7 +22,7 @@ files_default_columns(as = c("tibble", "character"))
 
 files_download(tbl, destination = tempdir())
 
-files_terms(facet = character(), catalog = c("dcp2", "it2", "dcp1", "it1"))
+files_facets(facet = character(), catalog = c("dcp2", "it2", "dcp1", "it1"))
 
 files_detail(uuid, catalog = c("dcp2", "it2", "dcp1", "it1"))
 }
@@ -102,8 +102,8 @@ files_filter <- filters(
 )
 files_tbl <- files(filter = files_filter)
 files_download(files_tbl, destination = tempdir())
-files_terms()
-files_terms("fileFormat")
+files_facets()
+files_facets("fileFormat")
 
 files_detail(
     uuid = "bb4185da-c3da-4bb3-ab51-30aafbb60a0d",

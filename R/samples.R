@@ -76,10 +76,10 @@ samples <-
 #' @rdname samples
 #'
 #' @examples
-#' samples_terms()
+#' samples_facets()
 #'
 #' @export
-samples_terms <-
+samples_facets <-
     function(
         facet = character(),
         catalog = c("dcp2", "it2", "dcp1", "it1")

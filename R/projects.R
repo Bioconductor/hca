@@ -95,14 +95,14 @@ projects <-
 
 #' @rdname projects
 #'
-#' @description `projects_terms()` summarizes facets and terms used by
+#' @description `projects_facets()` summarizes facets and terms used by
 #'     all records in the projects index.
 #'
 #' @param facet character() of valid facet names. Summary results (see
 #'     'Value', below) are returned when missing or length greater
 #'     than 1; details are returned when a single facet is specified.
 #'
-#' @return `projects_terms()` invoked with no `facet=` argument returns a
+#' @return `projects_facets()` invoked with no `facet=` argument returns a
 #'     tibble summarizing terms available as `projects()` return
 #'     values, and for use in filters. The tibble contains columns
 #'
@@ -111,16 +111,16 @@ projects <-
 #'     - `n_values`: the number of occurrences of the facet term in the
 #'        entire catalog.
 #'
-#'     `projects_terms()` invoked with a scalar value for `facet=`
+#'     `projects_facets()` invoked with a scalar value for `facet=`
 #'     returns a tibble summarizing terms used in the facet, and the
 #'     number of occurrences of the term in the entire catalog.
 #'
 #' @examples
-#' projects_terms()
-#' projects_terms("genusSpecies")
+#' projects_facets()
+#' projects_facets("genusSpecies")
 #'
 #' @export
-projects_terms <-
+projects_facets <-
     function(
         facet = character(),
         catalog = c("dcp2", "it2", "dcp1", "it1")

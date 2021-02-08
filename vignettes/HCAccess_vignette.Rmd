@@ -132,14 +132,14 @@ number of terms used in each facet, and the number of distinct values
 used to describe projects.
 
 ```{r}
-projects_terms()
+projects_facets()
 ```
 
-Note the `fileFormat` facet, and repeat `projects_terms()` to
+Note the `fileFormat` facet, and repeat `projects_facets()` to
 discover detail about available file formats
 
 ```{r}
-projects_terms(facet = "fileFormat")
+projects_facets("fileFormat")
 ```
 
 Note that there are 8 uses of the `h5ad` file format. Use this as a

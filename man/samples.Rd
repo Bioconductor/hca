@@ -2,7 +2,7 @@
 % Please edit documentation in R/samples.R
 \name{samples}
 \alias{samples}
-\alias{samples_terms}
+\alias{samples_facets}
 \alias{samples_default_columns}
 \alias{samples_detail}
 \title{HCA File Querying}
@@ -17,7 +17,7 @@ samples(
   columns = samples_default_columns("character")
 )
 
-samples_terms(facet = character(), catalog = c("dcp2", "it2", "dcp1", "it1"))
+samples_facets(facet = character(), catalog = c("dcp2", "it2", "dcp1", "it1"))
 
 samples_default_columns(as = c("tibble", "character"))
 
@@ -83,7 +83,7 @@ samples(filters = filters(
    )
 ))
 
-samples_terms()
+samples_facets()
 
 samples_detail(
     uuid = "1dda6a28-cbaa-4506-be47-fa117e8f463c",
