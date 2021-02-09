@@ -23,18 +23,22 @@
     paste0(base_path, "?", parameters_path)
 }
 
-.index_GET <- function(filters,
-                       size,
-                       sort,
+.index_GET <- function(filters = NULL,
+                       size = 1000L,
+                       sort = "projectTitle",
                        order = c("asc", "desc"),
                        catalog = c("dcp2", "it2", "dcp1", "it1"),
-                       base_path)
+                       base_path = "/index/projects")
 {
     ## validate
     size <- as.integer(size)
     sort <- match.arg(sort, facet_options())
     order <- match.arg(order) # defaults from argument
     catalog <- match.arg(catalog) # defaults from argument
+
+    if(is.null(filters)){
+        filters <- filters()
+    }
 
     ## validate
     .index_validate(
