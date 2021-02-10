@@ -6,6 +6,33 @@ test_that("'projects()' works with default arguments", {
                  projects_default_columns("tibble")$name)
 })
 
+test_that("'projects()' works for projectTitles with special characters", {
+    test_proj <- projects(
+        filters = filters(projectTitle = list(is = "Precursors of human CD4+ cytotoxic T lymphocytes identified by single-cell transcriptome analysis"))
+    )
+    expect_equal(test_proj$projectId[[1]],
+                 "90bd6933-40c0-48d4-8d76-778c103bf545")
+})
+
+test_that("'projects()' works for projectTitles with line breaks", {
+    test_proj <- projects(
+        filters = filters(projectTitle = list(is = "Precursors of human CD4+
+            cytotoxic T lymphocytes identified by single-cell
+            transcriptome analysis"))
+    )
+    expect_true(nrow(test_proj) == 0L)
+    expect_error(test_proj$projectId[[1]], label = "filter values must be
+                 formatted without line breaks")
+})
+
+test_that("'projects()' works for projectTitles that don't exist", {
+    test_proj <- projects(
+        filters = filters(projectTitle = list(is = "blah blah blah"))
+    )
+    expect_true(tibble::is_tibble(test_proj))
+    expect_true(nrow(test_proj) == 0L)
+})
+
 test_that("'projects_default_columns()' works", {
 
     ## testing tibble output
