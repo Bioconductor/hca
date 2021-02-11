@@ -9,6 +9,9 @@ test_that("'filters()' works", {
         URLencode('{}', reserved = TRUE)
     )
 
+    ## empty list
+    expect_error(filters(foo = list()), label = "list may not be empty")
+
     ## single filter
     object <- filters(organ = list(is = "pancreas"))
     expect_equal(length(object), 1L)

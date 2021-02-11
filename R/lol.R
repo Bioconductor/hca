@@ -387,3 +387,63 @@ lol_hits_path <-
         select("abbrev", everything())
 
 }
+
+#' @rdname lol
+#'
+#' @name next_lol
+#'
+#' @param curr_lol lol current lol for which we want the next page
+#'
+#' @return lol
+#'
+#' @export
+next_lol <- function (lol_tbl)
+    UseMethod("next_lol")
+
+#' @export
+next_lol.list <- function (curr_lol) {
+    url <- curr_lol$pagination$"next"
+    if (is.null(url)) {
+        print("You are already on the last page of results.")
+        return(url)
+    } else {
+        response <- GET(url)
+        stop_for_status(response)
+        result <- list(
+            content = content(response),
+            status_code = response$status_code
+        )
+
+        return(result$content)
+    }
+}
+
+#' @rdname lol
+#'
+#' @name prev_lol
+#'
+#' @param curr_lol lol current lol for which we want the previous page
+#'
+#' @return lol
+#'
+#' @export
+prev_lol <- function (lol_tbl)
+    UseMethod("prev_lol")
+
+#' @export
+prev_lol.list <- function (curr_lol) {
+    url <- curr_lol$pagination$previous
+    if (is.null(url)) {
+        print("You are already on the first page of results.")
+        return(url)
+    } else {
+        response <- GET(url)
+        stop_for_status(response)
+        result <- list(
+            content = content(response),
+            status_code = response$status_code
+        )
+
+        return(result$content)
+    }
+}

@@ -47,6 +47,9 @@ facet_options <- function() {
         ## each element in the list must also be a list
         `'filters()' arguments must be named lists` =
             all(vapply(x, inherits, logical(1), "list")),
+        ## each list element must not be empty
+        `'filters()' arguments must be non-empty lists` =
+            all(vapply(x, function(x){length(x) >= 1L}, logical(1))),
         ## allowed verbs only
         `'filters()' verbs must be 'is', 'within', 'intersects' or 'contains'` =
             all(vapply(x, names, character(1)) %in% verbs),

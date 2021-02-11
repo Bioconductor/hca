@@ -9,6 +9,8 @@
 \alias{lol_lfind}
 \alias{lol_hits}
 \alias{lol_hits_path}
+\alias{next_lol}
+\alias{prev_lol}
 \title{Utilities for manipulating lists-of-lists}
 \usage{
 lol_find(x = list(), key = "", not_in = character(), filter = NA_character_)
@@ -18,6 +20,10 @@ lol_lfind(x = list(), key = "", not_in = character(), simplify = TRUE)
 lol_hits(x = list(hits = list()), key = "", not_in = character())
 
 lol_hits_path(x = list(hits = list()), all = TRUE)
+
+next_lol(lol_tbl)
+
+prev_lol(lol_tbl)
 }
 \arguments{
 \item{x}{list(), possibly containing other lists.}
@@ -41,6 +47,8 @@ vectors, or sets with homogenous scalar types. See examples.}
 returns a tibble with all paths into \code{x}. When FALSE, only the
 paths that appear to be 1:1 mappings between hits and leaf
 elements are returned.}
+
+\item{curr_lol}{lol current lol for which we want the previous page}
 }
 \value{
 \code{lol_find()} returns a named character vector. The names
@@ -56,6 +64,10 @@ a 0- or 1-length value for each element of \code{hit} or
 list-of-vectors with each element matching \code{key}. In either
 case, the length of the \code{hits} component of \code{x} equaals the
 length of the return value.
+
+lol
+
+lol
 }
 \description{
 \code{lol_find()} searches a list-of-lists \code{x} for nodes
