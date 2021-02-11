@@ -1,8 +1,8 @@
-test_that("'projects()' works with default arguments", {
-    test_proj <- projects()
+test_that("'projects()' works with small size and default arguments", {
+    test_proj <- projects(size = 4)
     expect_true(tibble::is_tibble(test_proj))
     expect_true(nrow(test_proj) > 0L)
-    expect_equal(names(attr(test_proj, "columns")),
+    expect_equal(names(test_proj),
                  projects_default_columns("tibble")$name)
 })
 
@@ -20,9 +20,7 @@ test_that("'projects()' works for projectTitles with line breaks", {
             cytotoxic T lymphocytes identified by single-cell
             transcriptome analysis"))
     )
-    expect_true(nrow(test_proj) == 0L)
-    expect_error(test_proj$projectId[[1]], label = "filter values must be
-                 formatted without line breaks")
+    expect_true(plyr::empty(test_proj))
 })
 
 test_that("'projects()' works for projectTitles that don't exist", {
