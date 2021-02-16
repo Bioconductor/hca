@@ -397,7 +397,7 @@ lol_hits_path <-
 #' @return lol
 #'
 #' @export
-next_lol <- function (lol_tbl)
+next_lol <- function (curr_lol)
     UseMethod("next_lol")
 
 #' @export
@@ -427,7 +427,7 @@ next_lol.list <- function (curr_lol) {
 #' @return lol
 #'
 #' @export
-prev_lol <- function (lol_tbl)
+prev_lol <- function (curr_lol)
     UseMethod("prev_lol")
 
 #' @export

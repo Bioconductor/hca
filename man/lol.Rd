@@ -21,9 +21,9 @@ lol_hits(x = list(hits = list()), key = "", not_in = character())
 
 lol_hits_path(x = list(hits = list()), all = TRUE)
 
-next_lol(lol_tbl)
+next_lol(curr_lol)
 
-prev_lol(lol_tbl)
+prev_lol(curr_lol)
 }
 \arguments{
 \item{x}{list(), possibly containing other lists.}

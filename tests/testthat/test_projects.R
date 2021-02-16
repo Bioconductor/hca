@@ -15,12 +15,13 @@ test_that("'projects()' works for projectTitles with special characters", {
 })
 
 test_that("'projects()' works for projectTitles with line breaks", {
-    test_proj <- projects(
-        filters = filters(projectTitle = list(is = "Precursors of human CD4+
+    expect_error(
+        projects(
+            filters = filters(projectTitle = list(is = "Precursors of human CD4+
             cytotoxic T lymphocytes identified by single-cell
             transcriptome analysis"))
+        )
     )
-    expect_true(plyr::empty(test_proj))
 })
 
 test_that("'projects()' works for projectTitles that don't exist", {

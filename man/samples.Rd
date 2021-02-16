@@ -78,8 +78,7 @@ list-of-lists
 \examples{
 samples(filters = filters(
     projectTitle = list(
-        is = c("Tabula Muris: Transcriptomic characterization of 20 organs
-        and tissues from Mus musculus at single cell resolution")
+        is = c("Tabula Muris: Transcriptomic characterization of 20 organs and tissues from Mus musculus at single cell resolution")
    )
 ))
 

@@ -55,7 +55,10 @@ facet_options <- function() {
             all(vapply(x, names, character(1)) %in% verbs),
         ## allowed facets only
         `'filters()' facets must be one of those in the permissible list` =
-            all(names(x) %in% facets)
+            all(names(x) %in% facets),
+        ## do no allow values to have line breaks (i.e. newline or return chars)
+        `'filters()' facets values must not contain line breaks` =
+        !any(vapply(x, function(x){grepl("(\r\n|\r|\n)", x)}, logical(1)))
     )
 
     x
