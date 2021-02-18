@@ -155,11 +155,13 @@ projects(filters)
 The default tibble produced by `projects()` contains only some of the
 information available; the information is much richer.
 
+### `projects()` as an _R_ `list`
+
 Instead of retrieving the result of `projects()` as a tibble, retrieve
 it as a 'list-of-lists'
 
 ```{r}
-lol <- projects(as = "lol")
+projects_list <- projects(as = "list")
 ```
 
 This is a complicated structure. We will use `lengths()`, `names()`,
@@ -167,31 +169,47 @@ and standard _R_ list selection operations to navigate this a bit. At
 the top level there rae three elements.
 
 ```{r}
-lengths(lol)
+lengths(projects_list)
 ```
 
 `hits` represents each project as a list, e.g,.
 
 ```{r}
-lengths(lol$hits[[1]])
+lengths(projects_list$hits[[1]])
 ```
 
 shows that there are 10 different ways in which the project is
 described. Each component is itself a list-of-lists, e.g.,
 
 ```{r}
-lengths(lol$hits[[1]]$projects[[1]])
-lol$hits[[1]]$projects[[1]]$projectTitle
+lengths(projects_list$hits[[1]]$projects[[1]])
+projects_list$hits[[1]]$projects[[1]]$projectTitle
 ```
 
-The function `lol_hits_path()` provides one way of summarizing these paths
+### `projects()` as an `lol`
+
+Use `as = "lol"` to create a more convenient way to select, filter and
+extract elements from the list-of-lists by `projects()`.
 
 ```{r}
-lol_hits_path(lol)
+lol <- projects(as = "lol")
+lol
+```
+
+Use `lol_select()` to restrict the `lol` to particular paths, and
+`lol_filter()` to filter results to pathsleafs, or with specific
+numbers of entries.
+
+```{r}
+lol_select(lol, "hits[*].projects[*]")
+lol_select(lol, "hits[*].projects[*]") |>
+    lol_filter(n == 44, is_leaf)
 ```
 
 and the path or its abbreviation can be used to specify the columns of
 the tibble to be returned by the `projects()` query.
+
+### Creating `projects()` tibbles with specific columns
 
 Here we retrieve additional details of donor count and total cells by
 adding appropriate path abbreviations to a named character
@@ -201,11 +219,34 @@ list-of-lists.
 
 ```{r}
 columns <- c(
-    projectId = "entryId", "projectTitle", "donorCount", "totalCells",
-    genusSpecies = "donorOrganisms.genusSpecies", "specimens.organ"
+    projectId = "hits[*].entryId",
+    projectTitle = "hits[*].projects[*].projectTitle",
+    genusSpecies = "hits[*].donorOrganisms[*].genusSpecies[*]",
+    donorCount = "hits[*].donorOrganisms[*].donorCount",
+    organ = "hits[*].cellSuspensions[*].organ[*]",
+    totalCells = "hits[*].cellSuspensions[*].totalCells"
 )
 projects <- projects(filters, columns = columns)
 projects
+```
+
+Note that the `organ` and `totalCells` columns have more than one
+entry per project.
+
+```{r}
+projects |>
+   select(projectId, organ, totalCells)
+```
+
+In this case, the mapping between `organ` and `totalCells` is clear,
+but in general more refined navigation of the `lol` structure may be
+necessary.
+
+```{r}
+projects |>
+    select(projectId, organ, totalCells) |>
+    filter(lengths(totalCells) > 0) |>
+    tidyr::unnest(c("organ", "totalCells"))
 ```
 
 Select the following entry, augement the filter, and query available files
@@ -223,7 +264,7 @@ in the first example.
 
 ```{r}
 filters <- filters(
-    projectId = list(is = "ad98d3cd-26fb-4ee3-99c9-8a2ab085e737"),
+    projectId = list(is = "f83165c5-e2ea-4d15-a5cf-33f3550bffde"),
     fileFormat = list(is = "h5ad")
 )
 files <- files(filters)

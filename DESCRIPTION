@@ -9,8 +9,9 @@ Authors@R:
       ),
       person(given = "Martin",
            family = "Morgan",
-           role = c("aut"),
-           email = "martin.morgan@roswellpark.org"
+           role = "aut",
+           email = "martin.morgan@roswellpark.org",
+           comment = c(ORCID = "0000-0002-5874-8148")
       )
     )
 Description: This package allows users to query the Human Cell Atlas for data on

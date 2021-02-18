@@ -4,9 +4,15 @@
 .term_facets_1 <-
     function(termFacets, facet)
 {
+    term <- lol_lpull(termFacets, paste0(facet, ".terms[*].term"))
+    idx <- vapply(term, is.null, logical(1))
+    term[idx] <- list(NA_character_)
+    count <- lol_lpull(termFacets, paste0(facet, ".terms[*].count"))
+    idx <- vapply(count, is.null, logical(1))
+    count[idx] <- list(NA_character_)
     tbl <- tibble(
-        term = lol_find(termFacets, paste0(facet, ".term")),
-        count = lol_find(termFacets, paste0(facet, ".count"))
+        term = unlist(term, use.names = FALSE),
+        count = unlist(count, use.names = FALSE)
     )
     bind_cols(facet = facet, tbl)
 }
@@ -15,6 +21,7 @@
 .term_facets_n <-
     function(termFacets, facets)
 {
+    ## FIXME manage organismAge, which has term.unit and term.value paths
     facets <- setdiff(facets, "organismAge")
     terms <- lapply(facets, .term_facets_1, termFacets = termFacets)
     bind_rows(terms) %>%
@@ -25,16 +32,18 @@
 .term_facets <-
     function(lol, facet = character())
 {
-    termFacets <- lol_lfind(lol, "termFacets", simplify = FALSE)[["termFacets"]]
-    if (!length(facet))
-        facet <- names(termFacets)
-
+    termFacets0 <- lol_lpull(lol, "termFacets")
+    termFacets <- termFacets0[["termFacets"]]
+    facet_names <- names(termFacets)
+    termFacets <- lol(termFacets)
     stopifnot(
-        is.character(facet), length(facet) > 0L, !anyNA(facet),
-        all(facet %in% names(termFacets))
+        is.character(facet), !anyNA(facet),
+        all(facet %in% facet_names)
     )
 
-    if (length(facet) == 1L) {
+    if (length(facet) == 0L) {
+        .term_facets_n(termFacets, facet_names)
+    } else if (length(facet) == 1L) {
         .term_facets_1(termFacets, facet)
     } else {
         .term_facets_n(termFacets, facet)

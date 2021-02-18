@@ -1,11 +1,11 @@
 .PROJECTS_PATH <- "/index/projects"
 
 .PROJECTS_COLUMNS <- c(
-    projectId = "entryId",
-    projectTitle = "projects.projectTitle",
-    genusSpecies = "donorOrganisms.genusSpecies",
-    "samples.organ",
-    "specimens.organ"
+    projectId = "hits[*].entryId",
+    projectTitle = "hits[*].projects[*].projectTitle",
+    genusSpecies = "hits[*].donorOrganisms[*].genusSpecies[*]",
+    samples.organ = "hits[*].samples[*].organ[*]",
+    specimens.organ = "hits[*].specimens[*].organ[*]"
 )
 
 #' @rdname projects
@@ -40,15 +40,20 @@ NULL # don't add next function to documentation
 #'
 #' @param as character(1) return format. Default: `"tibble"`, a tibble
 #'     summarizing essential elements of HCA projects. `"lol"`: a
-#'     list-of-lists containing detailed project information
+#'     representation of the JSON returned by the query as a
+#'     'list-of-lists' data structure, indexed and presented to enable
+#'     convenient filtering, selection, and extraction. `"list"` an R
+#'     list (typically, highly recursive) containing detailed project
+#'     information, constructed from the JSON response to the original
+#'     query.
 #'
 #' @param columns named character() indicating the paths to be used
 #'     for parsing the 'lol' returned from the HCA to a tibble. The
 #'     names of `columns` are used as column names in the returned
 #'     tibble.
 #'
-#' @seealso `lol_find()` and `lol_lfind()` for working with
-#'     list-of-lists data structures.
+#' @seealso `lol()` and other `lol_*()` functions for working with the
+#'     list-of-list data structure returned when `as = "lol"`.
 #'
 #' @return When `as = "tibble"`, `projects()` returns a tibble with
 #'     each row representing an HCA project, and columns summarizing
@@ -57,7 +62,11 @@ NULL # don't add next function to documentation
 #'
 #'     When `as = "lol"`, `projects()` returns a list-of-lists data
 #'     structure representing detailed information on each project
-#'     (`hit`).
+#'     ('hit').
+#'
+#'     When `as = "list"`, `projects()` returns an R list, typically
+#'     containing other lists or atomic vectors, representing detailed
+#'     information on each project.
 #'
 #' @examples
 #' projects(filters())
@@ -69,7 +78,7 @@ projects <-
              sort = "projectTitle",
              order = c("asc", "desc"),
              catalog = c("dcp2", "it2", "dcp1", "it1"),
-             as = c("tibble", "lol"),
+             as = c("tibble", "lol", "list"),
              columns = projects_default_columns("character"))
 {
     if (is.null(filters))
@@ -89,7 +98,9 @@ projects <-
     switch(
         as,
         tibble = .as_tbl_hca(response$content, columns),
-        lol = .as_lol_hca(response$content, columns)
+        lol = .as_lol_hca(response$content, columns),
+        lol = lol(response$content),
+        list = response$content
     )
 }
 

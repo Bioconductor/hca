@@ -13,7 +13,7 @@ bundles(
   sort = "projectTitle",
   order = c("asc", "desc"),
   catalog = c("dcp2", "it2", "dcp1", "it1"),
-  as = c("tibble", "lol"),
+  as = c("tibble", "lol", "list"),
   columns = bundles_default_columns("character")
 )
 
@@ -41,7 +41,12 @@ sort result; default: \code{"projectTitle"}.}
 
 \item{as}{character(1) return format. Default: \code{"tibble"}, a tibble
 summarizing essential elements of HCA projects. \code{"lol"}: a
-list-of-lists containing detailed project information}
+representation of the JSON returned by the query as a
+'list-of-lists' data structure, indexed and presented to enable
+convenient filtering, selection, and extraction. \code{"list"} an R
+list (typically, highly recursive) containing detailed project
+information, constructed from the JSON response to the original
+query.}
 
 \item{columns}{named character() indicating the paths to be used
 for parsing the 'lol' returned from the HCA to a tibble. The
@@ -56,14 +61,6 @@ than 1; details are returned when a single facet is specified.}
 the object.}
 }
 \value{
-When \code{as = "tibble"}, \code{bundles()} returns a tibble with each
-row representing a file for one of the specified HCA project,
-and columns summarizing the file.  Each \code{.hit} is a single
-result; ....\preformatted{When `as = "lol"`, `bundles()` returns a list-of-lists data
-structure representing detailed information on each file
-(`hit`).
-}
-
 \code{bundles_detail()} returns a list-of-lists containing
 relevant details about the bundle
 }
@@ -76,20 +73,18 @@ the bundle, and returns details about the specified bundle as a
 list-of-lists
 }
 \examples{
-bundles(filters = filters(
-    projectTitle = list(
-        is = "Tabula Muris: Transcriptomic characterization of 20 organs and tissues from Mus musculus at single cell resolution"
-   )
-))
+title <- paste(
+    "Tabula Muris: Transcriptomic characterization of 20 organs and tissues from Mus musculus",
+    "at single cell resolution"
+)
+filters <- filters( projectTitle = list(is = title) )
+bundles(filters = filters)
+
 bundles_facets()
 
 bundles_detail(
     uuid = "00aa6c53-71b5-4c12-98c4-54eb8173ffa5",
     catalog = "dcp2"
-)
+) |> lol() |> lol_filter(is_leaf) |> print(n = Inf)
 
-}
-\seealso{
-\code{lol_find()} and \code{lol_lfind()} for working with
-list-of-lists data structures.
 }

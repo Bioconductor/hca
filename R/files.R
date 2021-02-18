@@ -1,12 +1,12 @@
 .FILES_PATH <- "/index/files"
 
 .FILES_COLUMNS <- c(
-    fileId = "files.uuid",
-    name = "files.name",
-    size = "files.size",
-    version = "files.version",
-    projectTitle = "projects.projectTitle",
-    url = "files.url"
+    fileId = "hits[*].files[*].uuid",
+    name = "hits[*].files[*].name",
+    size = "hits[*].files[*].size",
+    version = "hits[*].files[*].version",
+    projectTitle = "hits[*].projects[*].projectTitle[*]",
+    url = "hits[*].files[*].url"
 )
 
 #' @rdname files
@@ -22,33 +22,22 @@ NULL # don't add next function to documentation
 
 #' @inheritParams projects
 #'
-#' @seealso `lol_find()` and `lol_lfind()` for working with
-#'     list-of-lists data structures.
-#'
-#' @return When `as = "tibble"`, `files()` returns a tibble with each
-#'     row representing a file for one of the specified HCA project,
-#'     and columns summarizing the file.  Each `.hit` is a single
-#'     result; ....
-#'
-#'     When `as = "lol"`, `files()` returns a list-of-lists data
-#'     structure representing detailed information on each file
-#'     (`hit`).
+#' @examples
+#' title <- paste(
+#'     "Tabula Muris: Transcriptomic characterization of 20 organs and tissues from Mus musculus",
+#'     "at single cell resolution"
+#' )
+#' filters <- filters( projectTitle = list(is = title) )
+#' files(filters = filters)
 #'
 #' @export
-#'
-#' @examples
-#' files(filters = filters(
-#'     projectTitle = list(
-#'         is = "Tabula Muris: Transcriptomic characterization of 20 organ and tissues from Mus musculus at single cell resolution"
-#'    )
-#' ))
 files <-
     function(filters = NULL,
              size = 1000L,
              sort = "projectTitle",
              order = c("asc", "desc"),
              catalog = c("dcp2", "it2", "dcp1", "it1"),
-             as = c("tibble", "lol"),
+             as = c("tibble", "lol", "list"),
              columns = files_default_columns("character"))
 {
     if (is.null(filters))
@@ -67,7 +56,8 @@ files <-
     switch(
         as,
         tibble = .as_tbl_hca(response$content, columns),
-        lol = .as_lol_hca(response$content, columns)
+        lol = .as_lol_hca(response$content, columns),
+        list = response$content
     )
 }
 
@@ -123,8 +113,8 @@ files_default_columns <-
 #'     projectId = list(is = "cddab57b-6868-4be4-806f-395ed9dd635a"),
 #'     fileFormat = list(is = "loom")
 #' )
-#' files_tbl <- files(filter = files_filter)
-#' files_download(files_tbl, destination = tempdir())
+#' files_tbl <- files(filter = files_filter, catalog = "dcp1")
+#' \dontrun{files_download(files_tbl, destination = tempdir())}
 files_download <-
     function (tbl, destination = tempdir())
 {

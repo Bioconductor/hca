@@ -13,7 +13,7 @@ projects(
   sort = "projectTitle",
   order = c("asc", "desc"),
   catalog = c("dcp2", "it2", "dcp1", "it1"),
-  as = c("tibble", "lol"),
+  as = c("tibble", "lol", "list"),
   columns = projects_default_columns("character")
 )
 
@@ -41,7 +41,12 @@ sort result; default: \code{"projectTitle"}.}
 
 \item{as}{character(1) return format. Default: \code{"tibble"}, a tibble
 summarizing essential elements of HCA projects. \code{"lol"}: a
-list-of-lists containing detailed project information}
+representation of the JSON returned by the query as a
+'list-of-lists' data structure, indexed and presented to enable
+convenient filtering, selection, and extraction. \code{"list"} an R
+list (typically, highly recursive) containing detailed project
+information, constructed from the JSON response to the original
+query.}
 
 \item{columns}{named character() indicating the paths to be used
 for parsing the 'lol' returned from the HCA to a tibble. The
@@ -61,7 +66,11 @@ each row representing an HCA project, and columns summarizing
 the project. Each \code{.hit} is a single result; a result may
 contain several projects, as indexed by \code{.project}.\preformatted{When `as = "lol"`, `projects()` returns a list-of-lists data
 structure representing detailed information on each project
-(`hit`).
+('hit').
+
+When `as = "list"`, `projects()` returns an R list, typically
+containing other lists or atomic vectors, representing detailed
+information on each project.
 }
 
 \code{projects_facets()} invoked with no \verb{facet=} argument returns a
@@ -115,6 +124,6 @@ projects_detail(
 
 }
 \seealso{
-\code{lol_find()} and \code{lol_lfind()} for working with
-list-of-lists data structures.
+\code{lol()} and other \verb{lol_*()} functions for working with the
+list-of-list data structure returned when \code{as = "lol"}.
 }

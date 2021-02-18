@@ -1,391 +1,284 @@
-#' @rdname lol
-#'
-#' @name list-of-lists
-#'
-#' @aliases .lol_visit .lol_visit.list .lol_visit.default
-#'
-#' @title Utilities for manipulating lists-of-lists
-NULL
+.lol_visit_impl <- function(x, path, index, dict)
+    UseMethod(".lol_visit_impl")
 
-## visit each node, searching for nodes named 'key'. When key found
-## evaluate FUN(). Ignore nodes below any in 'not_in'. Return a
-## list-of-lists reflecting the structure of the found nodes.
-
-#' @export
-.lol_visit <- function(x, FUN, key, not_in)
-    UseMethod(".lol_visit")
-
-#' @importFrom stats setNames
-#' @importFrom utils head tail
-#'
-#' @export
-.lol_visit.list <-
-    function(x, FUN, key, not_in)
-{
-    ## list nodes; search for key or recurse into list elements
-    if (is.null(names(x))) {
-        found <- logical(length(x))
-        result <- vector("list", length(x))
-    } else {
-        x <- x[!names(x) %in% not_in] # remove 'not_in' nodes from named lists
-        found <- names(x) %in% key
-        result <- setNames(vector("list", length(x)), names(x))
-    }
-
-    result[found] <- FUN(x[found])
-    result[!found] <- lapply(x[!found], .lol_visit, FUN, key, not_in)
-
-    result[found | lengths(result) > 0L]
+.lol_visit_impl.default <- function(x, path, index, dict) {
+    dict[[path]] <- append(dict[[path]], list(index))
+    attr(dict[[path]], "leaf") <- TRUE
 }
 
-#' @export
-.lol_visit.default <-
-    function(x, FUN, key, not_in)
-{
-    ## leaf nodes
-    if (any(names(x) %in% key)) {
-        return(FUN(x[key]))
-    } else {
-        return(FUN(NULL))
-    }
-}
+.lol_visit_impl.list <- function(x, path, index, dict) {
+    dict[[path]] <- append(dict[[path]], list(index))
+    attr(dict[[path]], "leaf") <- FALSE
 
-.lol_select <- local({
-    result <- setNames(list(), character())
-    function(x, key, not_in, path = character(), top = TRUE) {
-        if (top)
-            result <<- setNames(list(), character())
-        if (is.null(names(x))) {
-            if (is.list(x))
-                lapply(x, .lol_select, key, not_in, path, FALSE)
+    nms <- names(x)
+    is_null_nms <- is.null(nms)
+    if (is_null_nms) {
+        ## nms <- paste0("[[", seq_along(x), "]]")
+        nms <- rep("[*]", length(x))
+    }
+    if (identical(path, ".")) {
+        path <- nms
+    } else {
+        if (is_null_nms) {
+            path <- paste0(path, nms)
         } else {
-            x <- x[!names(x) %in% not_in]
-            nms <- names(x)
-            found <- nms %in% key
-            path_idx <- nzchar(path) > 0L
-            nms[path_idx] <- paste(path[path_idx], nms, sep=".")
-            if (is.list(x)) {
-                for (i in seq_along(x))
-                    if (found[[i]]) {
-                        x0 <- setNames(x[i], nms[[i]])
-                        result <<- append(result, x0)
-                    } else {
-                        .lol_select(x[[i]], key, not_in, nms[[i]], FALSE)
-                    }
-            } else {
-                x0 <- as.list(setNames(x, nms))
-                result <<- append(result, x0)
-            }
+            path <- paste0(path, ".", nms)
         }
-        result
     }
-})
+
+    for (i in seq_along(x))
+        .lol_visit_impl(x[[i]], path[[i]], append(index, i), dict)
+}
+
+.lol <-
+    function(lol, dict, path = .lol_path(dict))
+{
+    if (!inherits(dict, "dict"))
+        class(dict) <- c("dict", class(dict))
+    structure(
+        list(lol = lol, dict = dict, path = path),
+        class = "lol"
+    )
+}
 
 #' @rdname lol
+#' @md
 #'
-#' @name list-of-lists
+#' @title Representing and manipulating list-of-list data structures.
 #'
-#' @description `lol_find()` searches a list-of-lists `x` for nodes
-#'     with name `key`, returning a named vector of scalar-valued
-#'     keys.
+#' @description `lol()` constructs an indexed representation of an R
+#'     'list-of-lists', typically from JSON queries. The object is
+#'     conveniently manipulated by other functions on this page to
+#'     filter and select subsets of the structure, and to pull
+#'     individual paths from across the list-of-lists.
 #'
-#' @param x list(), possibly containing other lists.
+#' @param x for `lol()` an R `list`, containing, recursively, named or
+#'     unnamed R lists or atomic vectors.
 #'
-#' @param key character() desired node name, or path to nodes of
-#'     interest, e.g., `"a.b"` finds "b" nodes that are descendents
-#'     (children or more distant) of "a" nodes.
-#'
-#' @param not_in character() node(s) whose descendants are excluded
-#'     from matching `key`.
-#'
-#' @param filter character(1) regular expression matching paths to be
-#'     returned.
-#'
-#' @return `lol_find()` returns a named character vector. The names
-#'     represent the paths to each node matching `key`, and the
-#'     elements correspond to the value of the node. Named keys with
-#'     empty elements are represented as `NA`.
+#' @return `lol()` returns a representation of the list-of-lists. The
+#'     list has been processed to a dictionary with entries to all
+#'     paths through the list, as well as a tibble summarizing the
+#'     path, number of occurrences, and leaf status of each unique
+#'     path.
 #'
 #' @examples
-#' lol <- list(a = list(b = 1), a = list(b = 2))
-#' lol_find(lol, "b")
+#' plol <- projects(as = "lol")
+#' plol
 #'
-#' lol <- list(list(b = 1), a = list(b = 2))
-#' lol_find(lol, "b")
-#' lol_find(lol, "b", not_in = "a")
-#'
-#' ## empty key
-#' lol_find(list(a = list(), a = list(1)), "a")  # c(NA, 1)
-#'
-#' ## 'a.b': choose 'b' nodes that are children of 'a' nodes
-#' lol <- list(a = list(b = 1), c = list(b = 2))
-#' lol_find(lol, "a.b")
-#' lol_find(lol, "b", filter = "a.b")  # same as previous, but less robust
-NULL
-
-## helper -- convert NULL or list() elments to NA
-.lol_list0_as_NA <-
-    function(elt)
-{
-    if (is.null(elt)) {
-        NA
-    } else {
-        elt[lengths(elt) == 0L] <- NA
-        elt
-    }
-}
-
-.lol_find_core <-
-    function(x, keys, not_in, list0.as.NA = TRUE)
-{
+#' @export
+lol <- function(x = list()) {
     stopifnot(
-        is.character(keys),
-        is.character(not_in)
+        inherits(x, "list")
     )
 
-    if (nzchar(keys))
-        keys <- strsplit(keys, ".", fixed = TRUE)[[1]]
+    dict <- new.env(parent = emptyenv())
+    .lol_visit_impl(x, ".", integer(), dict)
+    dict <- as.list(dict)
 
-    ## find all first keys
-    x <- .lol_visit(x, identity, head(keys, 1), not_in)
-    for (key in tail(keys, -1))
-        ## and for each first key, find nested keys
-        x <- lapply(x, .lol_visit, identity, key, not_in)
+    .lol(x, dict)
+}
 
-    if (list0.as.NA) { # empty list elements to NA
-        x <- .lol_visit(x, .lol_list0_as_NA, head(keys, 1), character())
-        for (key in tail(keys, -1))
-            x <- lapply(x, .lol_visit, .lol_list0_as_NA, key, character())
-    }
+.lol_dict <- function(x) x[["dict"]]
 
-    .lol_select(x, head(keys, 1), not_in)
+.lol_lol <- function(x) x[["lol"]]
+
+.lol_lengths <- function(x)
+    UseMethod(".lol_lengths")
+
+.lol_lengths.dict <-
+    function(x)
+{
+    lengths(x)
+}
+
+.lol_lengths.lol <-
+    function(x)
+{
+    .lol_lengths(.lol_dict(x))
+}
+
+.lol_is_leaf <- function(x)
+    UseMethod(".lol_is_leaf")
+
+.lol_is_leaf.dict <-
+    function(x)
+{
+    vapply(x, attr, logical(1), "leaf")
+}
+
+.lol_is_leaf.lol <-
+    function(x)
+{
+    .lol_is_leaf(.lol_dict(x))
+}
+
+.lol_path <-
+    function(x)
+{
+    path <- ls(x, all.names = FALSE)
+    is_leaf <- .lol_is_leaf(x)[path]
+    tbl <- tibble(
+        path = path,
+        n = unname(.lol_lengths(x)[path]),
+        is_leaf = unname(is_leaf)
+    )
+    arrange(tbl, .data$path)
+}
+
+.lol_valid_path <-
+    function(x, path)
+{
+    ok <- path %in% lol_path(x)$path
+    ok || stop("'path' not in 'x':\n", "  path: '", path, "'")
 }
 
 #' @rdname lol
 #'
+#' @param x an object of class 'lol'
+#'
+#' @param path character(1) from the tibble returned by `lol_path(x)`.
+#'
+#' @return `lol_select()` returns an object of class `"lol"` subset
+#'     to contain just the elements matching `path` as 'top-level'
+#'     elements of the list-of-lists.
+#'
+#' @examples
+#' plol |> lol_select("hits[*].projects[*]")
+#'
 #' @export
-lol_find <-
-    function(x = list(), key = "", not_in = character(), filter = NA_character_)
+lol_select <-
+    function(x, path)
 {
     stopifnot(
-        .is_scalar_character(filter, na.ok = TRUE)
+        inherits(x, "lol"),
+        .is_scalar_character(path),
+        .lol_valid_path(x, path)
     )
+    paths <- lol_path(x)
+    paths <- paths[startsWith(paths$path, path),]
+    dict <-  .lol_dict(x)[paths$path]
+    .lol(.lol_lol(x), dict, paths)
+}
 
-    result <- .lol_find_core(x, key, not_in)
+#' @rdname lol
+#' @md
+#'
+#' @description `lol_filter()` filters available paths based on
+#'     selections in `...`, e.g., `n` (number of matching elements) or
+#'     `is_leaf` (is the element a 'leaf' in the list-of-lists
+#'     representation?).
+#'
+#' @param ... for `lol_filter()`, named filter expressions
+#'     evaluating to a logical vector with length equal to the number
+#'     of rows in `lol_path()`.
+#'
+#' @return `lol_filter()` returns an object of class `lol`, filtered
+#'     to contain elements consistent with the filter criteria.
+#'
+#' @examples
+#' plol |>
+#'    lol_select("hits[*].projects[*]") |>
+#'    lol_filter(n == 44, is_leaf)
+#'
+#' @export
+lol_filter <-
+    function(x, ...)
+{
+    stopifnot(
+        inherits(x, "lol")
+    )
+    path <- lol_path(x)
+    ## FIXME: don't allow filtering on 'path'
+    path <- filter(path, ...)
+    dict <- .lol_dict(x)[path$path]
+    .lol(.lol_lol(x), dict, path)
+}
 
-    if (length(result)) {
-        result <- unlist(result)
-    } else {
-        result <- setNames(character(), character())
-    }
-    if (!is.na(filter))
-        result <- result[grepl(filter, names(result))]
-
-    result
+#' @rdname lol
+#'
+#' @description `lol_lpull()` returns a list containing elements
+#'     corresponding to a single `path`.
+#'
+#' @return `lol_lpull()` returns a list, where each element
+#'     corresponds to an element found at `path` in the list-of-lists
+#'     structure `x`.
+#'
+#' @export
+lol_lpull <-
+    function(x, path)
+{
+    stopifnot(
+        inherits(x, "lol"),
+        .is_scalar_character(path),
+        .lol_valid_path(x, path)
+    )
+    lol <- .lol_lol(x)
+    value <- lapply(.lol_dict(x)[[path]], function(idx) lol[[idx]])
+    names(value) <-  rep(path, length(value))
+    value
 }
 
 #' @rdname lol
 #'
 #' @md
 #'
-#' @description `lol_lfind()` is like `lol_find()`, but returns values
-#'     as lists-of-lists.
+#' @description `lol_pull()` tries to simplify the list-of-lists
+#'     structure returned by `lol_lpull()` to a vector.
 #'
-#' @param simplify logical(1). For `lol_lfind()`, when TRUE, unlist
-#'     each value before adding, as a list element, to the list of
-#'     found items. This is appropriate when the node values are
-#'     vectors, or sets with homogenous scalar types. See examples.
-#'
-#' @return `lol_lfind()` returns an unnamed list of elements matching
+#' @return `lol_lpull()` returns an unnamed list of elements matching
 #'     `key`.
 #'
 #' @examples
-#' lol <- list(a = list(b = c(1, 2)), a = list(b = 3))
-#' lol_find(lol, "b")  # names() mangled, length() of input and result differ
-#' lol_lfind(lol, "b")
-#'
-#' lol <- list(
-#'     person = list(
-#'         age = 32,
-#'         name = list(first = "Ima", last = "Person")
-#'     ),
-#'     person = list(
-#'         age = 27,
-#'         name = list(first = "Iman", last = "Other")
-#'     )
-#' )
-#' lol_lfind(lol, "name")  # simplify names to vectors, e.g., c("Ima", "Person")
-#' lol_lfind(lol, "name", simplify = FALSE)  # retain structure of each element
+#' plol |>
+#'     lol_lpull("hits[*].entryId") |>
+#'     head()
 #'
 #' @export
-lol_lfind <-
-    function(x = list(), key = "", not_in = character(), simplify = TRUE)
+lol_pull <-
+    function(x, path)
 {
-    stopifnot(.is_scalar_logical(simplify))
-
-    x <- .lol_find_core(x, key, not_in, list0.as.NA = FALSE)
-
-    if (simplify)
-        x <- lapply(x, unlist, use.names = FALSE)
-
-    x
-}
-
-
-#' @rdname lol
-#'
-#' @md
-#'
-#' @description `lol_hits()` selects an element `hits` from x, and
-#'     finds `key` values in each hit.
-#'
-#' @return `lol_hits()` returns either a vector (if `key` evaluates to
-#'     a 0- or 1-length value for each element of `hit` or
-#'     list-of-vectors with each element matching `key`. In either
-#'     case, the length of the `hits` component of `x` equaals the
-#'     length of the return value.
-#'
-#' @examples
-#'
-#' x <- list(
-#'     hits = list(
-#'         list(projects = list(projectTitle = "A title")),
-#'         list(projects = list(projectTitle = "Another title")),
-#'         list(files = list(projectTitle = "And another title"))
-#'     ),
-#'     termFacets = list(projects = list(projectTitle = c("A", "B", "C")))
-#' )
-#' lol_hits(x, "projects.projectTitle") # c("A title", "Another title")
-#'
-#' @export
-lol_hits <-
-    function(x = list(hits = list()), key = "", not_in = character())
-{
-    stopifnot(
-        is.list(x),
-        .is_scalar_character(key),
-        .is_character(not_in)
-    )
-
-    hits <- .lol_select(x, "hits", not_in)
-    stopifnot(
-        `failed to find 'hits' element` =
-            length(hits) == 1L && identical(names(hits), "hits")
-    )
-    hits <- unlist(hits, recursive = FALSE, use.names = FALSE)
-    if (!length(hits))
-        return(list())
-
-    paths <- lol_hits_path(x, TRUE)
-    is_edge <- key %in% c(paths$abbrev, paths$path)
-    if (is_edge) {
-        ## scalar, or list of scalars
-        results <- lapply(hits, lol_lfind, key, not_in)
-        idx <- lengths(results) > 0L
-        results[idx] <-
-            unlist(results[idx], recursive = FALSE, use.names = FALSE)
-        results[!idx] <- list(NULL)
-        if (all(lengths(results) == 1L))
-            results <- unlist(results, use.names = FALSE)
-    } else {
-        ## list-of-lists
-        results <- lapply(hits, lol_lfind, key, not_in, simplify = FALSE)
-        idx <- lengths(results) > 0L
-        results[idx] <-
-            unlist(results[idx], recursive = FALSE, use.names = FALSE)
-        idx <- lengths(results) > 0L
-        results[idx] <-
-            unlist(results[idx], recursive = FALSE, use.names = FALSE)
-        results[!idx] <- list(NULL)
-    }
-
-    results
-}
-
-.lol_path_abbreviation <-
-    function(path)
-{
-    ## pre-process split each path into parts; create a dictionary
-    ## mapping part to paths in which it is used
-    parts <- strsplit(path, ".", fixed = TRUE)
-    dict <- split(rep(seq_along(parts), lengths(parts)), unlist(parts))
-
-    ## initialize abbreviation with leaf node; look up paths in which
-    ## the abbreviation is used
-    abbrev <- abbrev1 <- vapply(parts, tail, character(1), 1L)
-    abbrev_found_in <- dict[abbrev1]
-
-    repeat {
-        ## remove trailing node from parts; identify paths that still
-        ## require abbreviation -- the abbreviation is not unique
-        parts <- lapply(parts, head, -1L)
-        idx <- lengths(abbrev_found_in) > 1L & lengths(parts) > 0L
-        if (!any(idx))
-            break
-        abbrev1 <- vapply(parts[idx], tail, character(1), 1L) # next candiate
-        abbrev[idx] <- paste0(abbrev1, ".", abbrev[idx])      # extend abbrev
-        abbrev_found_in[idx] <- # existing paths with abbrev1
-            Map(intersect, abbrev_found_in[idx], dict[abbrev1])
-    }
-
-    abbrev
-}
-
-.lol_path_root <-
-    function(path)
-{
-    sub("\\..*", "", path)
+    value <- lol_lpull(x, path)
+    unlist(value, recursive = FALSE, use.names = FALSE)
 }
 
 #' @rdname lol
 #'
-#' @md
-#'
-#' @param all logical(1) when TRUE (defualt), return `lol_hits_path()`
-#'     returns a tibble with all paths into `x`. When FALSE, only the
-#'     paths that appear to be 1:1 mappings between hits and leaf
-#'     elements are returned.
-#'
+#' @description `lol_path()` returns a tibble represnting the paths
+#'     through the list-of-lists, without the underlying list-of-list
+#'     data.
 #' @examples
-#' projects_lol <- projects(as = "lol")
-#' lol_hits_path(projects_lol)
-#'
-#' @importFrom dplyr .data count arrange select everything
+#' plol |> lol_path()
 #'
 #' @export
-lol_hits_path <-
-    function(x = list(hits = list()), all = TRUE)
+lol_path <- function(x) x[["path"]]
+
+#' @rdname lol
+#'
+#' @description `as.list()` returns a list-of-lists representation of
+#'     the data returned by `projects()`, etc.
+#'
+#' @export
+as.list.lol <- function(x, ...) .lol_lol(x)
+
+#' @rdname lol
+#'
+#' @export
+print.lol <-
+    function(x, ...)
 {
-    stopifnot(
-        is.list(x), "hits" %in% names(x),
-        .is_scalar_logical(all)
+    lengths <- .lol_lengths(x)
+    is_leaf <- .lol_is_leaf(x)
+    path <- lol_path(x)
+    cat(
+        "# class: ", paste(class(x), collapse = " "), "\n",
+        "# number of distinct paths: ", NROW(path), "\n",
+        "# total number of elements: ", sum(lengths), "\n",
+        "# number of leaf paths: ", sum(is_leaf), "\n",
+        "# number of leaf elements: ", sum(lengths[is_leaf]), "\n",
+        "# lol_path():\n",
+        sep = ""
     )
-
-    hits <- .lol_select(x, "hits", character())
-    path <- names(unlist(hits))
-
-    ## trim 'hits' and trailing digits
-    path <- substring(path, 6L)
-    path <- sub("[[:digit:]]+$", "", path)
-
-    tbl <-
-        tibble(path = path) %>%
-        count(.data$path) %>%
-        arrange(desc(.data$n))
-
-    ## all indicates whether we want all attributes of a hit (T) or only those
-    ## that have a 1-to-1 relationship to the hit (F)
-    if (!all)
-        ## what is n? > column defined above when count is applied
-        ## dplyr knows to find the column n in tbl, R does not >
-        ## specify it's from .data
-        tbl <- filter(tbl, .data$n == length(hits[[1]]))
-
-    tbl %>%
-        ## add abbreviation -- shortest path to uniquely identify the element
-        mutate(abbrev = .lol_path_abbreviation(.data$path)) %>%
-        select("abbrev", everything())
-
+    print(path, ...)
 }
 
 ## class definition
@@ -393,7 +286,7 @@ lol_hits_path <-
 .as_lol_hca <-
     function(x, keys)
 {
-    class(x) <- c("lol_hca", class(x))
+    x <- lol(x)
     attr(x, "keys") <- keys
     x
 }

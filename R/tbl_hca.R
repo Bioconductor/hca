@@ -35,7 +35,15 @@
         idx <- !nzchar(names(keys))
         names(keys)[idx] <- keys[idx]
     }
-    values <- lapply(keys, lol_hits, x = x)
+    lol <- lol(x)
+
+    idx <- keys %in% lol_path(lol)$path
+    if (!any(idx)) {
+        values <- rep(list(character()), length(keys))
+        names(values) <- names(keys)
+    } else {
+        values <- lapply(keys[idx], lol_hits_pull, x = lol)
+    }
 
     tbl_hca <- as_tibble(values)
     attr(tbl_hca, "keys") <- keys

@@ -14,7 +14,7 @@ files(
   sort = "projectTitle",
   order = c("asc", "desc"),
   catalog = c("dcp2", "it2", "dcp1", "it1"),
-  as = c("tibble", "lol"),
+  as = c("tibble", "lol", "list"),
   columns = files_default_columns("character")
 )
 
@@ -44,7 +44,12 @@ sort result; default: \code{"projectTitle"}.}
 
 \item{as}{character(1) return format. Default: \code{"tibble"}, a tibble
 summarizing essential elements of HCA projects. \code{"lol"}: a
-list-of-lists containing detailed project information}
+representation of the JSON returned by the query as a
+'list-of-lists' data structure, indexed and presented to enable
+convenient filtering, selection, and extraction. \code{"list"} an R
+list (typically, highly recursive) containing detailed project
+information, constructed from the JSON response to the original
+query.}
 
 \item{columns}{named character() indicating the paths to be used
 for parsing the 'lol' returned from the HCA to a tibble. The
@@ -64,14 +69,6 @@ than 1; details are returned when a single facet is specified.}
 the object.}
 }
 \value{
-When \code{as = "tibble"}, \code{files()} returns a tibble with each
-row representing a file for one of the specified HCA project,
-and columns summarizing the file.  Each \code{.hit} is a single
-result; ....\preformatted{When `as = "lol"`, `files()` returns a list-of-lists data
-structure representing detailed information on each file
-(`hit`).
-}
-
 file_destinations vector of file destinations
 
 \code{files_detail()} returns a list-of-lists containing
@@ -90,17 +87,19 @@ the file, and returns details about the specified file as a
 list-of-lists
 }
 \examples{
-files(filters = filters(
-    projectTitle = list(
-        is = "Tabula Muris: Transcriptomic characterization of 20 organ and tissues from Mus musculus at single cell resolution"
-   )
-))
+title <- paste(
+    "Tabula Muris: Transcriptomic characterization of 20 organs and tissues from Mus musculus",
+    "at single cell resolution"
+)
+filters <- filters( projectTitle = list(is = title) )
+files(filters = filters)
+
 files_filter <- filters(
     projectId = list(is = "cddab57b-6868-4be4-806f-395ed9dd635a"),
     fileFormat = list(is = "loom")
 )
-files_tbl <- files(filter = files_filter)
-files_download(files_tbl, destination = tempdir())
+files_tbl <- files(filter = files_filter, catalog = "dcp1")
+\dontrun{files_download(files_tbl, destination = tempdir())}
 files_facets()
 files_facets("fileFormat")
 
@@ -109,8 +108,4 @@ files_detail(
     catalog = "dcp2"
 )
 
-}
-\seealso{
-\code{lol_find()} and \code{lol_lfind()} for working with
-list-of-lists data structures.
 }
