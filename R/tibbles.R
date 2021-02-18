@@ -24,8 +24,7 @@ next_tbl <- function (curr_tbl)
 next_tbl.tbl_hca <- function (curr_tbl) {
     url <- attr(curr_tbl, "pagination")[["next"]]
     if (is.null(url)) {
-        print("You are already on the last page of results.")
-        return(url)
+        stop("you are already on the last page of result.")
     } else {
         response <- GET(url)
         stop_for_status(response)
@@ -55,8 +54,7 @@ prev_tbl <- function (curr_tbl)
 prev_tbl.tbl_hca <- function (curr_tbl) {
     url <- attr(curr_tbl, "pagination")[["previous"]]
     if (is.null(url)) {
-        print("You are already on the first page of results.")
-        return(url)
+        stop("you are already on the first page of results")
     } else {
         response <- GET(url)
         stop_for_status(response)

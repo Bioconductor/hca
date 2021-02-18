@@ -404,8 +404,7 @@ next_lol <- function (curr_lol)
 next_lol.list <- function (curr_lol) {
     url <- curr_lol$pagination$"next"
     if (is.null(url)) {
-        print("You are already on the last page of results.")
-        return(url)
+        stop("you are already on the last page of results")
     } else {
         response <- GET(url)
         stop_for_status(response)
@@ -434,8 +433,7 @@ prev_lol <- function (curr_lol)
 prev_lol.list <- function (curr_lol) {
     url <- curr_lol$pagination$previous
     if (is.null(url)) {
-        print("You are already on the first page of results.")
-        return(url)
+        stop("you are already on the first page of results")
     } else {
         response <- GET(url)
         stop_for_status(response)
