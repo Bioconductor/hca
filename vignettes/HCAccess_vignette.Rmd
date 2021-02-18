@@ -2,7 +2,7 @@
 title: "Accessing Human Cell Atlas Data"
 author: "Maya Reed McDaniel"
 date: "January 26th, 2021"
-output: rmarkdown::html_vignette
+output: BiocStyle::html_document
 vignette: >
   %\VignetteIndexEntry{Accessing Human Cell Atlas Data}
   %\VignetteEngine{knitr::rmarkdown}
