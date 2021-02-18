@@ -27,8 +27,7 @@ Imports:
     magrittr,
     tibble,
     tidyr,
-    tidyselect,
-    plyr
+    tidyselect
 Suggests:
     testthat (>= 3.0.0),
     knitr,
