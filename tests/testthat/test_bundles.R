@@ -2,8 +2,8 @@ test_that("'bundles()' works with small size and default arguments", {
     test_proj <- bundles(size = 4)
     expect_true(tibble::is_tibble(test_proj))
     expect_true(nrow(test_proj) > 0L)
-    expect_equal(names(attr(test_proj, "columns")),
-                 bundles_default_columns("tibble")$name)
+    expect_equal(names(test_proj),
+                 bundles_default_columns()$name)
 })
 
 test_that("'bundles_default_columns()' works", {
