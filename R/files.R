@@ -39,7 +39,7 @@ NULL # don't add next function to documentation
 #' @examples
 #' files(filters = filters(
 #'     projectTitle = list(
-#'         is = c("Tabula Muris: Transcriptomic characterization of 20 organ and tissues from Mus musculus at single cell resolution")
+#'         is = "Tabula Muris: Transcriptomic characterization of 20 organ and tissues from Mus musculus at single cell resolution"
 #'    )
 #' ))
 files <-
@@ -66,8 +66,8 @@ files <-
 
     switch(
         as,
-        tibble = .as_hca_tibble(response$content, columns),
-        lol = response$content
+        tibble = .as_tbl_hca(response$content, columns),
+        lol = .as_lol_hca(response$content, columns)
     )
 }
 

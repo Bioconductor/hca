@@ -92,7 +92,7 @@ list-of-lists
 \examples{
 files(filters = filters(
     projectTitle = list(
-        is = c("Tabula Muris: Transcriptomic characterization of 20 organ and tissues from Mus musculus at single cell resolution")
+        is = "Tabula Muris: Transcriptomic characterization of 20 organ and tissues from Mus musculus at single cell resolution"
    )
 ))
 files_filter <- filters(

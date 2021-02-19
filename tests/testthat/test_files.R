@@ -2,7 +2,7 @@ test_that("'files()' works with small size and default arguments", {
     test_proj <- files(size = 4)
     expect_true(tibble::is_tibble(test_proj))
     expect_true(nrow(test_proj) > 0L)
-    expect_equal(names(attr(test_proj, "columns")),
+    expect_equal(names(test_proj),
                  files_default_columns("tibble")$name)
 })
 

@@ -35,10 +35,6 @@ facet_options <- function() {
 .filters_validate <- function(x) {
     ## allowed verbs
     verbs <- c("is", "within", "intersects", "contains")
-    ## allowed facets
-    facets <- facet_options()
-    ## invalid facet message
-    facet_msg <- paste0("'filters()' facets must be one of those in the permissible list: ", paste(facets, collapse = ", "), collapse = ", ")
     ## facets and verbs are the same for index/files and index/samples
     stopifnot(
         ## 'filter' must be a list
@@ -60,10 +56,17 @@ facet_options <- function() {
             ## all(names(x) %in% facets),
         ## do no allow values to have line breaks (i.e. newline or return chars)
         `'filters()' facets values must not contain line breaks` =
-        !any(vapply(x, function(x){grepl("(\r\n|\r|\n)", x)}, logical(1)))
+            !any(vapply(x, function(x) grepl("\n", x), logical(1)))
     )
 
-    if(!all(names(x) %in% facets)){
+    ## allowed facets
+    facets <- facet_options()
+    if (!all(names(x) %in% facets)) {
+        ## invalid facet message
+        facet_msg <- paste0(
+            "'filters()' facets must be one of: ",
+            paste(facets, collapse = ", ")
+        )
         stop(facet_msg)
     }
 
