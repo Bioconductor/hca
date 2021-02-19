@@ -29,7 +29,7 @@ return, by default, a 'tibble' represenation of the query.\preformatted{`hca_nex
 }
 \examples{
 projects <- projects(size = 5)     # projects 1-5
-next_projects <- hca_next(project) # projects 6-10
+next_projects <- hca_next(projects) # projects 6-10
 
 hca_prev(next_projects)            # projects 1-5
 

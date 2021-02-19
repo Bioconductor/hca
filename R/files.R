@@ -82,8 +82,10 @@ files_default_columns <-
 
 ## helper function for downloading files
 #' @importFrom httr progress GET stop_for_status content write_disk
-#' @importFrom BiocFileCache BiocFileCache bfcadd
-.single_file_download <- function(ref_url, name, base_destination) {
+#' @importFrom BiocFileCache BiocFileCache bfcnew
+#' @importFrom tools file_ext
+.single_file_download <- function(ref_url, file_name, base_destination) {
+
     response <- GET(ref_url)
     stop_for_status(response)
 
@@ -93,17 +95,13 @@ files_default_columns <-
     download_url <- content$Location
 
     bfc <- BiocFileCache(base_destination, ask = FALSE)
-
-    ## response <- GET(
-        ## url, write_disk(destination, overwrite = TRUE),
-        ## if (interactive()) progress()
-    ## )
-    ## stop_for_status(response)
-
-    file <- bfcadd(bfc, rname = name, fpath=download_url)
-    rid <- names(file)
-
-    rid
+    extension <- paste0(".", file_ext(file_name))
+    savepath <- bfcnew(bfc, file_name, ext= extension)
+    response <- GET(
+        download_url, write_disk(savepath, overwrite = TRUE),
+        if (interactive()) progress()
+    )
+    unname(savepath)
 }
 
 #' @rdname files

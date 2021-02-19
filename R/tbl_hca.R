@@ -71,7 +71,7 @@
 #'
 #' @examples
 #' projects <- projects(size = 5)     # projects 1-5
-#' next_projects <- hca_next(project) # projects 6-10
+#' next_projects <- hca_next(projects) # projects 6-10
 #'
 #' @export
 hca_next.tbl_hca <-

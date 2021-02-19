@@ -16,9 +16,7 @@ knitr::opts_chunk$set(
 ```
 # Human Cell Atlas
 
-Visit the [Human Cell Atlas][]
-
-[Human Cell Atlas]: https://data.humancellatlas.org/
+Visit the [Human Cell Atlas](https://data.humancellatlas.org/)
 
 ## Biological Background
 
@@ -121,7 +119,7 @@ library(hca)
 
 # Example 2
 
-This example illustrataes access to `h5ad` files stored in the HCA and
+This example illustrates access to `h5ad` files stored in the HCA and
 created by the Python AnnData analysis software.
 
 ## Projects facets and terms
@@ -242,7 +240,7 @@ sce <- zellkonverter::readH5AD(file_path, use_hdf5 = TRUE)
 sce
 ```
 
-[zellkonverter]: https://bioconductor.org/packages/zellkonverter
+[zellkonverter](https://bioconductor.org/packages/zellkonverter)
 
 # Example 3
 

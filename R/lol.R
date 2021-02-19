@@ -420,7 +420,7 @@ lol_hits_path <-
 #'
 #' @examples
 #' projects <- projects(size = 5, as = "lol")     # projects 1-5
-#' next_projects <- hca_next(project)             # projects 6-10
+#' next_projects <- hca_next(projects)             # projects 6-10
 #'
 #' @export
 hca_next.lol_hca <-

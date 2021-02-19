@@ -27,7 +27,8 @@ Imports:
     magrittr,
     tibble,
     tidyr,
-    BiocFileCache
+    BiocFileCache,
+    tools
 Suggests:
     testthat (>= 3.0.0),
     knitr,
