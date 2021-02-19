@@ -78,7 +78,7 @@ list-of-lists
 \examples{
 bundles(filters = filters(
     projectTitle = list(
-        is = c("Tabula Muris: Transcriptomic characterization of 20 organs and tissues from Mus musculus at single cell resolution")
+        is = "Tabula Muris: Transcriptomic characterization of 20 organs and tissues from Mus musculus at single cell resolution"
    )
 ))
 bundles_facets()

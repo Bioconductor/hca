@@ -88,8 +88,8 @@ projects <-
 
     switch(
         as,
-        tibble = .as_hca_tibble(response$content, columns),
-        lol = response$content
+        tibble = .as_tbl_hca(response$content, columns),
+        lol = .as_lol_hca(response$content, columns)
     )
 }
 

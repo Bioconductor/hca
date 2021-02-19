@@ -388,60 +388,66 @@ lol_hits_path <-
 
 }
 
+## class definition
+
+.as_lol_hca <-
+    function(x, keys)
+{
+    class(x) <- c("lol_hca", class(x))
+    attr(x, "keys") <- keys
+    x
+}
+
+## pagination
+
+.lol_hca_pagination <- function(x)
+    x$pagination
+
+.lol_hca_keys <- function(x)
+    attr(x, "keys")
+
 #' @rdname lol
+#' @md
 #'
-#' @name next_lol
+#' @description `hca_next()` returns the next 'page' of results, if
+#'     available.
 #'
-#' @param curr_lol lol current lol for which we want the next page
+#' @param x a 'list-of-lists' returned by `projects()`, `samples()`,
+#'     `files()`, or `bundles()`
 #'
-#' @return lol
+#' @return `hca_next()` returns a list-of-lists containing the next
+#'     'page' of results.
+#'
+#' @examples
+#' projects <- projects(size = 5, as = "lol")     # projects 1-5
+#' next_projects <- hca_next(project)             # projects 6-10
 #'
 #' @export
-next_lol <- function (curr_lol)
-    UseMethod("next_lol")
-
-#' @export
-next_lol.list <- function (curr_lol) {
-    url <- curr_lol$pagination$"next"
-    if (is.null(url)) {
-        stop("you are already on the last page of results")
-    } else {
-        response <- GET(url)
-        stop_for_status(response)
-        result <- list(
-            content = content(response),
-            status_code = response$status_code
-        )
-
-        return(result$content)
-    }
+hca_next.lol_hca <-
+    function(x)
+{
+    pagination <- .lol_hca_pagination(x)
+    keys <- .lol_hca_keys(x)
+    response <- .hca_next(pagination)
+    .as_lol_hca(response$content, keys)
 }
 
 #' @rdname lol
 #'
-#' @name prev_lol
+#' @description `hca_prev()` returns the previous 'page' of results.
 #'
-#' @param curr_lol lol current lol for which we want the previous page
+#' @return `hca_prev()` returns a tibble with the same columns as `x`,
+#'     containing the previous 'page' of results.
 #'
-#' @return lol
+#' @examples
+#' hca_prev(next_projects)                        # projects 1-5
 #'
 #' @export
-prev_lol <- function (curr_lol)
-    UseMethod("prev_lol")
-
-#' @export
-prev_lol.list <- function (curr_lol) {
-    url <- curr_lol$pagination$previous
-    if (is.null(url)) {
-        stop("you are already on the first page of results")
-    } else {
-        response <- GET(url)
-        stop_for_status(response)
-        result <- list(
-            content = content(response),
-            status_code = response$status_code
-        )
-
-        return(result$content)
-    }
+hca_prev.lol_hca <-
+    function(x)
+{
+    pagination <- .lol_hca_pagination(x)
+    keys <- .lol_hca_keys(x)
+    response <- .hca_prev(pagination)
+    .as_lol_hca(response$content, keys)
 }

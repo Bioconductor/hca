@@ -9,8 +9,8 @@
 \alias{lol_lfind}
 \alias{lol_hits}
 \alias{lol_hits_path}
-\alias{next_lol}
-\alias{prev_lol}
+\alias{hca_next.lol_hca}
+\alias{hca_prev.lol_hca}
 \title{Utilities for manipulating lists-of-lists}
 \usage{
 lol_find(x = list(), key = "", not_in = character(), filter = NA_character_)
@@ -21,12 +21,13 @@ lol_hits(x = list(hits = list()), key = "", not_in = character())
 
 lol_hits_path(x = list(hits = list()), all = TRUE)
 
-next_lol(curr_lol)
+\method{hca_next}{lol_hca}(x)
 
-prev_lol(curr_lol)
+\method{hca_prev}{lol_hca}(x)
 }
 \arguments{
-\item{x}{list(), possibly containing other lists.}
+\item{x}{a 'list-of-lists' returned by \code{projects()}, \code{samples()},
+\code{files()}, or \code{bundles()}}
 
 \item{key}{character() desired node name, or path to nodes of
 interest, e.g., \code{"a.b"} finds "b" nodes that are descendents
@@ -47,8 +48,6 @@ vectors, or sets with homogenous scalar types. See examples.}
 returns a tibble with all paths into \code{x}. When FALSE, only the
 paths that appear to be 1:1 mappings between hits and leaf
 elements are returned.}
-
-\item{curr_lol}{lol current lol for which we want the previous page}
 }
 \value{
 \code{lol_find()} returns a named character vector. The names
@@ -65,9 +64,11 @@ list-of-vectors with each element matching \code{key}. In either
 case, the length of the \code{hits} component of \code{x} equaals the
 length of the return value.
 
-lol
+\code{hca_next()} returns a list-of-lists containing the next
+'page' of results.
 
-lol
+\code{hca_prev()} returns a tibble with the same columns as \code{x},
+containing the previous 'page' of results.
 }
 \description{
 \code{lol_find()} searches a list-of-lists \code{x} for nodes
@@ -79,6 +80,11 @@ as lists-of-lists.
 
 \code{lol_hits()} selects an element \code{hits} from x, and
 finds \code{key} values in each hit.
+
+\code{hca_next()} returns the next 'page' of results, if
+available.
+
+\code{hca_prev()} returns the previous 'page' of results.
 }
 \examples{
 lol <- list(a = list(b = 1), a = list(b = 2))
@@ -125,5 +131,10 @@ lol_hits(x, "projects.projectTitle") # c("A title", "Another title")
 
 projects_lol <- projects(as = "lol")
 lol_hits_path(projects_lol)
+
+projects <- projects(size = 5, as = "lol")     # projects 1-5
+next_projects <- hca_next(project)             # projects 6-10
+
+hca_prev(next_projects)                        # projects 1-5
 
 }

@@ -27,8 +27,6 @@ Imports:
     magrittr,
     tibble,
     tidyr,
-    tidyselect
-    tidyselect,
     BiocFileCache
 Suggests:
     testthat (>= 3.0.0),
