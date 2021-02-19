@@ -28,7 +28,8 @@ Imports:
     tibble,
     tidyr,
     tidyselect,
-    plyr
+    plyr,
+    BiocFileCache
 Suggests:
     testthat (>= 3.0.0),
     knitr,
