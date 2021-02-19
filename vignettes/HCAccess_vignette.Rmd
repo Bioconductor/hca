@@ -96,7 +96,7 @@ library(hca)
     projectId <-
         project_tibble %>%
         filter(startsWith(projectTitle, "Single cell trans")) %>%
-        pull(projectId)
+        dplyr::pull(projectId)
     ```
 
 3. File info
