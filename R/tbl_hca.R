@@ -70,7 +70,7 @@
 #'     `x`, containing the next 'page' of results.
 #'
 #' @examples
-#' projects <- projects(size = 5)     # projects 1-5
+#' projects <- projects(size = 5)      # projects 1-5
 #' next_projects <- hca_next(projects) # projects 6-10
 #'
 #' @export

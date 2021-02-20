@@ -28,7 +28,7 @@ return, by default, a 'tibble' represenation of the query.\preformatted{`hca_nex
 \code{hca_prev()} returns the previous 'page' of results.
 }
 \examples{
-projects <- projects(size = 5)     # projects 1-5
+projects <- projects(size = 5)      # projects 1-5
 next_projects <- hca_next(projects) # projects 6-10
 
 hca_prev(next_projects)            # projects 1-5

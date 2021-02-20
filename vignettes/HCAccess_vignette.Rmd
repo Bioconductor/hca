@@ -16,7 +16,9 @@ knitr::opts_chunk$set(
 ```
 # Human Cell Atlas
 
-Visit the [Human Cell Atlas](https://data.humancellatlas.org/)
+Visit the [Human Cell Atlas].
+
+[Human Cell Atlas]: https://data.humancellatlas.org/
 
 ## Biological Background
 
@@ -240,7 +242,7 @@ sce <- zellkonverter::readH5AD(file_path, use_hdf5 = TRUE)
 sce
 ```
 
-[zellkonverter](https://bioconductor.org/packages/zellkonverter)
+[zellkonverter]: https://bioconductor.org/packages/zellkonverter
 
 # Example 3
 
