@@ -82,26 +82,23 @@ files_default_columns <-
 
 ## helper function for downloading files
 #' @importFrom httr progress GET stop_for_status content write_disk
-#' @importFrom BiocFileCache BiocFileCache bfcnew
+#' @importFrom BiocFileCache BiocFileCache bfcquery bfcadd bfcrpath
 #' @importFrom tools file_ext
-.single_file_download <- function(ref_url, file_name, base_destination) {
-
-    response <- GET(ref_url)
-    stop_for_status(response)
-
-    content <- content(response)
-    content$Status # ?? how to use
-
-    download_url <- content$Location
-
+.single_file_download <-
+    function(file_id, file_name, ref_url, base_destination)
+{
     bfc <- BiocFileCache(base_destination, ask = FALSE)
-    extension <- paste0(".", file_ext(file_name))
-    savepath <- bfcnew(bfc, file_name, ext= extension)
-    response <- GET(
-        download_url, write_disk(savepath, overwrite = TRUE),
-        if (interactive()) progress()
-    )
-    unname(savepath)
+    if (!NROW(bfcquery(bfc, file_id))) {
+        response <- GET(ref_url)
+        stop_for_status(response)
+
+        content <- content(response)
+        download_url <- content$Location
+
+        extension <- paste0(".", file_ext(file_name))
+        bfcadd(bfc, file_id, download_url)
+    }
+    unname(bfcrpath(bfc, file_id))
 }
 
 #' @rdname files
@@ -132,18 +129,19 @@ files_download <-
     function (tbl, destination = tempdir())
 {
     stopifnot(
-        inherits(tbl, "data.frame"),
+        inherits(tbl, "tbl_hca"),
         `'tbl=' must contain columns "url", "name"` =
-            all(c("url", "name") %in% names(tbl)),
+            all(c("fileId", "url", "name") %in% names(tbl)),
         `'destination=' must be an existing directory` =
             .is_scalar_character(destination) && dir.exists(destination),
         `'destination=' must not contain files in tbl$name` =
             !any(file.exists(file.path(destination, tbl$name)))
     )
 
+    file_id <- paste(tbl$fileId, tbl$version, sep = "-")
     mapply(
         .single_file_download,
-        tbl$url, tbl$name,
+        file_id, tbl$name, tbl$url,
         MoreArgs = list(base_destination = destination)
     )
 }
