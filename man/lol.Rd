@@ -67,7 +67,7 @@ to contain elements consistent with the filter criteria.
 corresponds to an element found at \code{path} in the list-of-lists
 structure \code{x}.
 
-\code{lol_lpull()} returns an unnamed list of elements matching
+\code{lol_pull()} returns an unnamed vector of elements matching
 \code{key}.
 
 \code{hca_next()} returns a list-of-lists containing the next
@@ -122,7 +122,7 @@ plol |>
    lol_filter(n == 44, is_leaf)
 
 plol |>
-    lol_lpull("hits[*].entryId") |>
+    lol_pull("hits[*].entryId") |>
     head()
 
 plol |> lol_path()

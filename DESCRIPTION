@@ -1,6 +1,6 @@
 Package: hca
 Title: Utilities for interacting with the Human Cell Atlas API
-Version: 0.0.12
+Version: 0.0.13
 Authors@R:
     c(person(given = "Maya",
            family = "McDaniel",
@@ -21,6 +21,7 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
+Depends: R (>= 4.1)
 Imports:
     httr,
     jsonlite,

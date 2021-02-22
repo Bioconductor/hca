@@ -225,12 +225,12 @@ lol_lpull <-
 #' @description `lol_pull()` tries to simplify the list-of-lists
 #'     structure returned by `lol_lpull()` to a vector.
 #'
-#' @return `lol_lpull()` returns an unnamed list of elements matching
+#' @return `lol_pull()` returns an unnamed vector of elements matching
 #'     `key`.
 #'
 #' @examples
 #' plol |>
-#'     lol_lpull("hits[*].entryId") |>
+#'     lol_pull("hits[*].entryId") |>
 #'     head()
 #'
 #' @export
