@@ -99,7 +99,6 @@ projects <-
         as,
         tibble = .as_tbl_hca(response$content, columns),
         lol = .as_lol_hca(response$content, columns),
-        lol = lol(response$content),
         list = response$content
     )
 }

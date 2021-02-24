@@ -288,13 +288,16 @@ print.lol <-
 {
     x <- lol(x)
     attr(x, "keys") <- keys
+    attr(x, "pagination") <- x$lol$pagination
+    class(x) <- c("lol_hca", class(x))
+
     x
 }
 
 ## pagination
 
 .lol_hca_pagination <- function(x)
-    x$pagination
+    attr(x, "pagination")
 
 .lol_hca_keys <- function(x)
     attr(x, "keys")

@@ -279,7 +279,9 @@ file_path <- files_download(files)
 [zellkonverter][] package.
 
 ```{r, eval = FALSE}
+# don't want large amount of data written to disk
 sce <- zellkonverter::readH5AD(file_path, use_hdf5 = TRUE)
+# fails as matrix is transpose of expected matrix
 sce
 ```
 
