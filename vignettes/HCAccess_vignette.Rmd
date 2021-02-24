@@ -267,7 +267,9 @@ filters <- filters(
     projectId = list(is = "f83165c5-e2ea-4d15-a5cf-33f3550bffde"),
     fileFormat = list(is = "h5ad")
 )
-files <- files(filters)
+files <- 
+    files(filters) %>%
+    head(1)            # only first file, for demonstration
 files %>% t()
 ```
 
