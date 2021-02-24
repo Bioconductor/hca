@@ -1,6 +1,6 @@
 Package: hca
 Title: Utilities for interacting with the Human Cell Atlas API
-Version: 0.0.15
+Version: 0.0.16
 Authors@R:
     c(person(given = "Maya",
            family = "McDaniel",
