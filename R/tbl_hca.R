@@ -35,7 +35,7 @@
         idx <- !nzchar(names(keys))
         names(keys)[idx] <- keys[idx]
     }
-    lol <- lol(x)
+    lol <- .as_lol_hca(x, keys)
 
     idx <- keys %in% lol_path(lol)$path
     if (!any(idx)) {

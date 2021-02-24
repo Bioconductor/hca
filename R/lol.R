@@ -31,13 +31,13 @@
 }
 
 .lol <-
-    function(lol, dict, path = .lol_path(dict))
+    function(lol, dict, path = .lol_path(dict), class = "lol")
 {
     if (!inherits(dict, "dict"))
         class(dict) <- c("dict", class(dict))
     structure(
         list(lol = lol, dict = dict, path = path),
-        class = "lol"
+        class = class
     )
 }
 
@@ -154,11 +154,13 @@ lol_select <-
         .is_character_0(path) || .is_scalar_character(path),
         .lol_valid_path(x, path)
     )
+
     paths <- lol_path(x)
     idx <- paths$path[startsWith(paths$path, path)]
     paths <- paths[paths$path %in% idx,]
     dict <-  .lol_dict(x)[paths$path]
-    .lol(.lol_lol(x), dict, paths)
+
+    .lol(.lol_lol(x), dict, paths, class(x))
 }
 
 #' @rdname lol
@@ -188,11 +190,13 @@ lol_filter <-
     stopifnot(
         inherits(x, "lol")
     )
+
     path <- lol_path(x)
-    ## FIXME: don't allow filtering on 'path'
+    ## FIXME: don't allow filtering on 'path$path'
     path <- filter(path, ...)
     dict <- .lol_dict(x)[path$path]
-    .lol(.lol_lol(x), dict, path)
+
+    .lol(.lol_lol(x), dict, path, class(x))
 }
 
 #' @rdname lol
@@ -291,7 +295,7 @@ print.lol <-
     x <- lol(list(hits = x$hits)) #only 'remember' hits
     attr(x, "keys") <- keys
     attr(x, "pagination") <- pagination
-    class(lol) <- c("lol_hca", class(x))
+    class(x) <- c("lol_hca", class(x))
 
     x
 }

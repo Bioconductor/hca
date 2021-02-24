@@ -17,7 +17,7 @@
 \usage{
 lol(x = list())
 
-lol_select(x, path)
+lol_select(x, path = character())
 
 lol_filter(x, ...)
 
