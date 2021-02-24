@@ -31,7 +31,7 @@ lol_hits_lpull <-
         lol_lpull(x, path) |>
         split(path_idx) |>
         lapply(unname)
-    value
+    lapply(value, unlist, recursive = FALSE)
 }
 
 #' @rdname lol
@@ -42,14 +42,13 @@ lol_hits_pull <-
     function(x, path)
 {
     template <- lol_hits_lpull(x, path)
-    template <- lapply(template, unlist, recursive = FALSE)
     idx <- vapply(template, is.null, logical(1))
 
     if (all(lengths(template) < 2L)) {
         template <- unlist(template, use.names = FALSE)
         value <- vector(class(template), length(idx))
         value[idx] <- NA
-        value[!idx] <- template[!idx]
+        value[!idx] <- template
     } else {
         uclass <- unique(vapply(template[!idx], class, character(1)))
         if (length(uclass) == 1L)

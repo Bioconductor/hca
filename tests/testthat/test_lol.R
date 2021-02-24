@@ -69,12 +69,34 @@ test_that("'lol_filter()' works", {
     )
 })
 
+test_that("'lol_select()' and 'lol_filter()' retain class", {
+    x <- lol()
+    class(x) <- c("lol_foo", class(x))
+
+    expect_identical(class(lol_select(x)), class(x))
+    expect_identical(class(lol_filter(x)), class(x))
+})
+
 test_that("'lol_lpull()' works", {
     expect_error(lol_lpull(), 'argument "x" is missing, with no default')
     expect_error(lol_lpull(list()), 'inherits\\(x, "lol"\\) is not TRUE')
+    expect_error(lol_lpull(lol()), 'argument "path" is missing, with no default')
+    expect_error(lol_lpull(lol(), character()), ".is_scalar_character\\(path\\) is not TRUE")
+
+    l <- list( a = list(b = 1), a = list(), a = list(b = 3))
+    x <- lol(l)
+    expect_identical(lol_lpull(x, "a"), l)
+    expect_identical(lol_lpull(x, "a.b"), setNames(list(1, 3), rep("a.b", 2)))
 })
 
 test_that("'lol_pull()' works", {
     expect_error(lol_pull(), 'argument "x" is missing, with no default')
     expect_error(lol_pull(list()), 'inherits\\(x, "lol"\\) is not TRUE')
+    expect_error(lol_pull(lol()), 'argument "path" is missing, with no default')
+    expect_error(lol_pull(lol(), character()), ".is_scalar_character\\(path\\) is not TRUE")
+
+    l <- list( a = list(b = 1), a = list(), a = list(b = 3))
+    x <- lol(l)
+    expect_identical(lol_pull(x, "a"), list(1, 3))
+    expect_identical(lol_pull(x, "a.b"), c(1, 3))
 })
