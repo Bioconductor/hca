@@ -286,10 +286,11 @@ print.lol <-
 .as_lol_hca <-
     function(x, keys)
 {
-    x <- lol(x)
+    pagination <- x$pagination
+    x <- lol(list(hits = x$hits)) #only 'remember' hits
     attr(x, "keys") <- keys
-    attr(x, "pagination") <- x$lol$pagination
-    class(x) <- c("lol_hca", class(x))
+    attr(x, "pagination") <- pagination
+    class(lol) <- c("lol_hca", class(x))
 
     x
 }
