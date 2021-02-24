@@ -128,7 +128,7 @@ lol <- function(x = list()) {
 .lol_valid_path <-
     function(x, path)
 {
-    ok <- path %in% lol_path(x)$path
+    ok <- .is_character_0(path) || path %in% lol_path(x)$path
     ok || stop("'path' not in 'x':\n", "  path: '", path, "'")
 }
 
@@ -147,15 +147,16 @@ lol <- function(x = list()) {
 #'
 #' @export
 lol_select <-
-    function(x, path)
+    function(x, path = character())
 {
     stopifnot(
         inherits(x, "lol"),
-        .is_scalar_character(path),
+        .is_character_0(path) || .is_scalar_character(path),
         .lol_valid_path(x, path)
     )
     paths <- lol_path(x)
-    paths <- paths[startsWith(paths$path, path),]
+    idx <- paths$path[startsWith(paths$path, path)]
+    paths <- paths[paths$path %in% idx,]
     dict <-  .lol_dict(x)[paths$path]
     .lol(.lol_lol(x), dict, paths)
 }

@@ -1,5 +1,11 @@
 ## common validity checks
 
+.is_vector_0 <- function(x)
+    length(x) == 0L
+
+.is_character_0 <- function(x)
+    is.character(x) && .is_vector_0(x)
+
 .is_scalar <- function(x, na.ok = FALSE) {
     length(x) == 1L && (na.ok || !anyNA(x))
 }
