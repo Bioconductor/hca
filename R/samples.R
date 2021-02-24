@@ -79,8 +79,8 @@ samples_facets <-
         is.character(facet), !anyNA(facet)
     )
     catalog <- match.arg(catalog)
-    lol <- samples(size = 1L, catalog = catalog, as = "lol")
-    .term_facets(lol, facet)
+    lst <- samples(size = 1L, catalog = catalog, as = "list")
+    .term_facets(lst, facet)
 }
 
 #' @rdname samples

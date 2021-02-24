@@ -77,8 +77,8 @@ bundles_facets <-
         is.character(facet), !anyNA(facet)
     )
     catalog <- match.arg(catalog)
-    lol <- bundles(size = 1L, catalog = catalog, as = "lol")
-    .term_facets(lol, facet)
+    lst <- bundles(size = 1L, catalog = catalog, as = "list")
+    .term_facets(lst, facet)
 }
 
 #' @rdname bundles

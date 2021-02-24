@@ -30,10 +30,9 @@
 }
 
 .term_facets <-
-    function(lol, facet = character())
+    function(x, facet = character())
 {
-    termFacets0 <- lol_lpull(lol, "termFacets")
-    termFacets <- termFacets0[["termFacets"]]
+    termFacets <- x$termFacets
     facet_names <- names(termFacets)
     termFacets <- lol(termFacets)
     stopifnot(
