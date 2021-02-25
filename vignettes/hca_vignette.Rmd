@@ -299,13 +299,7 @@ file_tibble %>%
 ```{r}
 page_1_tbl <- projects(size = 30)
 
-## should raise an error
-page_0_tbl <- page_1_tbl %>% hca_prev()
-
 page_2_tbl <- page_1_tbl %>% hca_next()
-
-## should raise error
-page_3_tbl <- page_2_tbl %>% hca_next()
 
 ## should be identical to page_1_tbl
 page_2_tbl %>% hca_prev()
@@ -315,13 +309,7 @@ page_2_tbl %>% hca_prev()
 ```{r}
 page_1_lol <- projects(size = 30, as = "lol")
 
-## should raise an error
-page_0_lol <- page_1_lol %>% hca_prev()
-
 page_2_lol <- page_1_lol %>% hca_next()
-
-## should raise error
-page_3_lol <- page_2_lol %>% hca_next()
 
 ## should be identical to page_1_lol
 page_2_lol %>% hca_prev()
