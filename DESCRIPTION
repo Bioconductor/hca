@@ -14,8 +14,8 @@ Authors@R:
            comment = c(ORCID = "0000-0002-5874-8148")
       )
     )
-Description: This package allows users to query the Human Cell Atlas for data on
-    single-cell experiments via its API.
+Description: This package provides users with wrapper functions to query the
+  Human Cell Atlas for data on single-cell experiments via its provided API.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -26,11 +26,11 @@ Imports:
     httr,
     jsonlite,
     dplyr,
-    magrittr,
     tibble,
     tidyr,
     BiocFileCache,
-    tools
+    tools,
+    utils
 Suggests:
     testthat (>= 3.0.0),
     knitr,
@@ -39,3 +39,4 @@ Suggests:
     BiocStyle
 Config/testthat/edition: 3
 VignetteBuilder: knitr
+biocViews: Software, SingleCell

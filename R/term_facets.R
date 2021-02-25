@@ -17,7 +17,7 @@
     bind_cols(facet = facet, tbl)
 }
 
-#' @importFrom dplyr bind_rows group_by summarize arrange desc
+#' @importFrom dplyr %>% bind_rows group_by summarize arrange desc
 .term_facets_n <-
     function(termFacets, facets)
 {

@@ -12,7 +12,7 @@
 #'
 #' @importFrom tidyr unnest_longer
 #'
-#' @importFrom dplyr .data filter
+#' @importFrom dplyr %>% .data filter
 .summary_overview <- function(content) {
     enframe(content) %>%
         filter(grepl("(Size|Count)$", .data$name)) %>%
