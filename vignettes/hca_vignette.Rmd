@@ -14,48 +14,18 @@ knitr::opts_chunk$set(
   collapse = TRUE
 )
 ```
-# Human Cell Atlas
+# Motivation
 
-Visit the [Human Cell Atlas].
+- The purpose of this package is to make the querying of the
+[HCA's Data Portal](https://www.humancellatlas.org/data-portal/) via their
+provided
+[API](https://data.humancellatlas.org/apis/api-documentation/data-browser-api)
+easier and more accessible to researchers
 
-[Human Cell Atlas]: https://data.humancellatlas.org/
+## Human Cell Atlas (HCA) 
 
-## Biological Background
-
-- It is possible to isolate an individual cell and measure level of expression
-of each gene in that cell
-- The result is a matrix where:
-    - rows = genes (~ N=30k)
-    - columns = cells (~ M = 10k - 1mil)
-    - matrix cells = expression values
-- Experiments on the order of 10ks of cells and typically about 30k genes
-- Matrices of expression values tend to be sparse i.e. 95% of cells may be zeros
-
-## Experiment Workflow (pipeline)
-
-1. Extract short DNA sequences from cells (millions per cell)
-2. The short DNA sequences (about 100 nucleotide base pairs long) are analyzed
-and output to FASTQ files
-  - FASTQ files are often transformed to BAM or CRAM formats
-  - BAM or CRAM files are summarized into the matrices
-    - `.csv` file (standard)
-    - `.loom` (based on `hdf5` *which is NOT hadoop*, but rather astrophysics
-    derived file format for large data)
-    - `.mtx` for sparse text-based matrix representation with 3 columns:
-      1. row index
-      2. column index, and
-      3. non-zero value 
-
-## HCA Projects
-
-- HCA projects focus on a relatively small number of samples ex. 4 humans
-- Each "project" is an experiment that is an entry in the overall database
-    - some fields include the tissue organ type, species, etc.
-    
-## Motivation
-
-- This R package was created to make the querying of the HCA's Data Portal via
-their provided API easier and more accessible to researchers
+Visit the [Human Cell Atlas](https://data.humancellatlas.org/) for more
+information on the project.
 
 ```{r install, eval = FALSE}
 ## install from Bioconductor if you haven't already
@@ -74,10 +44,12 @@ library(hca)
 # Example 1
 
 - A useful workflow is to download and import the 'loom' file for the project
-'Single cell transcriptome analysis of human pancreas reveals transcriptional signatures of aging and somatic mutation patterns'.
+'Single cell transcriptome analysis of human pancreas reveals transcriptional
+signatures of aging and somatic mutation patterns'.
 - The project and loom file are in the 'dcp1' catalog.
 
-1. Discover projects from the 'dcp1' (Data Coordinating Center, version 1) catalog, with 'loom' files.
+1. Discover projects from the 'dcp1' (Data Coordinating Center, version 1)
+catalog, with 'loom' files.
 
     ```{r}
     project_filter <- filters(fileFormat = list(is = "loom"))
@@ -85,7 +57,7 @@ library(hca)
     project_tibble
     ```
 
-2. Extracting the `projectId` for a project I'm interested in
+2. Extracting the `projectId` for a project of interest
 (`projectTitle` is "Single cell trans...")
 
     ```{r}
@@ -99,7 +71,7 @@ library(hca)
         dplyr::pull(projectId)
     ```
 
-3. File info
+3. Extract file information
 
     ```{r}
     file_filter <- filters(
@@ -110,7 +82,7 @@ library(hca)
     file_tibble <- files(file_filter, catalog = "dcp1")
     ```
     
-4. Download the loom file(s)
+4. Download the loom file
 
     ```{r}
     file_tibble %>%
@@ -291,30 +263,66 @@ sce
 
 # Example 3
 
-- This puts together the steps above, and provides an example of a case when
-there is more than one file to download
+- This provides an example of a multiple file download
 
+```{r}
+project_filter <- filters(fileFormat = list(is = "csv"))
+project_tibble <- projects(project_filter, catalog = "dcp2")
 
-<!-- ```{r} -->
-<!--   project_filter <- filters(fileFormat = list(is = "bam")) -->
-<!--   project_tibble <- projects(project_filter, catalog = "dcp1") -->
+project_tibble %>%
+filter(startsWith(projectTitle,
+                  "Reconstructing the human first trimester"))
 
-<!--   project_tibble %>% -->
-<!--     filter(startsWith(projectTitle, "Structural Remodeling of the Human")) -->
+projectId <- 
+  project_tibble %>%
+  filter(startsWith(projectTitle,
+                    "Reconstructing the human first trimester")) %>%
+  pull(projectId)
 
-<!--   projectId <- -->
-<!--     project_tibble %>% -->
-<!--     filter(startsWith(projectTitle, "Structural Remodeling of the Human")) %>% -->
-<!--     pull(projectId) -->
+file_filter <- filters(
+  projectId = list(is = projectId),
+  fileFormat = list(is = "csv")
+  )
 
-<!--   file_filter <- filters( -->
-<!--     projectId = list(is = projectId), -->
-<!--     fileFormat = list(is = "bam") -->
-<!--   ) -->
-<!--   file_tibble <- files(file_filter, catalog = "dcp1", size = 2) -->
+## first 4 files will be returned
+file_tibble <- files(file_filter, catalog = "dcp2", size = 4)
 
-<!--   ## takes about an hour to run -->
-<!--   file_tibble %>% -->
-<!--     download_files() -->
-<!-- ``` -->
+file_tibble %>%
+  files_download()
+```
 
+# Example 4
+
+- This example explores the pagination feature of the results returned by
+`projects()`, `files()`, `bundles()`, and `samples()`
+- for the default tibble output
+```{r}
+page_1_tbl <- projects(size = 30)
+
+## should raise an error
+page_0_tbl <- page_1_tbl %>% hca_prev()
+
+page_2_tbl <- page_1_tbl %>% hca_next()
+
+## should raise error
+page_3_tbl <- page_2_tbl %>% hca_next()
+
+## should be identical to page_1_tbl
+page_2_tbl %>% hca_prev()
+```
+
+- for the custom list-of-lists output
+```{r}
+page_1_lol <- projects(size = 30, as = "lol")
+
+## should raise an error
+page_0_lol <- page_1_lol %>% hca_prev()
+
+page_2_lol <- page_1_lol %>% hca_next()
+
+## should raise error
+page_3_lol <- page_2_lol %>% hca_next()
+
+## should be identical to page_1_lol
+page_2_lol %>% hca_prev()
+```
