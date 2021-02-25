@@ -293,8 +293,9 @@ file_tibble %>%
 
 # Example 4
 
-- This example explores the pagination feature of the results returned by
+This example explores the pagination feature of the results returned by
 `projects()`, `files()`, `bundles()`, and `samples()`
+
 - for the default tibble output
 ```{r}
 page_1_tbl <- projects(size = 30)
