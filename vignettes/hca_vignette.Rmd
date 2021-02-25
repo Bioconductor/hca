@@ -41,7 +41,7 @@ library(LoomExperiment)
 library(hca)
 ```
 
-# Example 1
+# Example: Discover and download a 'loom' file
 
 - A useful workflow is to download and import the 'loom' file for the project
 'Single cell transcriptome analysis of human pancreas reveals transcriptional
@@ -91,9 +91,7 @@ catalog, with 'loom' files.
     ```
     
 
-# Example 2
-
-This example illustrates access to `h5ad` files stored in the HCA and
+# Example: Illustrating access to `h5ad` files stored in the HCA and
 created by the Python AnnData analysis software.
 
 ## Projects facets and terms
@@ -261,9 +259,7 @@ sce
 
 [zellkonverter]: https://bioconductor.org/packages/zellkonverter
 
-# Example 3
-
-- This provides an example of a multiple file download
+# Example: A multiple file download
 
 ```{r}
 project_filter <- filters(fileFormat = list(is = "csv"))
@@ -291,9 +287,7 @@ file_tibble %>%
   files_download()
 ```
 
-# Example 4
-
-This example explores the pagination feature of the results returned by
+# Example: Exploring the pagination feature of the results returned by
 `projects()`, `files()`, `bundles()`, and `samples()`
 
 - for the default tibble output
@@ -314,4 +308,10 @@ page_2_lol <- page_1_lol %>% hca_next()
 
 ## should be identical to page_1_lol
 page_2_lol %>% hca_prev()
+```
+
+# Session info
+
+```{r sessionInfo}
+sessionInfo()
 ```
