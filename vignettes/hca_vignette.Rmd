@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
   collapse = TRUE
 )
 ```
-# Motivation
+# Motivation & Introduction
 
 The purpose of this package is to make it easy to query the [Human
 Cell Atlas Data Portal](https://www.humancellatlas.org/data-portal/)
