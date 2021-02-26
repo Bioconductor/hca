@@ -16,16 +16,17 @@ knitr::opts_chunk$set(
 ```
 # Motivation
 
-- The purpose of this package is to make the querying of the
-[HCA's Data Portal](https://www.humancellatlas.org/data-portal/) via their
-provided
-[API](https://data.humancellatlas.org/apis/api-documentation/data-browser-api)
-easier and more accessible to researchers
+The purpose of this package is to make it easy to query the [Human
+Cell Atlas Data Portal](https://www.humancellatlas.org/data-portal/)
+via their data browser
+[API](https://data.humancellatlas.org/apis/api-documentation/data-browser-api).
+Visit the [Human Cell Atlas](https://data.humancellatlas.org/) for
+more information on the project.
 
-## Human Cell Atlas (HCA) 
+## Installation and getting started
 
-Visit the [Human Cell Atlas](https://data.humancellatlas.org/) for more
-information on the project.
+Evaluate the following code chunk to install packages required for
+this vignette.
 
 ```{r install, eval = FALSE}
 ## install from Bioconductor if you haven't already
@@ -33,6 +34,8 @@ pkgs <- c("httr", "dplyr", "LoomExperiment", "hca")
 pkgs_needed <- pkgs[!pkgs %in% rownames(installed.packages())]
 BiocManager::install(pkgs_needed)
 ```
+
+Load the packages into your _R_ session.
 
 ```{r setup, message = FALSE}
 library(httr)
@@ -43,61 +46,96 @@ library(hca)
 
 # Example: Discover and download a 'loom' file
 
-- A useful workflow is to download and import the 'loom' file for the project
-'Single cell transcriptome analysis of human pancreas reveals transcriptional
-signatures of aging and somatic mutation patterns'.
-- The project and loom file are in the 'dcp1' catalog.
+To illustrate use of this package, consider the task of downloading a
+'loom' file summarizing single-cell gene expression observed in an HCA
+research project. This could be accomplished by visiting the HCA data
+portal (at https://data.humancellatlas.org/explore) in a web browser
+and selecting projects interactively, but it is valuable to accomplish
+the same goal in a reproducible, flexible, programmatic way.  We will
+(1) discover projects available in the HCA Data Coordinating Center
+that have loom files; and (2) retrieve the file from the HCA and
+import the data into _R_ as a 'LoomExperiment' object. For
+illustration, we focus on the 'Single cell transcriptome analysis of
+human pancreas reveals transcriptional signatures of aging and somatic
+mutation patterns' project.
 
-1. Discover projects from the 'dcp1' (Data Coordinating Center, version 1)
-catalog, with 'loom' files.
+## Discover projects with loom files
 
-    ```{r}
-    project_filter <- filters(fileFormat = list(is = "loom"))
-    project_tibble <- projects(project_filter, catalog = "dcp1")
-    project_tibble
-    ```
+Use `projects()` to retrieve all projects in the HCA.
 
-2. Extracting the `projectId` for a project of interest
-(`projectTitle` is "Single cell trans...")
+```{r}
+projects()
+```
 
-    ```{r}
+Use `filters()` to restrict the projects to just those that contain at
+least one 'loom' file.
+
+```{r}
+project_filter <- filters(fileFormat = list(is = "loom"))
+project_tibble <- projects(project_filter, catalog = "dcp1")
+project_tibble
+```
+
+Use standard _R_ commands to further filter projects to the one we are
+interested in, with title starting with "Single cell
+trans...". Extract the unique `projectId` for this project.
+
+```{r}
+project_tibble %>%
+    filter(startsWith(projectTitle, "Single cell trans")) %>%
+    t()
+
+projectId <-
     project_tibble %>%
-        filter(startsWith(projectTitle, "Single cell trans")) %>%
-        t()
-      
-    projectId <-
-        project_tibble %>%
-        filter(startsWith(projectTitle, "Single cell trans")) %>%
-        dplyr::pull(projectId)
-    ```
+    filter(startsWith(projectTitle, "Single cell trans")) %>%
+    dplyr::pull(projectId)
+```
 
-3. Extract file information
+## Discover and download the loom file of interest
 
-    ```{r}
-    file_filter <- filters(
-        projectId = list(is = projectId),
-        fileFormat = list(is = "loom")
-    )
-    
-    file_tibble <- files(file_filter, catalog = "dcp1")
-    ```
-    
-4. Download the loom file
+`files()` retrieves (the first 1000) files from the Human Cell Atlas
+data portal. Construct a filter to restrict the files to loom files
+from the project we are interested in.
 
-    ```{r}
-    file_tibble %>%
-        files_download() %>%
-        LoomExperiment::import()
-    ```
-    
+```{r}
+file_filter <- filters(
+    projectId = list(is = projectId),
+    fileFormat = list(is = "loom")
+)
 
-# Example: Illustrating access to `h5ad` files stored in the HCA and
-created by the Python AnnData analysis software.
+file_tibble <- files(file_filter, catalog = "dcp1")
+
+file_tibble
+```
+
+`files_download()` will download one or more files (one for each row)
+in `file_tibble`. The download is more complicated than simply
+following the `url` column of `file_tibble`, so it is not possible to
+simply copy the url into a browser. We'll download the file and then
+immediately import it into _R_.
+
+```{r}
+file_tibble %>%
+    files_download() %>%
+    LoomExperiment::import()
+```
+
+Note that `files_download()` uses [BiocFileCache][], so individual
+files are only downloaded once.
+
+[BiocFileCache]: https://bioconductor.org/packages/BiocFileCache
+
+# Example: Illustrating access to `h5ad` files
+
+This example walks through the process of file discovery and retrieval
+in a little more detail, using `h5ad` files created by the Python
+AnnData analysis software and available for some experiments in the
+'dcp2' catalog.
 
 ## Projects facets and terms
 
 The first challenge is to understand what file formats are available
-from the HCA. Obtain a tibble describing the 'facets' fo the data, the
+from the HCA. Obtain a tibble describing the 'facets' of the data, the
 number of terms used in each facet, and the number of distinct values
 used to describe projects.
 
@@ -136,7 +174,7 @@ projects_list <- projects(as = "list")
 
 This is a complicated structure. We will use `lengths()`, `names()`,
 and standard _R_ list selection operations to navigate this a bit. At
-the top level there rae three elements.
+the top level there are three elements.
 
 ```{r}
 lengths(projects_list)
@@ -148,13 +186,16 @@ lengths(projects_list)
 lengths(projects_list$hits[[1]])
 ```
 
-shows that there are 10 different ways in which the project is
+shows that there are 10 different ways in which the first project is
 described. Each component is itself a list-of-lists, e.g.,
 
 ```{r}
 lengths(projects_list$hits[[1]]$projects[[1]])
 projects_list$hits[[1]]$projects[[1]]$projectTitle
 ```
+
+One can use standard _R_ commands to navigate this data structure, and
+to, e.g., extract the `projectTitle` of each project.
 
 ### `projects()` as an `lol`
 
@@ -167,8 +208,8 @@ lol
 ```
 
 Use `lol_select()` to restrict the `lol` to particular paths, and
-`lol_filter()` to filter results to pathsleafs, or with specific
-numbers of entries.
+`lol_filter()` to filter results to paths that are leafs, or with
+specific numbers of entries.
 
 ```{r}
 lol_select(lol, "hits[*].projects[*]")
@@ -176,15 +217,24 @@ lol_select(lol, "hits[*].projects[*]") |>
     lol_filter(n == 44, is_leaf)
 ```
 
-and the path or its abbreviation can be used to specify the columns of
-the tibble to be returned by the `projects()` query.
+`lol_pull()` extracts a path from the `lol` as a vector; `lol_lpull()`
+extracts paths as lists.
+
+```{r}
+titles <- lol_pull(lol, "hits[*].projects[*].projectTitle")
+length(titles)
+head(titles, 2)
+```
 
 ### Creating `projects()` tibbles with specific columns
+
+The path or its abbreviation can be used to specify the columns of
+the tibble to be returned by the `projects()` query.
 
 Here we retrieve additional details of donor count and total cells by
 adding appropriate path abbreviations to a named character
 vector. Names on the character vector can be used to rename the path
-more consisely, but the paths must uniquely identify elements in the
+more concisely, but the paths must uniquely identify elements in the
 list-of-lists.
 
 ```{r}
@@ -219,13 +269,17 @@ projects |>
     tidyr::unnest(c("organ", "totalCells"))
 ```
 
-Select the following entry, augement the filter, and query available files
+Select the following entry, augment the filter, and query available files
 
 ```{r}
 projects %>%
     filter(startsWith(projectTitle, "Reconstruct")) %>%
     t()
 ```
+
+This approach can be used to customize the tibbles returned by the
+other main functions in the package, `files()`, `samples()`, and
+`bundles()`.
 
 ## File download
 
@@ -237,7 +291,7 @@ filters <- filters(
     projectId = list(is = "f83165c5-e2ea-4d15-a5cf-33f3550bffde"),
     fileFormat = list(is = "h5ad")
 )
-files <- 
+files <-
     files(filters) %>%
     head(1)            # only first file, for demonstration
 files %>% t()
@@ -251,9 +305,8 @@ file_path <- files_download(files)
 [zellkonverter][] package.
 
 ```{r, eval = FALSE}
-# don't want large amount of data written to disk
+## don't want large amount of data read from disk
 sce <- zellkonverter::readH5AD(file_path, use_hdf5 = TRUE)
-# fails as matrix is transpose of expected matrix
 sce
 ```
 
@@ -266,48 +319,72 @@ project_filter <- filters(fileFormat = list(is = "csv"))
 project_tibble <- projects(project_filter, catalog = "dcp2")
 
 project_tibble %>%
-filter(startsWith(projectTitle,
-                  "Reconstructing the human first trimester"))
+    filter(
+        startsWith(
+            projectTitle,
+            "Reconstructing the human first trimester"
+        )
+    )
 
-projectId <- 
-  project_tibble %>%
-  filter(startsWith(projectTitle,
-                    "Reconstructing the human first trimester")) %>%
-  pull(projectId)
+projectId <-
+    project_tibble %>%
+    filter(
+        startsWith(
+            projectTitle,
+            "Reconstructing the human first trimester"
+        )
+    ) %>%
+    pull(projectId)
 
 file_filter <- filters(
-  projectId = list(is = projectId),
-  fileFormat = list(is = "csv")
-  )
+    projectId = list(is = projectId),
+    fileFormat = list(is = "csv")
+)
 
 ## first 4 files will be returned
 file_tibble <- files(file_filter, catalog = "dcp2", size = 4)
 
 file_tibble %>%
-  files_download()
+    files_download()
 ```
 
-# Example: Exploring the pagination feature of the results returned by
-`projects()`, `files()`, `bundles()`, and `samples()`
+# Example: Exploring the pagination feature
 
-- for the default tibble output
+The `files()`, `bundles()`, and `samples()` can all return many 1000's
+of results. It is necessary to 'page' through these to see all of
+them. We illustrate pagination with `projects()`, retrieving only 30
+of the 44 projects in the current DCP2 atlas.
+
+Pagination works for the default `tibble` output
+
 ```{r}
 page_1_tbl <- projects(size = 30)
+page_1_tbl
 
 page_2_tbl <- page_1_tbl %>% hca_next()
+page_2_tbl
 
 ## should be identical to page_1_tbl
 page_2_tbl %>% hca_prev()
 ```
 
-- for the custom list-of-lists output
-```{r}
-page_1_lol <- projects(size = 30, as = "lol")
+Pagination also works for the `lol` objects
 
-page_2_lol <- page_1_lol %>% hca_next()
+```{r}
+page_1_lol <- projects(size = 5, as = "lol")
+page_1_lol %>%
+    lol_pull("hits[*].projects[*].projectTitle")
+
+page_2_lol <-
+    page_1_lol %>%
+    hca_next()
+page_2_lol %>%
+    lol_pull("hits[*].projects[*].projectTitle")
 
 ## should be identical to page_1_lol
-page_2_lol %>% hca_prev()
+page_2_lol %>%
+    hca_prev() %>%
+    lol_pull("hits[*].projects[*].projectTitle")
 ```
 
 # Session info
