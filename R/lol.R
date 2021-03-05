@@ -1,21 +1,34 @@
 .lol_visit_impl <- function(x, path, index, dict)
     UseMethod(".lol_visit_impl")
 
+## default implementation of .lol_visit_impl
 .lol_visit_impl.default <- function(x, path, index, dict) {
     dict[[path]] <- append(dict[[path]], list(index))
     attr(dict[[path]], "leaf") <- TRUE
 }
 
+## list implementation of .lol_visit_impl
+
+## this function is applied recursively to traverse a nested list,
+## which can be though of as a tree-like structure,
+## the first iteration occurring at the root node
 .lol_visit_impl.list <- function(x, path, index, dict) {
+    ## dict maintains the results of the traversal across iterations
+    ## building out the various paths
     dict[[path]] <- append(dict[[path]], list(index))
     attr(dict[[path]], "leaf") <- FALSE
 
     nms <- names(x)
     is_null_nms <- is.null(nms)
+    ## if the list x is unnamed, [*] is used,
+    ## indicating a wild card matching any integer
     if (is_null_nms) {
         ## nms <- paste0("[[", seq_along(x), "]]")
         nms <- rep("[*]", length(x))
     }
+    ## logic for building out path names
+    ## starting with current node of the nested list and extending the path by
+    ## appending the next set of names or wild cards
     if (identical(path, ".")) {
         path <- nms
     } else {
@@ -26,6 +39,7 @@
         }
     }
 
+    ## recursively apply function until leaf is hit
     for (i in seq_along(x))
         .lol_visit_impl(x[[i]], path[[i]], append(index, i), dict)
 }
@@ -248,7 +262,7 @@ lol_pull <-
 
 #' @rdname lol
 #'
-#' @description `lol_path()` returns a tibble represnting the paths
+#' @description `lol_path()` returns a tibble representing the paths
 #'     through the list-of-lists, without the underlying list-of-list
 #'     data.
 #' @examples

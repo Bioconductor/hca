@@ -1,7 +1,7 @@
 ---
 title: "Accessing Human Cell Atlas Data"
 author: "Maya Reed McDaniel"
-date: "January 26th, 2021"
+date: "March 4th, 2021"
 output: BiocStyle::html_document
 vignette: >
   %\VignetteIndexEntry{Accessing Human Cell Atlas Data}
@@ -386,6 +386,53 @@ page_2_lol %>%
     hca_prev() %>%
     lol_pull("hits[*].projects[*].projectTitle")
 ```
+
+# Example: Obtaining other data entities
+Much like `projects()` and `files()`, `samples()` and `bundles()` allow you to
+provide a `filter` object and additional criteria to retrieve data in the
+form of samples and bundles respectively
+
+```{r}
+heart_filters <- filters(organ = list(is = "heart"))
+heart_samples <- samples(filters = heart_filters, size = 4)
+heart_samples
+
+heart_bundles <- bundles(filters = heart_filters, size = 4)
+heart_bundles
+```
+
+# Example: Obtaining summaries of project catalogs
+HCA experiments are organized into catalogs, each of which can be summarized
+with the `summary()` function
+
+```{r}
+heart_filters <- filters(organ = list(is = "heart"))
+summary(filters = heart_filters, type = "fileTypeSummaries", catalog = "dcp2")
+
+summary(type = "overview", catalog = "dcp1")
+```
+
+# Example: Obtaining details on individual projects, files, samples, and bundles
+Each project, file, sample, and bundles has its own unique ID by which, in
+conjunction with its catalog, can be to uniquely identify them.
+```{r}
+heart_filters <- filters(organ = list(is = "heart"))
+heart_projects <- projects(filters = heart_filters, size = 4)
+heart_projects
+
+projectId <-
+    heart_projects %>%
+    filter(
+        startsWith(
+            projectTitle,
+            "Cells of the adult human"
+        )
+    ) %>%
+    dplyr::pull(projectId)
+
+projects_detail(uuid = projectId, catalog = "dcp2")
+```
+
 
 # Session info
 
