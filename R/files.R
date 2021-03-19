@@ -105,7 +105,7 @@ files_default_columns <-
 #' @param tbl tibble of files (result of `files()`)
 #'
 #' @param destination character() vector name of temporary directory to use
-#' for file downloads
+#' for file downloads, or `NULL`
 #'
 #'
 #' @return file_destinations vector of file destinations
@@ -121,8 +121,11 @@ files_default_columns <-
 #' files_tbl <- files(filter = files_filter, catalog = "dcp1")
 #' \dontrun{files_download(files_tbl, destination = tempdir())}
 files_download <-
-    function (tbl, destination = tempdir())
+    function (tbl, destination = NULL)
 {
+    if (is.null(destination))
+        destination <- tempdir()
+
     stopifnot(
         inherits(tbl, "tbl_hca"),
         `'tbl=' must contain columns "url", "name"` =
