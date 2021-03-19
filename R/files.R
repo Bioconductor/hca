@@ -3,6 +3,7 @@
 .FILES_COLUMNS <- c(
     fileId = "hits[*].files[*].uuid",
     name = "hits[*].files[*].name",
+    fileFormat = "hits[*].files[*].format",
     size = "hits[*].files[*].size",
     version = "hits[*].files[*].version",
     projectTitle = "hits[*].projects[*].projectTitle[*]",
