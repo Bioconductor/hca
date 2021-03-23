@@ -111,6 +111,7 @@ files_default_columns <-
 #'
 #' @return file_destinations vector of file destinations
 #' @importFrom dplyr %>% mutate filter
+#' @importFrom tools R_user_dir
 #'
 #' @export
 #'
@@ -124,8 +125,13 @@ files_default_columns <-
 files_download <-
     function (tbl, destination = NULL)
 {
-    if (is.null(destination))
-        destination <- tempdir()
+    if (is.null(destination)){
+        ## this cache will persist across R sessions
+        destination <- R_user_dir(package = "hca", which = "cache")
+        if (!dir.exists(destination)){
+            dir.create(destination, recursive = TRUE)
+        }
+    }
 
     stopifnot(
         inherits(tbl, "tbl_hca"),
