@@ -3,6 +3,7 @@
 .FILES_COLUMNS <- c(
     fileId = "hits[*].files[*].uuid",
     name = "hits[*].files[*].name",
+    fileFormat = "hits[*].files[*].format",
     size = "hits[*].files[*].size",
     version = "hits[*].files[*].version",
     projectTitle = "hits[*].projects[*].projectTitle[*]",
@@ -105,11 +106,12 @@ files_default_columns <-
 #' @param tbl tibble of files (result of `files()`)
 #'
 #' @param destination character() vector name of temporary directory to use
-#' for file downloads
+#' for file downloads, or `NULL`
 #'
 #'
 #' @return file_destinations vector of file destinations
 #' @importFrom dplyr %>% mutate filter
+#' @importFrom tools R_user_dir
 #'
 #' @export
 #'
@@ -121,8 +123,16 @@ files_default_columns <-
 #' files_tbl <- files(filter = files_filter, catalog = "dcp1")
 #' \dontrun{files_download(files_tbl, destination = tempdir())}
 files_download <-
-    function (tbl, destination = tempdir())
+    function (tbl, destination = NULL)
 {
+    if (is.null(destination)){
+        ## this cache will persist across R sessions
+        destination <- R_user_dir(package = "hca", which = "cache")
+        if (!dir.exists(destination)){
+            dir.create(destination, recursive = TRUE)
+        }
+    }
+
     stopifnot(
         inherits(tbl, "tbl_hca"),
         `'tbl=' must contain columns "url", "name"` =

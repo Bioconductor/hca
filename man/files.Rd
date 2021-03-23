@@ -20,7 +20,7 @@ files(
 
 files_default_columns(as = c("tibble", "character"))
 
-files_download(tbl, destination = tempdir())
+files_download(tbl, destination = NULL)
 
 files_facets(facet = character(), catalog = c("dcp2", "it2", "dcp1", "it1"))
 
@@ -59,7 +59,7 @@ tibble.}
 \item{tbl}{tibble of files (result of \code{files()})}
 
 \item{destination}{character() vector name of temporary directory to use
-for file downloads}
+for file downloads, or \code{NULL}}
 
 \item{facet}{character() of valid facet names. Summary results (see
 'Value', below) are returned when missing or length greater

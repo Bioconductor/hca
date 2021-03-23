@@ -94,7 +94,7 @@ corresponding to a single \code{path}.
 \code{lol_pull()} tries to simplify the list-of-lists
 structure returned by \code{lol_lpull()} to a vector.
 
-\code{lol_path()} returns a tibble represnting the paths
+\code{lol_path()} returns a tibble representing the paths
 through the list-of-lists, without the underlying list-of-list
 data.
 
