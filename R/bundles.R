@@ -36,7 +36,7 @@ bundles <-
              size = 1000L,
              sort = "projectTitle",
              order = c("asc", "desc"),
-             catalog = c("dcp2", "it2", "dcp1", "it1"),
+             catalog = pkg_global_env$catalogs,
              as = c("tibble", "lol", "list"),
              columns = bundles_default_columns("character"))
 {
@@ -70,7 +70,7 @@ bundles <-
 bundles_facets <-
     function(
         facet = character(),
-        catalog = c("dcp2", "it2", "dcp1", "it1")
+        catalog = pkg_global_env$catalogs
     )
 {
     stopifnot(
@@ -109,7 +109,7 @@ bundles_default_columns <-
 #'
 #' @export
 bundles_detail <-
-    function (uuid, catalog = c("dcp2", "it2", "dcp1", "it1"))
+    function (uuid, catalog = pkg_global_env$catalogs)
 {
     catalog <- match.arg(catalog)
     .details(uuid = uuid, catalog = catalog, view = "bundles")

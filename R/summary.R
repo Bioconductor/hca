@@ -89,7 +89,7 @@ summary <- function(filters = NULL,
                  "fileTypeSummaries", "cellCountSummaries", "organTypes",
                  "list"
              ),
-             catalog = c("dcp2", "it2", "dcp1", "it1")) {
+             catalog = pkg_global_env$catalogs) {
     if (is.null(filters))
         filters <- filters()
     catalog <- match.arg(catalog)

@@ -12,16 +12,16 @@ bundles(
   size = 1000L,
   sort = "projectTitle",
   order = c("asc", "desc"),
-  catalog = c("dcp2", "it2", "dcp1", "it1"),
+  catalog = pkg_global_env$catalogs,
   as = c("tibble", "lol", "list"),
   columns = bundles_default_columns("character")
 )
 
-bundles_facets(facet = character(), catalog = c("dcp2", "it2", "dcp1", "it1"))
+bundles_facets(facet = character(), catalog = pkg_global_env$catalogs)
 
 bundles_default_columns(as = c("tibble", "character"))
 
-bundles_detail(uuid, catalog = c("dcp2", "it2", "dcp1", "it1"))
+bundles_detail(uuid, catalog = pkg_global_env$catalogs)
 }
 \arguments{
 \item{filters}{filter object created by \code{filters()}, or \code{NULL}

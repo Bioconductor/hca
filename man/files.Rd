@@ -13,7 +13,7 @@ files(
   size = 1000L,
   sort = "projectTitle",
   order = c("asc", "desc"),
-  catalog = c("dcp2", "it2", "dcp1", "it1"),
+  catalog = pkg_global_env$catalogs,
   as = c("tibble", "lol", "list"),
   columns = files_default_columns("character")
 )
@@ -22,9 +22,9 @@ files_default_columns(as = c("tibble", "character"))
 
 files_download(tbl, destination = NULL)
 
-files_facets(facet = character(), catalog = c("dcp2", "it2", "dcp1", "it1"))
+files_facets(facet = character(), catalog = pkg_global_env$catalogs)
 
-files_detail(uuid, catalog = c("dcp2", "it2", "dcp1", "it1"))
+files_detail(uuid, catalog = pkg_global_env$catalogs)
 }
 \arguments{
 \item{filters}{filter object created by \code{filters()}, or \code{NULL}

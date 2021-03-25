@@ -1,3 +1,9 @@
+## environment for variables that need to be made globally accessible to
+## functions across various package files
+
+pkg_global_env <- new.env(parent = emptyenv())
+pkg_global_env$catalogs  <- c("dcp2", "it2", "dcp1", "it1", "dcp3", "it3")
+
 ## helper functions
 ## internal only
 .index_validate <-
@@ -27,7 +33,7 @@
                        size = 1000L,
                        sort = "projectTitle",
                        order = c("asc", "desc"),
-                       catalog = c("dcp2", "it2", "dcp1", "it1"),
+                       catalog = pkg_global_env$catalogs,
                        base_path = "/index/projects")
 {
     ## validate

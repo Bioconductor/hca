@@ -37,7 +37,7 @@ files <-
              size = 1000L,
              sort = "projectTitle",
              order = c("asc", "desc"),
-             catalog = c("dcp2", "it2", "dcp1", "it1"),
+             catalog = pkg_global_env$catalogs,
              as = c("tibble", "lol", "list"),
              columns = files_default_columns("character"))
 {
@@ -162,7 +162,7 @@ files_download <-
 files_facets <-
     function(
         facet = character(),
-        catalog = c("dcp2", "it2", "dcp1", "it1")
+        catalog = pkg_global_env$catalogs
     )
 {
     stopifnot(
@@ -192,7 +192,7 @@ files_facets <-
 #'
 #' @export
 files_detail <-
-    function (uuid, catalog = c("dcp2", "it2", "dcp1", "it1"))
+    function (uuid, catalog = pkg_global_env$catalogs)
 {
     catalog <- match.arg(catalog)
     .details(uuid = uuid, catalog = catalog, view = "files")

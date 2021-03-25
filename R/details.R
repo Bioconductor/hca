@@ -25,7 +25,7 @@
 .details <-
     function(
         uuid = character(),
-        catalog = c("dcp2", "it2", "dcp1", "it1"),
+        catalog = pkg_global_env$catalogs,
         view = c("projects", "files", "samples", "bundles")
     )
 {
