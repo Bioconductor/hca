@@ -12,16 +12,16 @@ samples(
   size = 1000L,
   sort = "projectTitle",
   order = c("asc", "desc"),
-  catalog = pkg_global_env$catalogs,
+  catalog = NULL,
   as = c("tibble", "lol", "list"),
   columns = samples_default_columns("character")
 )
 
-samples_facets(facet = character(), catalog = pkg_global_env$catalogs)
+samples_facets(facet = character(), catalog = NULL)
 
 samples_default_columns(as = c("tibble", "character"))
 
-samples_detail(uuid, catalog = pkg_global_env$catalogs)
+samples_detail(uuid, catalog = NULL)
 }
 \arguments{
 \item{filters}{filter object created by \code{filters()}, or \code{NULL}

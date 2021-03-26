@@ -246,7 +246,7 @@ columns <- c(
     organ = "hits[*].cellSuspensions[*].organ[*]",
     totalCells = "hits[*].cellSuspensions[*].totalCells"
 )
-projects <- projects(filters, columns = columns)
+projects <- projects(filters, columns = columns, catalog = "dcp2")
 projects
 ```
 
@@ -358,7 +358,7 @@ of the 44 projects in the current DCP2 atlas.
 Pagination works for the default `tibble` output
 
 ```{r}
-page_1_tbl <- projects(size = 30)
+page_1_tbl <- projects(size = 30, catalog = "dcp2")
 page_1_tbl
 
 page_2_tbl <- page_1_tbl %>% hca_next()
@@ -371,7 +371,7 @@ page_2_tbl %>% hca_prev()
 Pagination also works for the `lol` objects
 
 ```{r}
-page_1_lol <- projects(size = 5, as = "lol")
+page_1_lol <- projects(size = 5, as = "lol", catalog = "dcp2")
 page_1_lol %>%
     lol_pull("hits[*].projects[*].projectTitle")
 

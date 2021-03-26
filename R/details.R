@@ -25,11 +25,14 @@
 .details <-
     function(
         uuid = character(),
-        catalog = pkg_global_env$catalogs,
+        catalog = NULL,
         view = c("projects", "files", "samples", "bundles")
     )
 {
-    catalog <- match.arg(catalog)
+    if(is.null(catalog)){
+        catalogs <- catalogs()
+        catalog <- catalogs[1]
+    }
     view <- match.arg(view)
 
     base_path <- .ENDPOINTS[[view]]

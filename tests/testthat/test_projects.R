@@ -1,5 +1,5 @@
 test_that("'projects()' works with small size and default arguments", {
-    test_proj <- projects(size = 4)
+    test_proj <- projects(size = 4, catalog = "dcp2")
     expect_true(tibble::is_tibble(test_proj))
     expect_true(nrow(test_proj) > 0L)
     expect_equal(names(test_proj),

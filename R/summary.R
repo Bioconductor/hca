@@ -89,10 +89,14 @@ summary <- function(filters = NULL,
                  "fileTypeSummaries", "cellCountSummaries", "organTypes",
                  "list"
              ),
-             catalog = pkg_global_env$catalogs) {
-    if (is.null(filters))
+             catalog = NULL) {
+    if (is.null(filters)){
         filters <- filters()
-    catalog <- match.arg(catalog)
+    }
+    if(is.null(catalog)){
+        catalogs <- catalogs()
+        catalog <- catalogs[1]
+    }
     type <- match.arg(type)
     stopifnot(
         `use 'filters()' to create 'filter=' argument` =

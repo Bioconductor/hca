@@ -37,12 +37,19 @@ files <-
              size = 1000L,
              sort = "projectTitle",
              order = c("asc", "desc"),
-             catalog = pkg_global_env$catalogs,
+             catalog = NULL,
              as = c("tibble", "lol", "list"),
              columns = files_default_columns("character"))
 {
-    if (is.null(filters))
+    if (is.null(filters)){
         filters <- filters()
+    }
+
+    if(is.null(catalog)){
+        catalogs <- catalogs()
+        catalog <- catalogs[1]
+    }
+
     as <- match.arg(as) # defaults from argument
 
     response <- .index_GET(
@@ -162,13 +169,16 @@ files_download <-
 files_facets <-
     function(
         facet = character(),
-        catalog = pkg_global_env$catalogs
+        catalog = NULL
     )
 {
     stopifnot(
         is.character(facet), !anyNA(facet)
     )
-    catalog <- match.arg(catalog)
+    if(is.null(catalog)){
+        catalogs <- catalogs()
+        catalog <- catalogs[1]
+    }
     lst <- files(size = 1L, catalog = catalog, as = "list")
     .term_facets(lst, facet)
 }
@@ -192,8 +202,11 @@ files_facets <-
 #'
 #' @export
 files_detail <-
-    function (uuid, catalog = pkg_global_env$catalogs)
+    function (uuid, catalog = NULL)
 {
-    catalog <- match.arg(catalog)
+    if(is.null(catalog)){
+        catalogs <- catalogs()
+        catalog <- catalogs[1]
+    }
     .details(uuid = uuid, catalog = catalog, view = "files")
 }

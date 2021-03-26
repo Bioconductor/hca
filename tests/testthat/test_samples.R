@@ -1,8 +1,8 @@
 test_that("'samples()' works with small size and default arguments", {
-    test_proj <- samples(size = 4)
-    expect_true(tibble::is_tibble(test_proj))
-    expect_true(nrow(test_proj) > 0L)
-    expect_equal(names(test_proj),
+    test_samples <- samples(size = 4, catalog = "dcp2")
+    expect_true(tibble::is_tibble(test_samples))
+    expect_true(nrow(test_samples) > 0L)
+    expect_equal(names(test_samples),
                  samples_default_columns("tibble")$name)
 })
 

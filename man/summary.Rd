@@ -7,7 +7,7 @@
 summary(
   filters = NULL,
   type = c("overview", "fileTypeSummaries", "cellCountSummaries", "organTypes", "list"),
-  catalog = pkg_global_env$catalogs
+  catalog = NULL
 )
 }
 \arguments{

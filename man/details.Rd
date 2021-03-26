@@ -6,7 +6,7 @@
 \usage{
 .details(
   uuid = character(),
-  catalog = pkg_global_env$catalogs,
+  catalog = NULL,
   view = c("projects", "files", "samples", "bundles")
 )
 }

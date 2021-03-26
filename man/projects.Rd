@@ -12,16 +12,16 @@ projects(
   size = 1000L,
   sort = "projectTitle",
   order = c("asc", "desc"),
-  catalog = pkg_global_env$catalogs,
+  catalog = NULL,
   as = c("tibble", "lol", "list"),
   columns = projects_default_columns("character")
 )
 
-projects_facets(facet = character(), catalog = pkg_global_env$catalogs)
+projects_facets(facet = character(), catalog = NULL)
 
 projects_default_columns(as = c("tibble", "character"))
 
-projects_detail(uuid, catalog = pkg_global_env$catalogs)
+projects_detail(uuid, catalog = NULL)
 }
 \arguments{
 \item{filters}{filter object created by \code{filters()}, or \code{NULL}
