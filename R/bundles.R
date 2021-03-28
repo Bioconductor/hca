@@ -13,7 +13,7 @@
 #'
 #' @name bundles
 #'
-#' @title HCA File Querying
+#' @title HCA Bundle Querying
 #'
 #' @description `bundles()` takes a list of user provided project titles
 #'     to be used to query the HCA API for information about available bundles.
