@@ -2,7 +2,7 @@
 % Please edit documentation in R/catalogs.R
 \name{catalogs}
 \alias{catalogs}
-\title{Title}
+\title{Catalogs Available in the HCA}
 \usage{
 catalogs()
 }

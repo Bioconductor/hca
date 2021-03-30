@@ -5,7 +5,7 @@
 \alias{bundles_facets}
 \alias{bundles_default_columns}
 \alias{bundles_detail}
-\title{HCA File Querying}
+\title{HCA Bundle Querying}
 \usage{
 bundles(
   filters = NULL,

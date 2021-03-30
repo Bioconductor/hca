@@ -5,7 +5,7 @@
 \alias{samples_facets}
 \alias{samples_default_columns}
 \alias{samples_detail}
-\title{HCA File Querying}
+\title{HCA Sample Querying}
 \usage{
 samples(
   filters = NULL,

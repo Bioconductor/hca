@@ -16,7 +16,7 @@
 #'
 #' @name samples
 #'
-#' @title HCA File Querying
+#' @title HCA Sample Querying
 #'
 #' @description `samples()` takes a list of user provided project titles
 #'     to be used to query the HCA API for information about available samples.
