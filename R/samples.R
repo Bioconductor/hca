@@ -38,17 +38,19 @@ samples <-
              size = 1000L,
              sort = "projectTitle",
              order = c("asc", "desc"),
-             catalog = NULL,
+             catalog = "dcp2",
              as = c("tibble", "lol", "list"),
              columns = samples_default_columns("character"))
 {
+    stopifnot(
+        `catalog must be a character scalar` =
+            .is_scalar_character(catalog),
+        `catalog must be one of those returned by catalogs()` =
+            catalog %in% catalogs()
+    )
+
     if (is.null(filters)){
         filters <- filters()
-    }
-
-    if(is.null(catalog)){
-        catalogs <- catalogs()
-        catalog <- catalogs[1]
     }
 
     as <- match.arg(as) # defaults from argument
@@ -79,16 +81,17 @@ samples <-
 samples_facets <-
     function(
         facet = character(),
-        catalog = NULL
+        catalog = "dcp2"
     )
 {
     stopifnot(
-        is.character(facet), !anyNA(facet)
+        is.character(facet),
+        !anyNA(facet),
+        `catalog must be a character scalar` =
+            .is_scalar_character(catalog),
+        `catalog must be one of those returned by catalogs()` =
+            catalog %in% catalogs()
     )
-    if(is.null(catalog)){
-        catalogs <- catalogs()
-        catalog <- catalogs[1]
-    }
     lst <- samples(size = 1L, catalog = catalog, as = "list")
     .term_facets(lst, facet)
 }
@@ -121,11 +124,13 @@ samples_default_columns <-
 #'
 #' @export
 samples_detail <-
-    function (uuid, catalog = NULL)
+    function (uuid, catalog = "dcp2")
 {
-    if(is.null(catalog)){
-        catalogs <- catalogs()
-        catalog <- catalogs[1]
-    }
+    stopifnot(
+        `catalog must be a character scalar` =
+            .is_scalar_character(catalog),
+        `catalog must be one of those returned by catalogs()` =
+            catalog %in% catalogs()
+    )
     .details(uuid = uuid, catalog = catalog, view = "samples")
 }

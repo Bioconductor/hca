@@ -18,21 +18,25 @@
 #'
 #' @param uuid character() unique *_id
 #'
-#' @param catalog character() catalog entity belongs to
+#' @param catalog character(1) source of data. Default: `"dcp2"`,
+#'     version 2 of the HCA Data Coordinating Platform. Use
+#'     `catalogs()` for possible values.
 #'
 #' @return list-of-lists containing relevant details about the project, file,
 #' sample, or bundle
 .details <-
     function(
         uuid = character(),
-        catalog = NULL,
+        catalog = "dcp2",
         view = c("projects", "files", "samples", "bundles")
     )
 {
-    if(is.null(catalog)){
-        catalogs <- catalogs()
-        catalog <- catalogs[1]
-    }
+    stopifnot(
+        `catalog must be a character scalar` =
+            .is_scalar_character(catalog),
+        `catalog must be one of those returned by catalogs()` =
+            catalog %in% catalogs()
+    )
     view <- match.arg(view)
 
     base_path <- .ENDPOINTS[[view]]

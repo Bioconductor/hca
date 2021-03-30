@@ -12,16 +12,16 @@ bundles(
   size = 1000L,
   sort = "projectTitle",
   order = c("asc", "desc"),
-  catalog = NULL,
+  catalog = "dcp2",
   as = c("tibble", "lol", "list"),
   columns = bundles_default_columns("character")
 )
 
-bundles_facets(facet = character(), catalog = NULL)
+bundles_facets(facet = character(), catalog = "dcp2")
 
 bundles_default_columns(as = c("tibble", "character"))
 
-bundles_detail(uuid, catalog = NULL)
+bundles_detail(uuid, catalog = "dcp2")
 }
 \arguments{
 \item{filters}{filter object created by \code{filters()}, or \code{NULL}
@@ -37,7 +37,9 @@ sort result; default: \code{"projectTitle"}.}
 \item{order}{character(1) sort order. One of \code{"asc"} (ascending) or
 \code{"desc"} (descending).}
 
-\item{catalog}{character() catalog to use for query.}
+\item{catalog}{character(1) source of data. Default: \code{"dcp2"},
+version 2 of the HCA Data Coordinating Platform. Use
+\code{catalogs()} for possible values.}
 
 \item{as}{character(1) return format. Default: \code{"tibble"}, a tibble
 summarizing essential elements of HCA projects. \code{"lol"}: a

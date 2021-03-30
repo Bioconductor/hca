@@ -36,7 +36,8 @@ NULL # don't add next function to documentation
 #'     `"desc"` (descending).
 #'
 #' @param catalog character(1) source of data. Default: `"dcp2"`,
-#'     version 2 of the HCA Data Coordinating Platform.
+#'     version 2 of the HCA Data Coordinating Platform. Use
+#'     `catalogs()` for possible values.
 #'
 #' @param as character(1) return format. Default: `"tibble"`, a tibble
 #'     summarizing essential elements of HCA projects. `"lol"`: a
@@ -77,17 +78,19 @@ projects <-
              size = 1000L,
              sort = "projectTitle",
              order = c("asc", "desc"),
-             catalog = NULL,
+             catalog = "dcp2",
              as = c("tibble", "lol", "list"),
              columns = projects_default_columns("character"))
 {
+    stopifnot(
+        `catalog must be a character scalar` =
+            .is_scalar_character(catalog),
+        `catalog must be one of those returned by catalogs()` =
+            catalog %in% catalogs()
+    )
+
     if (is.null(filters)){
         filters <- filters()
-    }
-
-    if(is.null(catalog)){
-        catalogs <- catalogs()
-        catalog <- catalogs[1]
     }
 
     as <- match.arg(as)
@@ -139,16 +142,17 @@ projects <-
 projects_facets <-
     function(
         facet = character(),
-        catalog = NULL
+        catalog = "dcp2"
     )
 {
     stopifnot(
-        is.character(facet), !anyNA(facet)
+        is.character(facet),
+        !anyNA(facet),
+        `catalog must be a character scalar` =
+            .is_scalar_character(catalog),
+        `catalog must be one of those returned by catalogs()` =
+            catalog %in% catalogs()
     )
-    if(is.null(catalog)){
-        catalogs <- catalogs()
-        catalog <- catalogs[1]
-    }
     lst <- projects(size = 1L, catalog = catalog, as = "list")
     .term_facets(lst, facet)
 }
@@ -188,7 +192,9 @@ projects_default_columns <-
 #' @param uuid character() unique identifier (e.g., `projectId`) of
 #'     the object.
 #'
-#' @param catalog character() catalog to use for query.
+#' @param catalog character(1) source of data. Default: `"dcp2"`,
+#'     version 2 of the HCA Data Coordinating Platform. Use
+#'     `catalogs()` for possible values.
 #'
 #' @return list-of-lists containing relevant details about the project.
 #'
@@ -200,11 +206,13 @@ projects_default_columns <-
 #'
 #' @export
 projects_detail <-
-    function (uuid, catalog = NULL)
+    function (uuid, catalog = "dcp2")
 {
-    if(is.null(catalog)){
-        catalogs <- catalogs()
-        catalog <- catalogs[1]
-    }
+    stopifnot(
+        `catalog must be a character scalar` =
+            .is_scalar_character(catalog),
+        `catalog must be one of those returned by catalogs()` =
+            catalog %in% catalogs()
+    )
     .details(uuid = uuid, catalog = catalog, view = "projects")
 }
