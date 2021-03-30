@@ -14,4 +14,5 @@ character() vector of available catalogs
 }
 \examples{
 catalogs()
+
 }
