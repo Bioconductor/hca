@@ -13,7 +13,7 @@
 #'
 #' @name bundles
 #'
-#' @title HCA File Querying
+#' @title HCA Bundle Querying
 #'
 #' @description `bundles()` takes a list of user provided project titles
 #'     to be used to query the HCA API for information about available bundles.
@@ -36,12 +36,21 @@ bundles <-
              size = 1000L,
              sort = "projectTitle",
              order = c("asc", "desc"),
-             catalog = c("dcp2", "it2", "dcp1", "it1"),
+             catalog = "dcp2",
              as = c("tibble", "lol", "list"),
              columns = bundles_default_columns("character"))
 {
-    if (is.null(filters))
+    stopifnot(
+        `catalog must be a character scalar` =
+            .is_scalar_character(catalog),
+        `catalog must be one of those returned by catalogs()` =
+            catalog %in% catalogs()
+    )
+
+    if (is.null(filters)){
         filters <- filters()
+    }
+
     as <- match.arg(as) # defaults from argument
 
     response <- .index_GET(
@@ -70,13 +79,17 @@ bundles <-
 bundles_facets <-
     function(
         facet = character(),
-        catalog = c("dcp2", "it2", "dcp1", "it1")
+        catalog = "dcp2"
     )
 {
     stopifnot(
-        is.character(facet), !anyNA(facet)
+        is.character(facet),
+        !anyNA(facet),
+        `catalog must be a character scalar` =
+            .is_scalar_character(catalog),
+        `catalog must be one of those returned by catalogs()` =
+            catalog %in% catalogs()
     )
-    catalog <- match.arg(catalog)
     lst <- bundles(size = 1L, catalog = catalog, as = "list")
     .term_facets(lst, facet)
 }
@@ -109,8 +122,13 @@ bundles_default_columns <-
 #'
 #' @export
 bundles_detail <-
-    function (uuid, catalog = c("dcp2", "it2", "dcp1", "it1"))
+    function (uuid, catalog = "dcp2")
 {
-    catalog <- match.arg(catalog)
+    stopifnot(
+        `catalog must be a character scalar` =
+            .is_scalar_character(catalog),
+        `catalog must be one of those returned by catalogs()` =
+            catalog %in% catalogs()
+    )
     .details(uuid = uuid, catalog = catalog, view = "bundles")
 }

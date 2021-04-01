@@ -6,14 +6,16 @@
 \usage{
 .details(
   uuid = character(),
-  catalog = c("dcp2", "it2", "dcp1", "it1"),
+  catalog = "dcp2",
   view = c("projects", "files", "samples", "bundles")
 )
 }
 \arguments{
 \item{uuid}{character() unique *_id}
 
-\item{catalog}{character() catalog entity belongs to}
+\item{catalog}{character(1) source of data. Default: \code{"dcp2"},
+version 2 of the HCA Data Coordinating Platform. Use
+\code{catalogs()} for possible values.}
 
 \item{view}{character() type of entity i.e. project, file, sample, or bundle}
 }

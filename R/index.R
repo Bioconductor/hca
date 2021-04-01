@@ -11,7 +11,7 @@
         `use 'filters()' to create 'filter=' argument` =
             inherits(filters, "filters"),
         length(size) == 1L || size < 0 && size <= 1000
-        ## sort, order, catalog already validated by match.arg
+        ## sort, order, catalog already validated
     )
 }
 
@@ -27,14 +27,19 @@
                        size = 1000L,
                        sort = "projectTitle",
                        order = c("asc", "desc"),
-                       catalog = c("dcp2", "it2", "dcp1", "it1"),
+                       catalog = "dcp2",
                        base_path = "/index/projects")
 {
     ## validate
+    stopifnot(
+        `catalog must be a character scalar` =
+            .is_scalar_character(catalog),
+        `catalog must be one of those returned by catalogs()` =
+            catalog %in% catalogs()
+    )
     size <- as.integer(size)
     sort <- match.arg(sort, facet_options())
     order <- match.arg(order) # defaults from argument
-    catalog <- match.arg(catalog) # defaults from argument
 
     if(is.null(filters)){
         filters <- filters()
