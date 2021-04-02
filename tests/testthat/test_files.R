@@ -1,5 +1,5 @@
 test_that("'files()' works with small size and default arguments", {
-    test_files <- files(size = 4, catalog = "dcp2")
+    test_files <- files(size = 4)
     expect_true(tibble::is_tibble(test_files))
     expect_true(nrow(test_files) > 0L)
     expect_equal(names(test_files),

@@ -23,7 +23,9 @@ catalogs <- local({
             ## `CATALOGS` in the lcoal environment; the assignment
             ## persists for the session, so catalogs() is only
             ## expensive once
-            CATALOGS <<- names(json[["content"]][["catalogs"]])
+            ## putting "dcp3" first to act as the default
+            CATALOGS <<- unique(c("dcp3",
+                                  names(json[["content"]][["catalogs"]])))
         }
         CATALOGS
     }

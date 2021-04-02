@@ -26,8 +26,8 @@ NULL # don't add next function to documentation
 #'
 #' @examples
 #' title <- paste(
-#'     "Tabula Muris: Transcriptomic characterization of 20 organs and tissues from Mus musculus",
-#'     "at single cell resolution"
+#'     "Tabula Muris: Transcriptomic characterization of 20 organs and tissues",
+#'     "from Mus musculus at single cell resolution"
 #' )
 #' filters <- filters( projectTitle = list(is = title) )
 #' samples(filters = filters)
@@ -38,16 +38,13 @@ samples <-
              size = 1000L,
              sort = "projectTitle",
              order = c("asc", "desc"),
-             catalog = "dcp2",
+             catalog = NULL,
              as = c("tibble", "lol", "list"),
              columns = samples_default_columns("character"))
 {
-    stopifnot(
-        `catalog must be a character scalar` =
-            .is_scalar_character(catalog),
-        `catalog must be one of those returned by catalogs()` =
-            catalog %in% catalogs()
-    )
+    if(is.null(catalog)){
+        catalog <- catalogs()[1]
+    }
 
     if (is.null(filters)){
         filters <- filters()
@@ -81,16 +78,19 @@ samples <-
 samples_facets <-
     function(
         facet = character(),
-        catalog = "dcp2"
+        catalog = NULL
     )
 {
+    if(is.null(catalog)){
+        catalog <- catalogs()[1]
+    }
+
     stopifnot(
         is.character(facet),
         !anyNA(facet),
-        `catalog must be a character scalar` =
-            .is_scalar_character(catalog),
-        `catalog must be one of those returned by catalogs()` =
-            catalog %in% catalogs()
+        ## catalog validation
+        `catalog must be a character scalar returned by catalogs()` =
+            .is_catalog(catalog)
     )
     lst <- samples(size = 1L, catalog = catalog, as = "list")
     .term_facets(lst, facet)
@@ -118,19 +118,22 @@ samples_default_columns <-
 #'
 #' @examples
 #' samples_detail(
-#'     uuid = "1dda6a28-cbaa-4506-be47-fa117e8f463c",
-#'     catalog = "dcp2"
+#'     uuid = "46b58d7b-7143-4c0a-88f3-73d0409eb453",
+#'     catalog = "dcp1"
 #' )
 #'
 #' @export
 samples_detail <-
-    function (uuid, catalog = "dcp2")
+    function (uuid, catalog = NULL)
 {
+    if(is.null(catalog)){
+        catalog <- catalogs()[1]
+    }
+
     stopifnot(
-        `catalog must be a character scalar` =
-            .is_scalar_character(catalog),
-        `catalog must be one of those returned by catalogs()` =
-            catalog %in% catalogs()
+        ## catalog validation
+        `catalog must be a character scalar returned by catalogs()` =
+            .is_catalog(catalog)
     )
     .details(uuid = uuid, catalog = catalog, view = "samples")
 }

@@ -12,16 +12,16 @@ projects(
   size = 1000L,
   sort = "projectTitle",
   order = c("asc", "desc"),
-  catalog = "dcp2",
+  catalog = NULL,
   as = c("tibble", "lol", "list"),
   columns = projects_default_columns("character")
 )
 
-projects_facets(facet = character(), catalog = "dcp2")
+projects_facets(facet = character(), catalog = NULL)
 
 projects_default_columns(as = c("tibble", "character"))
 
-projects_detail(uuid, catalog = "dcp2")
+projects_detail(uuid, catalog = NULL)
 }
 \arguments{
 \item{filters}{filter object created by \code{filters()}, or \code{NULL}
@@ -37,8 +37,7 @@ sort result; default: \code{"projectTitle"}.}
 \item{order}{character(1) sort order. One of \code{"asc"} (ascending) or
 \code{"desc"} (descending).}
 
-\item{catalog}{character(1) source of data. Default: \code{"dcp2"},
-version 2 of the HCA Data Coordinating Platform. Use
+\item{catalog}{character(1) source of data. Use
 \code{catalogs()} for possible values.}
 
 \item{as}{character(1) return format. Default: \code{"tibble"}, a tibble

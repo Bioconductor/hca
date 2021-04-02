@@ -13,7 +13,7 @@ files(
   size = 1000L,
   sort = "projectTitle",
   order = c("asc", "desc"),
-  catalog = "dcp2",
+  catalog = NULL,
   as = c("tibble", "lol", "list"),
   columns = files_default_columns("character")
 )
@@ -22,9 +22,9 @@ files_default_columns(as = c("tibble", "character"))
 
 files_download(tbl, destination = NULL)
 
-files_facets(facet = character(), catalog = "dcp2")
+files_facets(facet = character(), catalog = NULL)
 
-files_detail(uuid, catalog = "dcp2")
+files_detail(uuid, catalog = NULL)
 }
 \arguments{
 \item{filters}{filter object created by \code{filters()}, or \code{NULL}
@@ -40,8 +40,7 @@ sort result; default: \code{"projectTitle"}.}
 \item{order}{character(1) sort order. One of \code{"asc"} (ascending) or
 \code{"desc"} (descending).}
 
-\item{catalog}{character(1) source of data. Default: \code{"dcp2"},
-version 2 of the HCA Data Coordinating Platform. Use
+\item{catalog}{character(1) source of data. Use
 \code{catalogs()} for possible values.}
 
 \item{as}{character(1) return format. Default: \code{"tibble"}, a tibble
@@ -106,8 +105,8 @@ files_facets()
 files_facets("fileFormat")
 
 files_detail(
-    uuid = "bb4185da-c3da-4bb3-ab51-30aafbb60a0d",
-    catalog = "dcp2"
+    uuid = "ee6a75bd-3252-41ee-b253-425bbd377f0c",
+    catalog = "dcp1"
 )
 
 }

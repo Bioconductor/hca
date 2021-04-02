@@ -37,19 +37,16 @@ files <-
              size = 1000L,
              sort = "projectTitle",
              order = c("asc", "desc"),
-             catalog = "dcp2",
+             catalog = NULL,
              as = c("tibble", "lol", "list"),
              columns = files_default_columns("character"))
 {
-    stopifnot(
-        `catalog must be a character scalar` =
-            .is_scalar_character(catalog),
-        `catalog must be one of those returned by catalogs()` =
-            catalog %in% catalogs()
-    )
-
     if (is.null(filters)){
         filters <- filters()
+    }
+
+    if(is.null(catalog)){
+        catalog <- catalogs()[1]
     }
 
 
@@ -172,16 +169,19 @@ files_download <-
 files_facets <-
     function(
         facet = character(),
-        catalog = "dcp2"
+        catalog = NULL
     )
 {
+    if(is.null(catalog)){
+        catalog <- catalogs()[1]
+    }
+
     stopifnot(
         is.character(facet),
         !anyNA(facet),
-        `catalog must be a character scalar` =
-            .is_scalar_character(catalog),
-        `catalog must be one of those returned by catalogs()` =
-            catalog %in% catalogs()
+        ## catalog validation
+        `catalog must be a character scalar returned by catalogs()` =
+            .is_catalog(catalog)
     )
     lst <- files(size = 1L, catalog = catalog, as = "list")
     .term_facets(lst, facet)
@@ -200,19 +200,22 @@ files_facets <-
 #'
 #' @examples
 #' files_detail(
-#'     uuid = "bb4185da-c3da-4bb3-ab51-30aafbb60a0d",
-#'     catalog = "dcp2"
+#'     uuid = "ee6a75bd-3252-41ee-b253-425bbd377f0c",
+#'     catalog = "dcp1"
 #' )
 #'
 #' @export
 files_detail <-
-    function (uuid, catalog = "dcp2")
+    function (uuid, catalog = NULL)
 {
+    if(is.null(catalog)){
+        catalog <- catalogs()[1]
+    }
+
     stopifnot(
-        `catalog must be a character scalar` =
-            .is_scalar_character(catalog),
-        `catalog must be one of those returned by catalogs()` =
-            catalog %in% catalogs()
+        ## catalog validation
+        `catalog must be a character scalar returned by catalogs()` =
+            .is_catalog(catalog)
     )
     .details(uuid = uuid, catalog = catalog, view = "files")
 }

@@ -12,16 +12,16 @@ samples(
   size = 1000L,
   sort = "projectTitle",
   order = c("asc", "desc"),
-  catalog = "dcp2",
+  catalog = NULL,
   as = c("tibble", "lol", "list"),
   columns = samples_default_columns("character")
 )
 
-samples_facets(facet = character(), catalog = "dcp2")
+samples_facets(facet = character(), catalog = NULL)
 
 samples_default_columns(as = c("tibble", "character"))
 
-samples_detail(uuid, catalog = "dcp2")
+samples_detail(uuid, catalog = NULL)
 }
 \arguments{
 \item{filters}{filter object created by \code{filters()}, or \code{NULL}
@@ -37,8 +37,7 @@ sort result; default: \code{"projectTitle"}.}
 \item{order}{character(1) sort order. One of \code{"asc"} (ascending) or
 \code{"desc"} (descending).}
 
-\item{catalog}{character(1) source of data. Default: \code{"dcp2"},
-version 2 of the HCA Data Coordinating Platform. Use
+\item{catalog}{character(1) source of data. Use
 \code{catalogs()} for possible values.}
 
 \item{as}{character(1) return format. Default: \code{"tibble"}, a tibble
@@ -76,8 +75,8 @@ list-of-lists
 }
 \examples{
 title <- paste(
-    "Tabula Muris: Transcriptomic characterization of 20 organs and tissues from Mus musculus",
-    "at single cell resolution"
+    "Tabula Muris: Transcriptomic characterization of 20 organs and tissues",
+    "from Mus musculus at single cell resolution"
 )
 filters <- filters( projectTitle = list(is = title) )
 samples(filters = filters)
@@ -85,8 +84,8 @@ samples(filters = filters)
 samples_facets()
 
 samples_detail(
-    uuid = "1dda6a28-cbaa-4506-be47-fa117e8f463c",
-    catalog = "dcp2"
+    uuid = "46b58d7b-7143-4c0a-88f3-73d0409eb453",
+    catalog = "dcp1"
 )
 
 }

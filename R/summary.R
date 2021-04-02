@@ -65,8 +65,7 @@
 #'     include "overview", "fileTypeSummaries", "cellCountSummaries",
 #'     "organType", and a "list" off all summary statistics.
 #'
-#' @param catalog character(1) source of data. Default: `"dcp2"`,
-#'     version 2 of the HCA Data Coordinating Platform. Use
+#' @param catalog character(1) source of data. Use
 #'     `catalogs()` for possible values.
 #'
 #' @return `summary()` returns a tibble or (for `type = "list"`) a
@@ -90,23 +89,23 @@ summary <- function(filters = NULL,
                  "fileTypeSummaries", "cellCountSummaries", "organTypes",
                  "list"
              ),
-             catalog = "dcp2") {
-
-    stopifnot(
-        `catalog must be a character scalar` =
-            .is_scalar_character(catalog),
-        `catalog must be one of those returned by catalogs()` =
-            catalog %in% catalogs()
-    )
+             catalog = NULL) {
 
     if (is.null(filters)){
         filters <- filters()
     }
 
+    if(is.null(catalog)){
+        catalog <- catalogs()[1]
+    }
+
     type <- match.arg(type)
     stopifnot(
         `use 'filters()' to create 'filter=' argument` =
-            inherits(filters, "filters")
+            inherits(filters, "filters"),
+        ## catalog validation
+        `catalog must be a character scalar returned by catalogs()` =
+            .is_catalog(catalog)
     )
     encoding <- .filters_encoding(filters)
 

@@ -61,8 +61,7 @@ mutation patterns' project.
 
 ## Discover projects with loom files
 
-Use `projects()` to retrieve all projects in the HCA.
-
+Use `projects()` to retrieve all projects in the HCA's default catalog.
 ```{r}
 projects()
 ```
@@ -130,7 +129,7 @@ files are only downloaded once.
 This example walks through the process of file discovery and retrieval
 in a little more detail, using `h5ad` files created by the Python
 AnnData analysis software and available for some experiments in the
-'dcp2' catalog.
+default catalog.
 
 ## Projects facets and terms
 
@@ -246,7 +245,7 @@ columns <- c(
     organ = "hits[*].cellSuspensions[*].organ[*]",
     totalCells = "hits[*].cellSuspensions[*].totalCells"
 )
-projects <- projects(filters, columns = columns, catalog = "dcp2")
+projects <- projects(filters, columns = columns)
 projects
 ```
 
@@ -316,7 +315,7 @@ sce
 
 ```{r}
 project_filter <- filters(fileFormat = list(is = "csv"))
-project_tibble <- projects(project_filter, catalog = "dcp2")
+project_tibble <- projects(project_filter)
 
 project_tibble %>%
     filter(
@@ -342,7 +341,7 @@ file_filter <- filters(
 )
 
 ## first 4 files will be returned
-file_tibble <- files(file_filter, catalog = "dcp2", size = 4)
+file_tibble <- files(file_filter, size = 4)
 
 file_tibble %>%
     files_download()
@@ -352,13 +351,12 @@ file_tibble %>%
 
 The `files()`, `bundles()`, and `samples()` can all return many 1000's
 of results. It is necessary to 'page' through these to see all of
-them. We illustrate pagination with `projects()`, retrieving only 30
-of the 44 projects in the current DCP2 atlas.
+them. We illustrate pagination with `projects()`, retrieving only 30 projects.
 
 Pagination works for the default `tibble` output
 
 ```{r}
-page_1_tbl <- projects(size = 30, catalog = "dcp2")
+page_1_tbl <- projects(size = 30)
 page_1_tbl
 
 page_2_tbl <- page_1_tbl %>% hca_next()
@@ -371,7 +369,7 @@ page_2_tbl %>% hca_prev()
 Pagination also works for the `lol` objects
 
 ```{r}
-page_1_lol <- projects(size = 5, as = "lol", catalog = "dcp2")
+page_1_lol <- projects(size = 5, as = "lol")
 page_1_lol %>%
     lol_pull("hits[*].projects[*].projectTitle")
 
@@ -407,7 +405,7 @@ with the `summary()` function
 
 ```{r}
 heart_filters <- filters(organ = list(is = "heart"))
-summary(filters = heart_filters, type = "fileTypeSummaries", catalog = "dcp2")
+summary(filters = heart_filters, type = "fileTypeSummaries")
 
 summary(type = "overview", catalog = "dcp1")
 ```
@@ -430,7 +428,7 @@ projectId <-
     ) %>%
     dplyr::pull(projectId)
 
-projects_detail(uuid = projectId, catalog = "dcp2")
+projects_detail(uuid = projectId)
 ```
 
 

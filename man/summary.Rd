@@ -7,7 +7,7 @@
 summary(
   filters = NULL,
   type = c("overview", "fileTypeSummaries", "cellCountSummaries", "organTypes", "list"),
-  catalog = "dcp2"
+  catalog = NULL
 )
 }
 \arguments{
@@ -18,8 +18,7 @@ summary(
 include "overview", "fileTypeSummaries", "cellCountSummaries",
 "organType", and a "list" off all summary statistics.}
 
-\item{catalog}{character(1) source of data. Default: \code{"dcp2"},
-version 2 of the HCA Data Coordinating Platform. Use
+\item{catalog}{character(1) source of data. Use
 \code{catalogs()} for possible values.}
 }
 \value{

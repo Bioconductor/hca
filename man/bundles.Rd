@@ -12,16 +12,16 @@ bundles(
   size = 1000L,
   sort = "projectTitle",
   order = c("asc", "desc"),
-  catalog = "dcp2",
+  catalog = NULL,
   as = c("tibble", "lol", "list"),
   columns = bundles_default_columns("character")
 )
 
-bundles_facets(facet = character(), catalog = "dcp2")
+bundles_facets(facet = character(), catalog = NULL)
 
 bundles_default_columns(as = c("tibble", "character"))
 
-bundles_detail(uuid, catalog = "dcp2")
+bundles_detail(uuid, catalog = NULL)
 }
 \arguments{
 \item{filters}{filter object created by \code{filters()}, or \code{NULL}
@@ -37,8 +37,7 @@ sort result; default: \code{"projectTitle"}.}
 \item{order}{character(1) sort order. One of \code{"asc"} (ascending) or
 \code{"desc"} (descending).}
 
-\item{catalog}{character(1) source of data. Default: \code{"dcp2"},
-version 2 of the HCA Data Coordinating Platform. Use
+\item{catalog}{character(1) source of data. Use
 \code{catalogs()} for possible values.}
 
 \item{as}{character(1) return format. Default: \code{"tibble"}, a tibble
@@ -85,8 +84,8 @@ bundles(filters = filters)
 bundles_facets()
 
 bundles_detail(
-    uuid = "00aa6c53-71b5-4c12-98c4-54eb8173ffa5",
-    catalog = "dcp2"
+    uuid = "0003b020-fd79-4747-94b0-42105f2f941b",
+    catalog = "dcp1"
 ) |> lol() |> lol_filter(is_leaf) |> print(n = Inf)
 
 }
