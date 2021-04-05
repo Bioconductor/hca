@@ -36,16 +36,13 @@ bundles <-
              size = 1000L,
              sort = "projectTitle",
              order = c("asc", "desc"),
-             catalog = "dcp2",
+             catalog = NULL,
              as = c("tibble", "lol", "list"),
              columns = bundles_default_columns("character"))
 {
-    stopifnot(
-        `catalog must be a character scalar` =
-            .is_scalar_character(catalog),
-        `catalog must be one of those returned by catalogs()` =
-            catalog %in% catalogs()
-    )
+    if(is.null(catalog)){
+        catalog <- catalogs()[1]
+    }
 
     if (is.null(filters)){
         filters <- filters()
@@ -79,16 +76,19 @@ bundles <-
 bundles_facets <-
     function(
         facet = character(),
-        catalog = "dcp2"
+        catalog = NULL
     )
 {
+    if(is.null(catalog)){
+        catalog <- catalogs()[1]
+    }
+
     stopifnot(
         is.character(facet),
         !anyNA(facet),
-        `catalog must be a character scalar` =
-            .is_scalar_character(catalog),
-        `catalog must be one of those returned by catalogs()` =
-            catalog %in% catalogs()
+        ## catalog validation
+        `catalog must be a character scalar returned by catalogs()` =
+            .is_catalog(catalog)
     )
     lst <- bundles(size = 1L, catalog = catalog, as = "list")
     .term_facets(lst, facet)
@@ -116,19 +116,22 @@ bundles_default_columns <-
 #'
 #' @examples
 #' bundles_detail(
-#'     uuid = "00aa6c53-71b5-4c12-98c4-54eb8173ffa5",
-#'     catalog = "dcp2"
+#'     uuid = "0003b020-fd79-4747-94b0-42105f2f941b",
+#'     catalog = "dcp1"
 #' ) |> lol() |> lol_filter(is_leaf) |> print(n = Inf)
 #'
 #' @export
 bundles_detail <-
-    function (uuid, catalog = "dcp2")
+    function (uuid, catalog = NULL)
 {
+    if(is.null(catalog)){
+        catalog <- catalogs()[1]
+    }
+
     stopifnot(
-        `catalog must be a character scalar` =
-            .is_scalar_character(catalog),
-        `catalog must be one of those returned by catalogs()` =
-            catalog %in% catalogs()
+        ## catalog validation
+        `catalog must be a character scalar returned by catalogs()` =
+            .is_catalog(catalog)
     )
     .details(uuid = uuid, catalog = catalog, view = "bundles")
 }

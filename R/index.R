@@ -10,8 +10,11 @@
     stopifnot(
         `use 'filters()' to create 'filter=' argument` =
             inherits(filters, "filters"),
-        length(size) == 1L || size < 0 && size <= 1000
-        ## sort, order, catalog already validated
+        length(size) == 1L || size < 0 && size <= 1000,
+        ## sort, order  already validated
+        ## catalog validation
+        `catalog must be a character scalar returned by catalogs()` =
+            .is_catalog(catalog)
     )
 }
 
@@ -27,22 +30,19 @@
                        size = 1000L,
                        sort = "projectTitle",
                        order = c("asc", "desc"),
-                       catalog = "dcp2",
+                       catalog = NULL,
                        base_path = "/index/projects")
 {
-    ## validate
-    stopifnot(
-        `catalog must be a character scalar` =
-            .is_scalar_character(catalog),
-        `catalog must be one of those returned by catalogs()` =
-            catalog %in% catalogs()
-    )
     size <- as.integer(size)
     sort <- match.arg(sort, facet_options())
     order <- match.arg(order) # defaults from argument
 
     if(is.null(filters)){
         filters <- filters()
+    }
+
+    if(is.null(catalog)){
+        catalog <- catalogs()[1]
     }
 
     ## validate

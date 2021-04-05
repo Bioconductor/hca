@@ -17,7 +17,7 @@
 .is_scalar_integer <- function(x, na.ok = FALSE) {
     is.integer(x) && .is_scalar(x, na.ok)
 }
-             
+
 .is_scalar_numeric <- function(x, na.ok = FALSE) {
     is.numeric(x) && .is_scalar(x, na.ok)
 }
@@ -28,4 +28,8 @@
 
 .is_character <- function(x, na.ok = FALSE) {
     is.character(x) && (na.ok || !anyNA(x))
+}
+
+.is_catalog <- function(x, na.ok = FALSE) {
+    .is_scalar_character(x) && (x %in% catalogs())
 }
