@@ -27,7 +27,7 @@
 
 #' @importFrom tibble as_tibble
 .as_tbl_hca <-
-    function(x, keys)
+    function(x, keys, type)
 {
     if (is.null(names(keys))) {
         names(keys) <- keys
@@ -49,6 +49,17 @@
     attr(tbl_hca, "keys") <- keys
     attr(tbl_hca, "pagination") <- x$pagination
     class(tbl_hca) <- c("tbl_hca", class(tbl_hca))
+
+    switch(
+        type,
+        projects_tbl_hca = {class(tbl_hca) <- c("projects_tbl_hca",
+                                                class(tbl_hca))},
+        files_tbl_hca = {class(tbl_hca) <- c("files_tbl_hca", class(tbl_hca))},
+        bundles_tbl_hca = {class(tbl_hca) <- c("bundles_tbl_hca",
+                                               class(tbl_hca))},
+        samples_tbl_hca = {class(tbl_hca) <- c("samples_tbl_hca",
+                                               class(tbl_hca))}
+    )
 
     tbl_hca
 }
@@ -88,7 +99,7 @@ hca_next.tbl_hca <-
     pagination <- .tbl_hca_pagination(x)
     keys <- .tbl_hca_keys(x)
     response <- .hca_next(pagination)
-    .as_tbl_hca(response$content, keys)
+    .as_tbl_hca(response$content, keys, class(x)[1])
 }
 
 #' @rdname tbl_hca
@@ -108,5 +119,5 @@ hca_prev.tbl_hca <-
     pagination <- .tbl_hca_pagination(x)
     keys <- .tbl_hca_keys(x)
     response <- .hca_prev(pagination)
-    .as_tbl_hca(response$content, keys)
+    .as_tbl_hca(response$content, keys, class(x)[1])
 }

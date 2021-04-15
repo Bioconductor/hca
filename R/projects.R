@@ -102,7 +102,7 @@ projects <-
 
     switch(
         as,
-        tibble = .as_tbl_hca(response$content, columns),
+        tibble = .as_tbl_hca(response$content, columns, "projects_tbl_hca"),
         lol = .as_lol_hca(response$content, columns),
         list = response$content
     )

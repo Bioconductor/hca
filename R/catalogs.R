@@ -24,8 +24,7 @@ catalogs <- local({
             ## persists for the session, so catalogs() is only
             ## expensive once
             ## putting "dcp3" first to act as the default
-            CATALOGS <<- unique(c("dcp3",
-                                  names(json[["content"]][["catalogs"]])))
+            CATALOGS <<- unique(names(json[["content"]][["catalogs"]]))
         }
         CATALOGS
     }
