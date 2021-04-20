@@ -25,7 +25,6 @@ Description: This package provides users with the ability to query the
     'list-of-lists' structure representing query responses.
 License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Depends: R (>= 4.1)
