@@ -85,22 +85,26 @@ files_default_columns <-
 .single_file_download <-
     function(file_id, file_name, ref_url, base_destination)
 {
+    # creating a BiocFileCache at the specified location
     bfc <- BiocFileCache(base_destination, ask = FALSE)
+    # if file is not already in cache, proceed
     if (!NROW(bfcquery(bfc, file_id))) {
         response <- GET(ref_url)
         stop_for_status(response)
 
-        content <- content(response)
-        download_url <- content$Location
+        # location of file for download
+        download_url <- response$url
 
         extension <- paste0(".", file_ext(file_name))
 
         savepath <- bfcnew(bfc, file_id, ext = extension)
         response <- GET(
             download_url, write_disk(savepath, overwrite = TRUE),
+            # if running interactively, show file download progress bar
             if (interactive()) progress()
         )
     }
+    # return the path to the file's location in the cache
     unname(bfcrpath(bfc, file_id))
 }
 

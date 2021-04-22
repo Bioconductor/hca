@@ -104,7 +104,8 @@ file_filter <- filters(
     fileFormat = list(is = "loom")
 )
 
-file_tibble <- files(file_filter)
+# only the two smallest files
+file_tibble <- files(file_filter, size = 2, sort = "fileSize", order = "asc")
 
 file_tibble
 ```
