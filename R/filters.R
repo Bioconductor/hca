@@ -63,10 +63,10 @@ facet_options <- function() {
     facets <- facet_options()
     if (!all(names(x) %in% facets)) {
         ## invalid facet message
-        facet_msg <- paste0(
+        facet_msg <- .wrap_lines(c(
             "'filters()' facets must be one of: ",
             paste(facets, collapse = ", ")
-        )
+        ))
         stop(facet_msg)
     }
 

@@ -42,3 +42,19 @@
 .is_catalog <- function(x, na.ok = FALSE) {
     .is_scalar_character(x) && (x %in% catalogs())
 }
+
+## wrap lines to output width, with 2-character 'exdent' of lines
+## after the first
+
+.wrap_lines <-
+    function(x, exdent = 2)
+{
+    ## create a length-1 string
+    x <- paste(x, collapse = " ")
+
+    ## break into lines of fixed width
+    lines <- strwrap(x, exdent = exdent)
+
+    ## collapse into a single string with embedded new lines
+    paste(lines, collapse = "\n")
+}        
