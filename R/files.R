@@ -119,8 +119,8 @@ files_default_columns <-
 #' @param destination character() vector name of temporary directory to use
 #' for file downloads, or `NULL`
 #'
-#'
-#' @return file_destinations vector of file destinations
+#' @return `files_download()` returns a character() vector of file
+#'     destinations
 #' @importFrom dplyr %>% mutate filter
 #' @importFrom tools R_user_dir
 #'
@@ -136,13 +136,9 @@ files_default_columns <-
 files_download <-
     function (tbl, destination = NULL)
 {
-    if (is.null(destination)){
+    if (is.null(destination))
         ## this cache will persist across R sessions
-        destination <- R_user_dir(package = "hca", which = "cache")
-        if (!dir.exists(destination)){
-            dir.create(destination, recursive = TRUE)
-        }
-    }
+        destination <- files_cache(create = TRUE)
 
     stopifnot(
         inherits(tbl, "tbl_hca"),
@@ -222,4 +218,35 @@ files_detail <-
             .is_catalog(catalog)
     )
     .details(uuid = uuid, catalog = catalog, view = "files")
+}
+
+#' @rdname files
+#'
+#' @description `files_cache()` is the default location of the cache
+#'     of downloaded files.
+#'
+#' @details `files_cache()` can be useful when it is necessary to
+#'     'clean up' the cache, e.g., `BiocFileCache::cleanbfc()` or more
+#'     dramatically `unlink(files_cache(), recursive = TRUE)`.
+#'
+#' @param create logical(1) create the default cache location, if it
+#'     does not yet exist.
+#'
+#' @return `files_cache()` returns the path to the default cache. Use
+#'     this as the `cache=` argument to `BiocFileCache()`.
+#'
+#' @export
+#'
+#' @examples
+#' files_cache(create = FALSE)
+files_cache <-
+    function(create = FALSE)
+{
+    stopifnot(.is_scalar_logical(create))
+
+    cache <- R_user_dir(package = "hca", which = "cache")
+    if (create && !dir.exists(cache))
+        dir.create(cache, recursive = TRUE)
+
+    cache
 }
