@@ -6,6 +6,7 @@
 \alias{files_download}
 \alias{files_facets}
 \alias{files_detail}
+\alias{files_cache}
 \title{HCA File Querying}
 \usage{
 files(
@@ -25,6 +26,8 @@ files_download(tbl, destination = NULL)
 files_facets(facet = character(), catalog = NULL)
 
 files_detail(uuid, catalog = NULL)
+
+files_cache(create = FALSE)
 }
 \arguments{
 \item{filters}{filter object created by \code{filters()}, or \code{NULL}
@@ -68,12 +71,19 @@ than 1; details are returned when a single facet is specified.}
 
 \item{uuid}{character() unique identifier (e.g., \code{projectId}) of
 the object.}
+
+\item{create}{logical(1) create the default cache location, if it
+does not yet exist.}
 }
 \value{
-file_destinations vector of file destinations
+\code{files_download()} returns a character() vector of file
+destinations
 
 \code{files_detail()} returns a list-of-lists containing
 relevant details about the file.
+
+\code{files_cache()} returns the path to the default cache. Use
+this as the \verb{cache=} argument to \code{BiocFileCache()}.
 }
 \description{
 \code{files()} takes a list of user provided project titles
@@ -86,6 +96,14 @@ directory.
 \code{files_detail()} takes a unique file_id and catalog for
 the file, and returns details about the specified file as a
 list-of-lists
+
+\code{files_cache()} is the default location of the cache
+of downloaded files.
+}
+\details{
+\code{files_cache()} can be useful when it is necessary to
+'clean up' the cache, e.g., \code{BiocFileCache::cleanbfc()} or more
+dramatically \code{unlink(files_cache(), recursive = TRUE)}.
 }
 \examples{
 title <- paste(
@@ -109,4 +127,5 @@ files_detail(
     catalog = "dcp1"
 )
 
+files_cache(create = FALSE)
 }
