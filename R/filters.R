@@ -56,7 +56,7 @@ facet_options <- function() {
             ## all(names(x) %in% facets),
         ## do no allow values to have line breaks (i.e. newline or return chars)
         `'filters()' facets values must not contain line breaks` =
-            !any(vapply(x, function(x) grepl("\n", x), logical(1)))
+            !any(vapply(unlist(x), function(x) grepl("\n", x), logical(1)))
     )
 
     ## allowed facets
