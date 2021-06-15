@@ -89,11 +89,12 @@ files_default_columns <-
     bfc <- BiocFileCache(base_destination, ask = FALSE)
     # if file is not already in cache, proceed
     if (!NROW(bfcquery(bfc, file_id))) {
-        response <- GET(ref_url)
-        stop_for_status(response)
+        # do not follow redirect
+        config <-  httr::config(followlocation = 0)
+        response <- httr::GET(ref_url, config = config)
 
         # location of file for download
-        download_url <- response$url
+        download_url <- headers(response)$location
 
         extension <- paste0(".", file_ext(file_name))
 
