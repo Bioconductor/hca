@@ -1,5 +1,6 @@
-Changes in version 1.0 (2021-06-15)
+Changes in version 1.0 (2021-07-06)
 Bug fixes
++ (v. 1.0.2) Update `files_download()` to clarify error message
 + (v. 1.0.1) Update `files_download()` to avoid unnecessary downloads
 + (v. 1.0.1) Update `filters()` to handle long character strings without
 newline breaks
