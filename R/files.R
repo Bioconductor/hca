@@ -143,7 +143,7 @@ files_download <-
 
     stopifnot(
         inherits(tbl, "tbl_hca"),
-        `'tbl=' must contain columns "url", "name"` =
+        `'tbl=' must contain columns "fileId", "url", and "name"` =
             all(c("fileId", "url", "name") %in% names(tbl)),
         `'destination=' must be an existing directory` =
             .is_scalar_character(destination) && dir.exists(destination),
