@@ -1,3 +1,11 @@
+test_that("HCA API healthcheck", {
+    response <- httr::GET("https://service.azul.data.humancellatlas.org/health/basic")
+    ## success
+    expect_equal(response$status_code, 200)
+    ## API should be up
+    expect_true(httr::content(response)$up)
+})
+
 test_that("'.hca_GET()' works", {
     ## valid path
     test_filter <- filters(organ = list(is = "pancreas"))
