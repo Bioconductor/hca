@@ -142,9 +142,7 @@ files_download <-
         destination <- files_cache(create = TRUE)
 
     stopifnot(
-        inherits(tbl, "tbl_hca"),
-        `'tbl=' must contain columns "fileId", "url", and "name"` =
-            all(c("fileId", "url", "name") %in% names(tbl)),
+        inherits(tbl, "files_tbl_hca"),
         `'destination=' must be an existing directory` =
             .is_scalar_character(destination) && dir.exists(destination),
         `'destination=' must not contain files in tbl$name` =
