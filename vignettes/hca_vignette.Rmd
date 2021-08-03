@@ -244,8 +244,6 @@ columns <- c(
     projectTitle = "hits[*].projects[*].projectTitle",
     genusSpecies = "hits[*].donorOrganisms[*].genusSpecies[*]",
     donorCount = "hits[*].donorOrganisms[*].donorCount",
-    samples.organ = "hits[*].samples[*].organ[*]",
-    specimens.organ = "hits[*].specimens[*].organ[*]",
     cellSuspensions.organ = "hits[*].cellSuspensions[*].organ[*]",
     totalCells = "hits[*].cellSuspensions[*].totalCells"
 )

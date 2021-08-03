@@ -20,6 +20,6 @@ test_that("'files_download()' checks arguments correctly", {
                  'inherits\\(tbl, "files_tbl_hca"\\) is not TRUE')
 
     expect_error(.tbl_hca_column_check(empty_tbl,
-                                         .FILES_COLUMNS,
+                                         .FILES_REQUIRED_COLUMNS,
                                          "files_tbl_hca"))
 })
