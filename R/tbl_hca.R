@@ -1,8 +1,8 @@
 .COLUMNS_DEFAULTS <- list(
-    projects = .PROJECTS_COLUMNS,
-    files = .FILES_COLUMNS,
-    samples = .SAMPLES_COLUMNS,
-    bundles = .BUNDLES_COLUMNS
+    projects = .PROJECTS_DEFAULT_COLUMNS,
+    files = .FILES_DEFAULT_COLUMNS,
+    samples = .SAMPLES_DEFAULT_COLUMNS,
+    bundles = .BUNDLES_DEFAULT_COLUMNS
 )
 
 #' @importFrom tibble tibble
@@ -68,16 +68,16 @@
         type,
         # check that they have at least the minimum necessary columns
         projects_tbl_hca = {.tbl_hca_column_check(tbl_hca,
-                                                  .PROJECTS_COLUMNS,
+                                                  .PROJECTS_REQUIRED_COLUMNS,
                                                   "projects_tbl_hca")},
         files_tbl_hca = {.tbl_hca_column_check(tbl_hca,
-                                                  .FILES_COLUMNS,
+                                                  .FILES_REQUIRED_COLUMNS,
                                                   "files_tbl_hca")},
         samples_tbl_hca = {.tbl_hca_column_check(tbl_hca,
-                                                  .SAMPLES_COLUMNS,
+                                                  .SAMPLES_REQUIRED_COLUMNS,
                                                   "samples_tbl_hca")},
         bundles_tbl_hca = {.tbl_hca_column_check(tbl_hca,
-                                                  .BUNDLES_COLUMNS,
+                                                  .BUNDLES_REQUIRED_COLUMNS,
                                                   "bundles_tbl_hca")}
     )
 

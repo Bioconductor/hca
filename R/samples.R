@@ -1,6 +1,6 @@
 .SAMPLES_PATH <- "/index/samples"
 
-.SAMPLES_COLUMNS <- c(
+.SAMPLES_DEFAULT_COLUMNS <- c(
     entryId = "hits[*].entryId",
     projectTitle = "hits[*].projects[*].projectTitle[*]",
     genusSpecies = "hits[*].donorOrganisms[*].genusSpecies[*]",
@@ -10,6 +10,10 @@
         "hits[*].protocols[*].instrumentManufacturerModel[*]",
     fileType = "hits[*].fileTypeSummaries[*].fileType",
     count = "hits[*].fileTypeSummaries[*].count"
+)
+
+.SAMPLES_REQUIRED_COLUMNS <- c(
+    entryId = "hits[*].entryId"
 )
 
 #' @rdname samples

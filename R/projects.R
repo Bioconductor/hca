@@ -1,11 +1,15 @@
 .PROJECTS_PATH <- "/index/projects"
 
-.PROJECTS_COLUMNS <- c(
+.PROJECTS_DEFAULT_COLUMNS <- c(
     projectId = "hits[*].entryId",
     projectTitle = "hits[*].projects[*].projectTitle",
     genusSpecies = "hits[*].donorOrganisms[*].genusSpecies[*]",
     samples.organ = "hits[*].samples[*].organ[*]",
     specimens.organ = "hits[*].specimens[*].organ[*]"
+)
+
+.PROJECTS_REQUIRED_COLUMNS <- c(
+    projectId = "hits[*].entryId"
 )
 
 #' @rdname projects
