@@ -58,7 +58,10 @@ query.}
 \item{columns}{named character() indicating the paths to be used
 for parsing the 'lol' returned from the HCA to a tibble. The
 names of \code{columns} are used as column names in the returned
-tibble.}
+tibble. If the columns are unnamed, a name is derived from the
+elements of \code{path} by removing \verb{hits[*]} and all \verb{[*]}, e.g., a
+path \verb{hits[*].donorOrganisms[*].biologicalSex[*]} is given the
+name \code{donorOrganisms.biologicalSex}.}
 
 \item{tbl}{tibble of files (result of \code{files()})}
 
