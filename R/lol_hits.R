@@ -44,7 +44,9 @@ lol_hits_pull <-
     template <- lol_hits_lpull(x, path)
     idx <- vapply(template, is.null, logical(1))
 
-    if (all(lengths(template) < 2L)) {
+    if (all(idx)) { # all 'NULL' -- no information on class
+        value <- rep(NA, length(template))
+    } else if (all(lengths(template) < 2L)) {
         template <- unlist(template, use.names = FALSE)
         value <- vector(class(template), length(idx))
         value[idx] <- NA
