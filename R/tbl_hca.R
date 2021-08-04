@@ -30,10 +30,10 @@
     function(x, keys, type)
 {
     if (is.null(names(keys))) {
-        names(keys) <- keys
+        keys <- .tbl_hca_name_columns(keys)
     } else {
         idx <- !nzchar(names(keys))
-        names(keys)[idx] <- keys[idx]
+        names(keys)[idx] <- names(.tbl_hca_name_columns(keys[idx]))
     }
     lol <- .as_lol_hca(x, keys)
 
@@ -120,4 +120,25 @@ hca_prev.tbl_hca <-
     keys <- .tbl_hca_keys(x)
     response <- .hca_prev(pagination)
     .as_tbl_hca(response$content, keys, class(x)[1])
+}
+
+## utilities
+
+## clean up column queries to more user-friendly names
+.tbl_hca_name_columns <-
+    function(x)
+{
+    ## clean
+    names1 <- sub("hits[*].", "", x, fixed = TRUE)
+    names2 <- gsub("[*]", "", names1, fixed = TRUE)
+
+    ## don't clean if results in duplicates
+    count <- table(names2)
+    idx <- names2 %in% names(count)[count > 1]
+    names2[idx] <- names1[idx]
+
+    ## apply updated names
+    names(x) <- names2
+
+    x
 }
