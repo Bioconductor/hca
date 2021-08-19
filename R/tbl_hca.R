@@ -25,14 +25,18 @@
     }
 }
 
-.tbl_hca_column_check <- function(input_tbl, default_columns, new_class){
+.tbl_hca_column_check <-
+    function(input_tbl, default_columns, new_class)
+{
     if (!all(names(default_columns) %in% names(input_tbl))) {
         ## missing column message
-        error_message  <- paste0("At minimum, these columns must be included in your tibble:\n",
-                                 paste(names(default_columns),
-                                       default_columns,
-                                       collapse = "\n",
-                                       sep = ": "))
+        error_message  <- paste0(
+            "At minimum, these columns must be included in your tibble:\n    ",
+            paste(
+                sprintf('%s = \"%s\"', names(default_columns), default_columns),
+                collapse = ",\n    "
+            )
+        )
         stop(error_message)
     }
 
@@ -64,24 +68,16 @@
     attr(tbl_hca, "pagination") <- x$pagination
     class(tbl_hca) <- c("tbl_hca", class(tbl_hca))
 
-    classed_tbl_hca <- switch(
+    required_columns <- switch(
         type,
         # check that they have at least the minimum necessary columns
-        projects_tbl_hca = {.tbl_hca_column_check(tbl_hca,
-                                                  .PROJECTS_REQUIRED_COLUMNS,
-                                                  "projects_tbl_hca")},
-        files_tbl_hca = {.tbl_hca_column_check(tbl_hca,
-                                                  .FILES_REQUIRED_COLUMNS,
-                                                  "files_tbl_hca")},
-        samples_tbl_hca = {.tbl_hca_column_check(tbl_hca,
-                                                  .SAMPLES_REQUIRED_COLUMNS,
-                                                  "samples_tbl_hca")},
-        bundles_tbl_hca = {.tbl_hca_column_check(tbl_hca,
-                                                  .BUNDLES_REQUIRED_COLUMNS,
-                                                  "bundles_tbl_hca")}
+        projects_tbl_hca = .PROJECTS_REQUIRED_COLUMNS,
+        files_tbl_hca = .FILES_REQUIRED_COLUMNS,
+        samples_tbl_hca = .SAMPLES_REQUIRED_COLUMNS,
+        bundles_tbl_hca = .BUNDLES_REQUIRED_COLUMNS,
     )
 
-    classed_tbl_hca
+    .tbl_hca_column_check(tbl_hca, required_columns, type)
 }
 
 ## accessors
