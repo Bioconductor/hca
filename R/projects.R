@@ -54,7 +54,10 @@ NULL # don't add next function to documentation
 #' @param columns named character() indicating the paths to be used
 #'     for parsing the 'lol' returned from the HCA to a tibble. The
 #'     names of `columns` are used as column names in the returned
-#'     tibble.
+#'     tibble. If the columns are unnamed, a name is derived from the
+#'     elements of `path` by removing `hits[*]` and all `[*]`, e.g., a
+#'     path `hits[*].donorOrganisms[*].biologicalSex[*]` is given the
+#'     name `donorOrganisms.biologicalSex`.
 #'
 #' @seealso `lol()` and other `lol_*()` functions for working with the
 #'     list-of-list data structure returned when `as = "lol"`.
