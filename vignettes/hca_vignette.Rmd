@@ -76,8 +76,8 @@ project_tibble
 ```
 
 Use standard _R_ commands to further filter projects to the one we are
-interested in, with title starting with "Single cell
-trans...". Extract the unique `projectId` for this project.
+interested in, with title starting with "Single...".
+Extract the unique `projectId` for this project.
 
 ```{r}
 project_tibble %>%
@@ -244,30 +244,30 @@ columns <- c(
     projectTitle = "hits[*].projects[*].projectTitle",
     genusSpecies = "hits[*].donorOrganisms[*].genusSpecies[*]",
     donorCount = "hits[*].donorOrganisms[*].donorCount",
-    organ = "hits[*].cellSuspensions[*].organ[*]",
+    cellSuspensions.organ = "hits[*].cellSuspensions[*].organ[*]",
     totalCells = "hits[*].cellSuspensions[*].totalCells"
 )
 projects <- projects(filters, columns = columns)
 projects
 ```
 
-Note that the `organ` and `totalCells` columns have more than one
-entry per project.
+Note that the `cellSuspensions.organ` and `totalCells` columns have more than
+one entry per project.
 
 ```{r}
 projects |>
-   select(projectId, organ, totalCells)
+   select(projectId, cellSuspensions.organ, totalCells)
 ```
 
-In this case, the mapping between `organ` and `totalCells` is clear,
-but in general more refined navigation of the `lol` structure may be
+In this case, the mapping between `cellSuspensions.organ` and `totalCells`
+is clear, but in general more refined navigation of the `lol` structure may be
 necessary.
 
 ```{r}
 projects |>
-    select(projectId, organ, totalCells) |>
+    select(projectId, cellSuspensions.organ, totalCells) |>
     filter(lengths(totalCells) > 0) |>
-    tidyr::unnest(c("organ", "totalCells"))
+    tidyr::unnest(c("cellSuspensions.organ", "totalCells"))
 ```
 
 Select the following entry, augment the filter, and query available files

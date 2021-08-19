@@ -1,12 +1,16 @@
 .BUNDLES_PATH <- "/index/bundles"
 
-.BUNDLES_COLUMNS <- c(
+.BUNDLES_DEFAULT_COLUMNS <- c(
     projectTitle = "hits[*].projects[*].projectTitle[*]",
     genusSpecies = "hits[*].donorOrganisms[*].genusSpecies[*]",
     samples = "hits[*].samples[*].id[*]",
     files = "hits[*].files[*].name",
     bundleUuid = "hits[*].bundles[*].bundleUuid",
     bundleVersion = "hits[*].bundles[*].bundleVersion"
+)
+
+.BUNDLES_REQUIRED_COLUMNS <- c(
+    bundleUuid = "hits[*].bundles[*].bundleUuid"
 )
 
 #' @rdname bundles

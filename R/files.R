@@ -1,12 +1,23 @@
 .FILES_PATH <- "/index/files"
 
-.FILES_COLUMNS <- c(
+.FILES_DEFAULT_COLUMNS <- c(
     fileId = "hits[*].files[*].uuid",
     name = "hits[*].files[*].name",
     fileFormat = "hits[*].files[*].format",
     size = "hits[*].files[*].size",
     version = "hits[*].files[*].version",
     projectTitle = "hits[*].projects[*].projectTitle[*]",
+    projectId = "hits[*].projects[*].projectId[*]",
+    url = "hits[*].files[*].url"
+)
+
+.FILES_REQUIRED_COLUMNS <- c(
+    fileId = "hits[*].files[*].uuid",
+    name = "hits[*].files[*].name",
+    fileFormat = "hits[*].files[*].format",
+    version = "hits[*].files[*].version",
+    projectTitle = "hits[*].projects[*].projectTitle[*]",
+    projectId = "hits[*].projects[*].projectId[*]",
     url = "hits[*].files[*].url"
 )
 
@@ -142,9 +153,7 @@ files_download <-
         destination <- files_cache(create = TRUE)
 
     stopifnot(
-        inherits(tbl, "tbl_hca"),
-        `'tbl=' must contain columns "fileId", "url", and "name"` =
-            all(c("fileId", "url", "name") %in% names(tbl)),
+        inherits(tbl, "files_tbl_hca"),
         `'destination=' must be an existing directory` =
             .is_scalar_character(destination) && dir.exists(destination),
         `'destination=' must not contain files in tbl$name` =
