@@ -1,7 +1,10 @@
-Changes in version 1.0 (2021-07-06)
+Changes in RELEASE version 1.0 (2021-08-19)
 
 Bug fixes
 
++ (v. 1.0.3) Update unnamed query columns s.t. they are named more compactly
++ (v. 1.0.3) Update how `.as_tbl_hca()` supports queries where
+  all values are `NULL`
 + (v. 1.0.3) Update how class definitions for tibbles returned by
   `projects()`, `files()`, `samples()`, and `bundles()` are applied;
   ensure that all tibbles have minimum necessary columns.
