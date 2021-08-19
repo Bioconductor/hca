@@ -2,8 +2,10 @@
     projects = .PROJECTS_DEFAULT_COLUMNS,
     files = .FILES_DEFAULT_COLUMNS,
     samples = .SAMPLES_DEFAULT_COLUMNS,
-    bundles = .BUNDLES_DEFAULT_COLUMNS
+    bundles = .BUNDLES_DEFAULT_COLUMNS,
+    test = c("hits[*].foo", "hits[*].bar")
 )
+.TEST_REQUIRED_COLUMNS <- c()
 
 #' @importFrom tibble tibble
 .default_columns <-
@@ -75,6 +77,7 @@
         files_tbl_hca = .FILES_REQUIRED_COLUMNS,
         samples_tbl_hca = .SAMPLES_REQUIRED_COLUMNS,
         bundles_tbl_hca = .BUNDLES_REQUIRED_COLUMNS,
+        test_tbl_hca = .TEST_REQUIRED_COLUMNS
     )
 
     .tbl_hca_column_check(tbl_hca, required_columns, type)
