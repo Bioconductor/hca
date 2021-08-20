@@ -57,3 +57,17 @@ test_that("'lol_hits_pull()' works", {
     expect_equal(lol_hits_pull(x, "hits[*].b"), c(NA, 2, NA))
 
 })
+
+test_that("'lol_hits_pull()' works with NULL queries", {
+    content <- list(hits = list(list(foo = 1, bar = NULL)))
+
+    ## handle NULL value for '.bar'...
+    tbl <- .as_tbl_hca(content, c("hits[*].foo", "hits[*].bar"), "test_tbl_hca")
+    expect_identical(dim(tbl), c(1L, 2L))
+    expect_identical(tbl[["bar"]], NA)
+
+    ## handle NULL value for '.bar', including when only element of tibble
+    tbl <- .as_tbl_hca(content, c("hits[*].bar"), "test_tbl_hca")
+    expect_identical(dim(tbl), c(1L, 1L))
+    expect_identical(tbl[["bar"]], NA)
+})

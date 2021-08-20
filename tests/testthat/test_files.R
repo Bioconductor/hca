@@ -17,10 +17,9 @@ test_that("'files_default_columns()' works", {
 test_that("'files_download()' checks arguments correctly", {
     empty_tbl <- tibble::tibble()
     expect_error(files_download(empty_tbl),
-                 'inherits\\(tbl, "tbl_hca"\\) is not TRUE')
-    class(empty_tbl) <- c("tbl_hca", class(empty_tbl))
-    expect_error(
-        files_download(empty_tbl),
-        '\'tbl=\' must contain columns "fileId", "url", and "name"'
-    )
+                 'inherits\\(tbl, "files_tbl_hca"\\) is not TRUE')
+
+    expect_error(.tbl_hca_column_check(empty_tbl,
+                                         .FILES_REQUIRED_COLUMNS,
+                                         "files_tbl_hca"))
 })
