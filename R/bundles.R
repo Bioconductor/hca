@@ -120,9 +120,8 @@ bundles_default_columns <-
 #'
 #' @examples
 #' bundles_detail(
-#'     uuid = "0003b020-fd79-4747-94b0-42105f2f941b",
-#'     catalog = "dcp1"
-#' ) |> lol() |> lol_filter(is_leaf) |> print(n = Inf)
+#'     uuid = "0003b020-fd79-4747-94b0-42105f2f941b")
+#'     |> lol() |> lol_filter(is_leaf) |> print(n = Inf)
 #'
 #' @export
 bundles_detail <-

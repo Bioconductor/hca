@@ -122,9 +122,7 @@ samples_default_columns <-
 #'
 #' @examples
 #' samples_detail(
-#'     uuid = "46b58d7b-7143-4c0a-88f3-73d0409eb453",
-#'     catalog = "dcp1"
-#' )
+#'     uuid = "46b58d7b-7143-4c0a-88f3-73d0409eb453")
 #'
 #' @export
 samples_detail <-
