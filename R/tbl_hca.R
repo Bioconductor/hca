@@ -3,7 +3,6 @@
     files = .FILES_DEFAULT_COLUMNS,
     samples = .SAMPLES_DEFAULT_COLUMNS,
     bundles = .BUNDLES_DEFAULT_COLUMNS,
-    manifest = .MANIFEST_DEFAULT_COLUMNS,
     test = c("hits[*].foo", "hits[*].bar")
 )
 .TEST_REQUIRED_COLUMNS <- c()
@@ -11,7 +10,7 @@
 #' @importFrom tibble tibble
 .default_columns <-
     function(
-        view = c("projects", "files", "samples", "bundles", "manifest"),
+        view = c("projects", "files", "samples", "bundles"),
         as = c("tibble", "character")
     )
 {
@@ -78,7 +77,6 @@
         files_tbl_hca = .FILES_REQUIRED_COLUMNS,
         samples_tbl_hca = .SAMPLES_REQUIRED_COLUMNS,
         bundles_tbl_hca = .BUNDLES_REQUIRED_COLUMNS,
-        manifest_tbl_hca = .MANIFEST_REQUIRED_COLUMNS,
         test_tbl_hca = .TEST_REQUIRED_COLUMNS
     )
 
@@ -98,13 +96,13 @@
 #'
 #' @title 'tibble' representation of HCA query results
 #'
-#' @description `projects()`, `samples()`, `files()`, `bundles()`
-#' and `manifest()` return, by default, a 'tibble' representation of the query.
+#' @description `projects()`, `samples()`, `files()`, and `bundles()`
+#' return, by default, a 'tibble' representation of the query.
 #'
 #'     `hca_next()` returns the next 'page' of results, if available.
 #'
 #' @param x a 'tibble' returned by `projects()`, `samples()`,
-#'     `files()`, `bundles()`, or `manifest()`.
+#'     `files()`, or `bundles()`.
 #'
 #' @return `hca_next()` returns a tibble, with the same columns as
 #'     `x`, containing the next 'page' of results.

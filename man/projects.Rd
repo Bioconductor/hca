@@ -122,9 +122,7 @@ projects_facets("genusSpecies")
 projects_default_columns()
 
 projects_detail(
-    uuid = "4a95101c-9ffc-4f30-a809-f04518a23803",
-    catalog = "dcp1"
-)
+    uuid = "4a95101c-9ffc-4f30-a809-f04518a23803")
 
 }
 \seealso{

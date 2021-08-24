@@ -3,7 +3,7 @@
 \name{hca_next.tbl_hca}
 \alias{hca_next.tbl_hca}
 \alias{hca_prev.tbl_hca}
-\title{'tibble' reprsentation of HCA query results}
+\title{'tibble' representation of HCA query results}
 \usage{
 \method{hca_next}{tbl_hca}(x)
 
@@ -11,7 +11,7 @@
 }
 \arguments{
 \item{x}{a 'tibble' returned by \code{projects()}, \code{samples()},
-\code{files()}, or \code{bundles()}}
+\code{files()}, \code{bundles()}, or \code{manifest()}.}
 }
 \value{
 \code{hca_next()} returns a tibble, with the same columns as
@@ -21,8 +21,8 @@
 containing the previous 'page' of results.
 }
 \description{
-\code{projects()}, \code{samples()}, \code{files()} and \code{bundles()}
-return, by default, a 'tibble' represenation of the query.\preformatted{`hca_next()` returns the next 'page' of results, if available.
+\code{projects()}, \code{samples()}, \code{files()}, \code{bundles()}
+and \code{manifest()} return, by default, a 'tibble' representation of the query.\preformatted{`hca_next()` returns the next 'page' of results, if available.
 }
 
 \code{hca_prev()} returns the previous 'page' of results.

@@ -120,15 +120,13 @@ files_filter <- filters(
     projectId = list(is = "cddab57b-6868-4be4-806f-395ed9dd635a"),
     fileFormat = list(is = "loom")
 )
-files_tbl <- files(filter = files_filter, catalog = "dcp1")
+files_tbl <- files(filter = files_filter)
 \dontrun{files_download(files_tbl, destination = tempdir())}
 files_facets()
 files_facets("fileFormat")
 
 files_detail(
-    uuid = "ee6a75bd-3252-41ee-b253-425bbd377f0c",
-    catalog = "dcp1"
-)
+    uuid = "ee6a75bd-3252-41ee-b253-425bbd377f0c")
 
 files_cache(create = FALSE)
 }
