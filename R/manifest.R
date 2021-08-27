@@ -16,7 +16,7 @@ NULL # don't add next function to documentation
 #' @description `manifest_url_generator()` takes a filter object with criteria
 #' for the query and the catalog to search within.
 #'
-#' @param filter hca filter object
+#' @param manifest_filter hca filter object
 #'
 #' @param catalog character() name of catalog
 #'
@@ -27,23 +27,23 @@ NULL # don't add next function to documentation
 #'
 #' @examples
 #' manifest_url_generator()
-manifest_url_generator <- function(filters, catalog){
+manifest_url_generator <- function(manifest_filter, catalog){
 
     stopifnot(
         ## catalog validation
         `catalog must be a character scalar returned by catalogs()` =
             .is_catalog(catalog),
-        ## filter must be a valid filter
-        `use 'filters()' to create 'filter=' argument` =
-            inherits(filters, "filters")
+        ## manifest_filter must be a valid filter
+        `use 'filters()' to create 'manifest_filter=' argument` =
+            inherits(manifest_filter, "filters")
     )
 
-    manifest_index_path <- hca:::.index_path(
-        filters = hca:::.filters_encoding(filters),
+    manifest_index_path <- .index_path(
+        filters = .filters_encoding(manifest_filter),
         catalog = catalog,
         base_path = .MANIFEST_FILE_PATH)
 
-    manifest_uri_construct <- hca:::.hca_path(manifest_index_path)
+    manifest_uri_construct <- .hca_path(manifest_index_path)
     manifest_uri_construct
 }
 
@@ -52,7 +52,7 @@ manifest_url_generator <- function(filters, catalog){
 #' @description `manifest_uuid_constructo()` takes a filter object with criteria
 #' for the query and the catalog to search within.
 #'
-#' @param filter hca filter object
+#' @param manifest_filter hca filter object
 #'
 #' @param catalog character() name of catalog
 #'
@@ -60,40 +60,35 @@ manifest_url_generator <- function(filters, catalog){
 #' API call
 #'
 #' @importFrom jsonlite fromJSON
-#' @importFrom rlang squash
+#' @importFrom digest digest
 #'
 #' @export
 #'
 #' @examples
 #' manifest_url_generator(filters(), catalogs()[1])
-manifest_uuid_constructor <- function(filters, catalog) {
+manifest_uuid_constructor <- function(manifest_filter, catalog) {
     stopifnot(
         ## catalog validation
         `catalog must be a character scalar returned by catalogs()` =
             .is_catalog(catalog),
         ## filter must be a valid filter
-        `use 'filters()' to create 'filter=' argument` =
-            inherits(filters, "filters")
+        `use 'filters()' to create 'manifest_filter=' argument` =
+            inherits(manifest_filter, "filters")
     )
 
-    manifest_json <- hca:::.filters_json(manifest_filter)
-    manifest_list <- jsonlite::fromJSON(manifest_json)
+    manifest_list <- manifest_filter$filters
     manifest_list["catalog"] <- catalog
-    ## help from: https://stackoverflow.com/questions/50915066/names-of-leaves-of-nested-list-in-r
-    ## help from: https://stackoverflow.com/questions/22377713/concatenating-the-list-elements-in-r
-    manifest_list_condensed_values <- suppressWarnings(sapply(rlang::squash(manifest_list),
-                                                              paste,
-                                                              collapse = ","))
-    manifest_uuid <- paste(
-        names(manifest_list),
-        manifest_list_condensed_values,
-        sep = "=",
-        collapse = "&"
-    )
+    ## alphabetize the elements of the list to make order uniform
+    ## manifest_filter$filters[indices]
+    ## or hash for uuid: digest::digest(manifest_filter$filters)
+    ## remember to make different indices for each filter
+    ordered_indices <- order(names(manifest_filter$filters))
+    manifest_uuid <- digest::digest(manifest_filter$filters[ordered_indices])
+    manifest_uuid
 }
 
 ## helper function for downloading manifest
-## very similar to files:::.single_file_download
+## very similar to .single_file_download
 #' @importFrom httr progress GET stop_for_status content write_disk config
 #' @importFrom BiocFileCache BiocFileCache bfcquery bfcnew bfcrpath
 #' @importFrom tools file_ext
@@ -150,9 +145,9 @@ manifest <- function(filters = NULL, catalog = NULL) {
     if (is.null(catalog)){
         catalog <- catalogs()[1]
     }
-    manifest_uri <- manifest_url_generator(filters = filters,
+    manifest_uri <- manifest_url_generator(manifest_filter = filters,
                                            catalog = catalog)
-    manifest_uuid <- manifest_uuid_constructor(filters = filters,
+    manifest_uuid <- manifest_uuid_constructor(manifest_filter = filters,
                                                catalog = catalog)
 
     manifest_file_location <- .single_manifest_download(manifest_id = manifest_uuid,
@@ -161,19 +156,12 @@ manifest <- function(filters = NULL, catalog = NULL) {
 
     manifest_tibble <- read.csv(manifest_file_location, sep = "\t") %>%
         tibble::as_tibble()
-    ##switch(
-        ##as,
-        ##tibble = .as_tbl_hca(response$content, columns, "manifest_tbl_hca"),
-        ##lol = .as_lol_hca(response$content, columns),
-        ##list = response$content
-    ##)
-}
 
-#' @rdname manifest
-#'
-#' @export
-manifest_default_columns <- function(as = c("tibble", "character")) {
-    .default_columns("manifest", as)
+    ## make returned tbl extend tbl_df not tbl_hca
+    ## i.e. manifest_tbl_hca tbl_df ...
+    class(manifest_tibble) <- c("manifest_tbl_hca", class(manifest_tibble))
+
+    manifest_tibble
 }
 
 #' @rdname manifest

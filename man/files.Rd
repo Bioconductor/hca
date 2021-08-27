@@ -125,8 +125,9 @@ files_tbl <- files(filter = files_filter)
 files_facets()
 files_facets("fileFormat")
 
-files_detail(
-    uuid = "ee6a75bd-3252-41ee-b253-425bbd377f0c")
+file <- files(size = 1, as = "list")
+file_uuid <- file[["hits"]][[1]][["entryId"]]
+files_detail(uuid = file_uuid)
 
 files_cache(create = FALSE)
 }

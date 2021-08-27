@@ -121,8 +121,9 @@ projects_facets("genusSpecies")
 
 projects_default_columns()
 
-projects_detail(
-    uuid = "4a95101c-9ffc-4f30-a809-f04518a23803")
+project <- projects(size = 1, as = "list")
+project_uuid <- project[["hits"]][[1]][["entryId"]]
+projects_detail(uuid = project_uuid)
 
 }
 \seealso{

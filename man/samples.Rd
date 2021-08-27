@@ -86,7 +86,8 @@ samples(filters = filters)
 
 samples_facets()
 
-samples_detail(
-    uuid = "46b58d7b-7143-4c0a-88f3-73d0409eb453")
+sample <- samples(size = 1, as = "list")
+sample_uuid <- sample[["hits"]][[1]][["entryId"]]
+samples_detail(uuid = sample_uuid)
 
 }

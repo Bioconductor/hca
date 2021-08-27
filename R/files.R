@@ -209,8 +209,9 @@ files_facets <-
 #'     relevant details about the file.
 #'
 #' @examples
-#' files_detail(
-#'     uuid = "ee6a75bd-3252-41ee-b253-425bbd377f0c")
+#' file <- files(size = 1, as = "list")
+#' file_uuid <- file[["hits"]][[1]][["entryId"]]
+#' files_detail(uuid = file_uuid)
 #'
 #' @export
 files_detail <-

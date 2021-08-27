@@ -4,21 +4,20 @@
 \alias{manifest}
 \alias{manifest_url_generator}
 \alias{manifest_uuid_constructor}
-\alias{manifest_default_columns}
 \alias{manifest_cache}
 \title{HCA File Querying}
 \usage{
-manifest_url_generator(filters, catalog)
+manifest_url_generator(manifest_filter, catalog)
 
-manifest_uuid_constructor(filters, catalog)
+manifest_uuid_constructor(manifest_filter, catalog)
 
 manifest(filters = NULL, catalog = NULL)
-
-manifest_default_columns(as = c("tibble", "character"))
 
 manifest_cache(create = FALSE)
 }
 \arguments{
+\item{manifest_filter}{hca filter object}
+
 \item{catalog}{character() name of catalog}
 
 \item{create}{logical(1) create the default cache location, if it

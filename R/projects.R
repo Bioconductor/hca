@@ -204,8 +204,9 @@ projects_default_columns <-
 #' @return list-of-lists containing relevant details about the project.
 #'
 #' @examples
-#' projects_detail(
-#'     uuid = "4a95101c-9ffc-4f30-a809-f04518a23803")
+#' project <- projects(size = 1, as = "list")
+#' project_uuid <- project[["hits"]][[1]][["entryId"]]
+#' projects_detail(uuid = project_uuid)
 #'
 #' @export
 projects_detail <-

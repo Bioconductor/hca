@@ -119,9 +119,10 @@ bundles_default_columns <-
 #'     relevant details about the bundle
 #'
 #' @examples
-#' bundles_detail(
-#'     uuid = "0003b020-fd79-4747-94b0-42105f2f941b")
-#'     |> lol() |> lol_filter(is_leaf) |> print(n = Inf)
+#' bundle <- bundles(size = 1, as = "list")
+#' bundle_uuid <- bundle[["hits"]][[1]][["entryId"]]
+#' bundles_detail(uuid = bundle_uuid) |> lol() |>
+#' lol_filter(is_leaf) |> print(n = Inf)
 #'
 #' @export
 bundles_detail <-
