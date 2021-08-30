@@ -55,7 +55,7 @@ of downloaded manifest.
 dramatically \code{unlink(manifest_cache(), recursive = TRUE)}.
 }
 \examples{
-manifest_url_generator()
+manifest_url_generator(filters(), catalogs()[1])
 manifest_url_generator(filters(), catalogs()[1])
 manifest_filter <- hca::filters(
     projectId = list(is = "4a95101c-9ffc-4f30-a809-f04518a23803"),

@@ -26,7 +26,7 @@ NULL # don't add next function to documentation
 #' @export
 #'
 #' @examples
-#' manifest_url_generator()
+#' manifest_url_generator(filters(), catalogs()[1])
 manifest_url_generator <- function(manifest_filter, catalog){
 
     stopifnot(
@@ -121,7 +121,7 @@ manifest_uuid_constructor <- function(manifest_filter, catalog) {
     unname(bfcrpath(bfc, manifest_id))
 }
 
-#' @param filter hca filter object
+#' @param filters hca filter object
 #'
 #' @param catalog character() name of catalog
 #'
