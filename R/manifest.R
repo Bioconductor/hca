@@ -39,8 +39,8 @@ manifest_url_generator <- function(manifest_filter, catalog){
     )
 
     manifest_index_path <- .index_path(
-        filters = .filters_encoding(manifest_filter),
         catalog = catalog,
+        filters = .filters_encoding(manifest_filter),
         base_path = .MANIFEST_FILE_PATH)
 
     manifest_uri_construct <- .hca_path(manifest_index_path)
@@ -82,8 +82,8 @@ manifest_uuid_constructor <- function(manifest_filter, catalog) {
     ## manifest_filter$filters[indices]
     ## or hash for uuid: digest::digest(manifest_filter$filters)
     ## remember to make different indices for each filter
-    ordered_indices <- order(names(manifest_filter$filters))
-    manifest_uuid <- digest::digest(manifest_filter$filters[ordered_indices])
+    ordered_indices <- order(names(manifest_list))
+    manifest_uuid <- digest::digest(manifest_list[ordered_indices])
     manifest_uuid
 }
 
@@ -145,8 +145,10 @@ manifest <- function(filters = NULL, catalog = NULL) {
     if (is.null(catalog)){
         catalog <- catalogs()[1]
     }
+
     manifest_uri <- manifest_url_generator(manifest_filter = filters,
                                            catalog = catalog)
+
     manifest_uuid <- manifest_uuid_constructor(manifest_filter = filters,
                                                catalog = catalog)
 

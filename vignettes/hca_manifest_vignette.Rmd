@@ -1,0 +1,68 @@
+---
+title: "Human Cell Atlas Manifests"
+author: "Maya Reed McDaniel"
+date: "September 2nd, 2021"
+output: BiocStyle::html_document
+vignette: >
+  %\VignetteIndexEntry{uman Cell Atlas Manifests}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE
+)
+```
+
+# Motivation & Introduction
+
+The purpose of this vignette is to explore the file manifests available from the
+[Human Cell Atlas](https://data.humancellatlas.org/) project.
+
+These files provide a metadata summary for a collection of files in a tabular
+format, including but not limited to information about process and workflow used
+to generate the file, information about the specimens the file data were derived
+from, and identifiers connect specific projects, files, and specimens.
+
+The [WARP (WDL Analysis Research Pipelines) repository](https://broadinstitute.github.io/warp/docs/get-started)
+contains information on a variety of pipelines, and can be used alongside a
+manifest to better understand the metadata.
+
+## Installation and getting started
+
+Evaluate the following code chunk to install packages required for
+this vignette.
+
+```{r install, eval = FALSE}
+## install from Bioconductor if you haven't already
+pkgs <- c("dplyr", "LoomExperiment", "hca")
+pkgs_needed <- pkgs[!pkgs %in% rownames(installed.packages())]
+BiocManager::install(pkgs_needed)
+```
+
+Load the packages into your _R_ session.
+
+```{r setup, message = FALSE}
+library(dplyr)
+library(LoomExperiment)
+library(hca)
+```
+
+# Example: Default function parameters
+```{r}
+default_manifest_tbl <- hca::manifest()
+default_manifest_tbl
+```
+
+# Example: Manifest for a specific catalog
+```{r}
+lungmap_manifest_tbl <- hca::manifest(catalog = "lungmap")
+lungmap_manifest_tbl
+```
+
+# Example: Manifest for specific criteria
+
+# Example: Using manifest data to select files
+
+# Example: Using manifest data to annotate a `.loom` file

@@ -20,10 +20,10 @@ manifest_cache(create = FALSE)
 
 \item{catalog}{character() name of catalog}
 
+\item{filters}{hca filter object}
+
 \item{create}{logical(1) create the default cache location, if it
 does not yet exist.}
-
-\item{filter}{hca filter object}
 }
 \value{
 \code{manifest_url_generator()} returns a url string to be used in an

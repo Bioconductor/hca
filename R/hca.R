@@ -6,6 +6,8 @@
         length(path) == 1L,
         startsWith(path, "/")
     )
+    message('request for:')
+    message(paste0(.BASE_URL, path))
     paste0(.BASE_URL, path)
 }
 
@@ -27,7 +29,6 @@
 #' @importFrom httr GET stop_for_status headers content
 .hca_GET <- function(path) {
     uri <- .hca_path(path)
-
     response <- GET(uri)
     stop_for_status(response)
     list(

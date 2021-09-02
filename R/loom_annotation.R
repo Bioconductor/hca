@@ -10,7 +10,7 @@
 #' additional manifest information will be added to the object for return.
 
 #' @importFrom dplyr %>% mutate
-#' @importFrom dplyr %>% mutate
+#' @importFrom tools file_ext
 #'
 #' @param loom_file_path character() file path of loom file on user's system.
 #'

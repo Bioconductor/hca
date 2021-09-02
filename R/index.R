@@ -55,11 +55,11 @@
     )
 
     index_path <- .index_path(
+        catalog = catalog,
         filters = .filters_encoding(filters),
         size = size,
         sort = sort,
         order = order,
-        catalog = catalog,
         base_path = base_path)
 
     response <- .hca_GET(index_path)
