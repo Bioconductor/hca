@@ -1,0 +1,86 @@
+#' @rdname optimus_loom_annotation
+#'
+#' @name optimus_loom_annotation
+#'
+#' @title HCA loom file annotation
+#'
+#' @description `optimus_loom_annotation()` takes the file path location of a .loom file
+#' for which additional data will be extracted from the appropriate manifest.
+#' The .loom file will be imported as a LoomExperiment object, and the
+#' additional manifest information will be added to the object for return.
+
+#' @importFrom dplyr %>% mutate arrange filter
+#' @importFrom tools file_ext
+#' @importFrom LoomExperiment import
+#' @importFrom SummarizedExperiment colData rowData
+#' @importFrom S4Vectors metadata
+#' @importFrom SingleCellExperiment SingleCellExperiment
+#' @importFrom BiocGenerics match unique
+#'
+#' @param loom_file_path character() file path of loom file on user's system.
+#' @param catalog character() HCA catalog from which the .loom file originated.
+#'
+#' @seealso `manifest()` and related functions for working with data returned
+#' from the `*/manifest/*` HCA API endpoints.
+#'
+#' @return SingleCellExperiment object
+#'
+#' @export
+optimus_loom_annotation <- function(loom_file_path = NULL, catalog = NULL) {
+    stopifnot(
+        ## loom_file_path must be a character string
+        `loom_file_path must be a non-null file path` =
+            .is_scalar_character(loom_file_path),
+        ## loom_file_path must be an existing file
+        `loom_file_path must be an existing file` =
+            file.exists(loom_file_path),
+        ## loom_file_path must be a loom file
+        `loom_file_path must be an existing file` =
+            file_ext(loom_file_path) == 'loom',
+        ## catalog validation
+        `catalog must be a character scalar returned by catalogs()` =
+            .is_catalog(catalog)
+    )
+
+    loom_exp <- LoomExperiment::import(loom_file_path, type = "SingleCellLoomExperiment")
+
+    ## need manifest rows corresponding to each input_id of this file
+    ## projectId facet is equal to the metadata$project.provenance.document_id
+
+    project_id <- S4Vectors::metadata(loom_exp)$project.provenance.document_id
+
+    loom_filter <- hca::filters(
+        projectId = list(is = project_id)
+    )
+
+    loom_manifest_tbl <- hca::manifest(filters = loom_filter,
+                                       catalog = catalog)
+
+    ## taking only the loom file entries to avoid multiplicity
+    loom_manifest_subset_tbl <- loom_manifest_tbl %>%
+        dplyr::filter(sequencing_process.provenance.document_id %in% BiocGenerics::unique(SummarizedExperiment::colData(loom_exp)$input_id)) %>%
+        dplyr::filter(file_format == "loom")
+
+    ## before merging the additional manifest information with the colData
+    ## we must make note of the original order of the colData rows
+    original_coldata_order <- SummarizedExperiment::colData(loom_exp)$cell_names
+
+    joined_coldata_merge <- SummarizedExperiment::colData(loom_exp) %>%
+        merge(loom_manifest_subset_tbl,
+              by.x = "input_id",
+              by.y = "sequencing_process.provenance.document_id",
+              all.x = TRUE)
+
+    reorder_idx <-BiocGenerics::match(original_coldata_order, joined_coldata_merge$cell_names)
+
+    new_coldata <- joined_coldata_merge %>% dplyr::arrange(reorder_idx)
+
+    ## add manifest as a metadata field
+    new_metadata <- S4Vectors::metadata(loom_exp)
+    new_metadata['manifest'] <- list(loom_manifest_subset_tbl)
+    sce <- SingleCellExperiment(assays = SummarizedExperiment::assay(loom_exp),
+                                colData = new_coldata,
+                                rowData = SummarizedExperiment::rowData(loom_exp),
+                                metadata = new_metadata)
+
+}
