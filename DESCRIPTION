@@ -37,12 +37,16 @@ Imports:
     BiocFileCache,
     tools,
     utils,
-    digest
+    digest,
+    BiocGenerics,
+    LoomExperiment,
+    SummarizedExperiment,
+    SingleCellExperiment,
+    S4Vectors
 Suggests:
     testthat (>= 3.0.0),
     knitr,
     rmarkdown,
-    LoomExperiment,
     BiocStyle
 Config/testthat/edition: 3
 VignetteBuilder: knitr
