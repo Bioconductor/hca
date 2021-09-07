@@ -42,7 +42,8 @@ Imports:
     LoomExperiment,
     SummarizedExperiment,
     SingleCellExperiment,
-    S4Vectors
+    S4Vectors,
+    futile.logger
 Suggests:
     testthat (>= 3.0.0),
     knitr,
