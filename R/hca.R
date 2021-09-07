@@ -6,8 +6,7 @@
         length(path) == 1L,
         startsWith(path, "/")
     )
-    message('request for:')
-    message(paste0(.BASE_URL, path))
+    futile.logger::flog.debug('request for: %s/%s', .BASE_URL, path)
     paste0(.BASE_URL, path)
 }
 
