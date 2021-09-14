@@ -17,6 +17,7 @@
 #' @importFrom S4Vectors metadata
 #' @importFrom SingleCellExperiment SingleCellExperiment
 #' @importFrom BiocGenerics match unique
+#' @importFrom methods initialize as
 #'
 #' @param loom_file_path character() file path of loom file on user's system.
 #' @param catalog character() HCA catalog from which the .loom file originated.
@@ -75,7 +76,7 @@ optimus_loom_annotation <- function(loom_file_path = NULL, catalog = NULL) {
     reorder_idx <-BiocGenerics::match(original_coldata_order, joined_coldata_merge$cell_names)
 
     new_coldata <- joined_coldata_merge %>% dplyr::arrange(reorder_idx)
-    casted_coldata <- as(new_coldata, "DFrame")
+    casted_coldata <- methods::as(new_coldata, "DFrame")
 
     ## add manifest as a metadata field
     extended_metadata <- c(metadata(loom_exp),
