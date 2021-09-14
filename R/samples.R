@@ -43,7 +43,7 @@ samples <-
              sort = "projectTitle",
              order = c("asc", "desc"),
              catalog = NULL,
-             as = c("tibble", "lol", "list"),
+             as = c("tibble", "lol", "list", "tibble_all"),
              columns = samples_default_columns("character"))
 {
     if(is.null(catalog)){
@@ -55,6 +55,10 @@ samples <-
     }
 
     as <- match.arg(as) # defaults from argument
+
+    if (as == "tibble_all"){
+        columns <- all_columns("samples")
+    }
 
     response <- .index_GET(
         filters = filters,
@@ -69,7 +73,8 @@ samples <-
         as,
         tibble = .as_tbl_hca(response$content, columns, "samples_tbl_hca"),
         lol = .as_lol_hca(response$content, columns),
-        list = response$content
+        list = response$content,
+        tibble_all = .as_tbl_hca(response$content, columns, "samples_tbl_hca")
     )
 }
 

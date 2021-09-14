@@ -13,7 +13,7 @@ samples(
   sort = "projectTitle",
   order = c("asc", "desc"),
   catalog = NULL,
-  as = c("tibble", "lol", "list"),
+  as = c("tibble", "lol", "list", "tibble_all"),
   columns = samples_default_columns("character")
 )
 

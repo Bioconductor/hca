@@ -41,7 +41,7 @@ bundles <-
              sort = "projectTitle",
              order = c("asc", "desc"),
              catalog = NULL,
-             as = c("tibble", "lol", "list"),
+             as = c("tibble", "lol", "list", "tibble_all"),
              columns = bundles_default_columns("character"))
 {
     if(is.null(catalog)){
@@ -53,6 +53,10 @@ bundles <-
     }
 
     as <- match.arg(as) # defaults from argument
+
+    if (as == "tibble_all"){
+        columns <- all_columns("bundles")
+    }
 
     response <- .index_GET(
         filters = filters,
@@ -67,7 +71,8 @@ bundles <-
         as,
         tibble = .as_tbl_hca(response$content, columns, "bundles_tbl_hca"),
         lol = .as_lol_hca(response$content, columns),
-        list = response$content
+        list = response$content,
+        tibble = .as_tbl_hca(response$content, columns, "bundles_tbl_hca")
     )
 }
 

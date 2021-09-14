@@ -20,10 +20,9 @@ catalogs <- local({
         if (is.null(CATALOGS)) {
             json <- .hca_GET("/index/catalogs")
             ## `<<-` assigns _outside_ the function, to the variable
-            ## `CATALOGS` in the lcoal environment; the assignment
+            ## `CATALOGS` in the local environment; the assignment
             ## persists for the session, so catalogs() is only
             ## expensive once
-            ## putting "dcp3" first to act as the default
             CATALOGS <<- unique(names(json[["content"]][["catalogs"]]))
         }
         CATALOGS

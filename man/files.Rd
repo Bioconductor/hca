@@ -15,7 +15,7 @@ files(
   sort = "projectTitle",
   order = c("asc", "desc"),
   catalog = NULL,
-  as = c("tibble", "lol", "list"),
+  as = c("tibble", "lol", "list", "tibble_all"),
   columns = files_default_columns("character")
 )
 

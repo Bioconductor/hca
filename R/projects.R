@@ -85,7 +85,7 @@ projects <-
              sort = "projectTitle",
              order = c("asc", "desc"),
              catalog = NULL,
-             as = c("tibble", "lol", "list"),
+             as = c("tibble", "lol", "list", "tibble_all"),
              columns = projects_default_columns("character"))
 {
     if (is.null(filters)){
@@ -97,6 +97,10 @@ projects <-
     }
 
     as <- match.arg(as)
+
+    if (as == "tibble_all"){
+        columns <- all_columns("projects")
+    }
 
     response <- .index_GET(
         filters = filters,
@@ -111,7 +115,8 @@ projects <-
         as,
         tibble = .as_tbl_hca(response$content, columns, "projects_tbl_hca"),
         lol = .as_lol_hca(response$content, columns),
-        list = response$content
+        list = response$content,
+        tibble_all = .as_tbl_hca(response$content, columns, "projects_tbl_hca")
     )
 }
 
