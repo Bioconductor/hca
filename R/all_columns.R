@@ -10,7 +10,7 @@
 #' @description `all_columns()` queries the API for all available columns for
 #' either projects, files, samples, or bundles
 #'
-#' @importFrom dplyr %>% filter pull
+#' @importFrom dplyr %>% filter pull .data
 #'
 #' @return character() vector of all columns formatted like "hits[*]..."
 #'
@@ -35,6 +35,10 @@ all_columns <- local({
         )
         ## first time evaluations --  if NULL, assign it
         if (is.null(ALL_COLUMNS_PROJECTS)) {
+            ## grab just first 10? 100? 1000?
+            ## core elements may be represented even if they're not filled in
+            ## hits[*].projects[*].matrices is project specific > filter out
+            ## is the first one always going to have all columns?
             projects_json <- .hca_GET("/index/projects")
             ## `<<-` assigns _outside_ the function, to the variable
             ## `ALL_COLUMNS_PROJECTS` in the local environment; the assignment
@@ -43,8 +47,8 @@ all_columns <- local({
             all_unnamed_project_columns <- projects_json$content %>%
                 lol() %>%
                 lol_path() %>%
-                filter(is_leaf == TRUE) %>%
-                pull(path)
+                filter(.data$is_leaf == TRUE) %>%
+                pull("path")
             # must give names to required/default columns
             new_project_column_names <- as.character(all_unnamed_project_columns)
             default_col_indices <- match(.PROJECTS_DEFAULT_COLUMNS, new_project_column_names)
@@ -62,8 +66,8 @@ all_columns <- local({
             all_unnamed_file_columns <- files_json$content %>%
                 lol() %>%
                 lol_path() %>%
-                filter(is_leaf == TRUE) %>%
-                pull(path)
+                filter(.data$is_leaf == TRUE) %>%
+                pull("path")
             # must give names to required/default columns
             new_file_column_names <- as.character(all_unnamed_file_columns)
             default_col_indices <- match(.FILES_DEFAULT_COLUMNS, new_file_column_names)
@@ -81,8 +85,8 @@ all_columns <- local({
             all_unnamed_sample_columns <- samples_json$content %>%
                 lol() %>%
                 lol_path() %>%
-                filter(is_leaf == TRUE) %>%
-                pull(path)
+                filter(.data$is_leaf == TRUE) %>%
+                pull("path")
             # must give names to required/default columns
             new_sample_column_names <- as.character(all_unnamed_sample_columns)
             default_col_indices <- match(.SAMPLES_DEFAULT_COLUMNS, new_sample_column_names)
@@ -100,8 +104,8 @@ all_columns <- local({
             all_unnamed_bundle_columns <- bundles_json$content %>%
                 lol() %>%
                 lol_path() %>%
-                filter(is_leaf == TRUE) %>%
-                pull(path)
+                filter(.data$is_leaf == TRUE) %>%
+                pull("path")
             # must give names to required/default columns
             new_bundle_column_names <- as.character(all_unnamed_bundle_columns)
             default_col_indices <- match(.BUNDLES_DEFAULT_COLUMNS, new_bundle_column_names)

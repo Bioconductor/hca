@@ -13,7 +13,7 @@ bundles(
   sort = "projectTitle",
   order = c("asc", "desc"),
   catalog = NULL,
-  as = c("tibble", "lol", "list", "tibble_all"),
+  as = c("tibble", "lol", "list", "tibble_expanded"),
   columns = bundles_default_columns("character")
 )
 

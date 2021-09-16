@@ -22,9 +22,7 @@
 #'     HCA API for information about available projects.
 NULL # don't add next function to documentation
 
-#' @importFrom tidyr unnest
-#'
-#' @importFrom dplyr %>% mutate
+#' @importFrom BiocGenerics grepl
 #'
 #' @param filters filter object created by `filters()`, or `NULL`
 #'     (default; all projects).
@@ -85,7 +83,7 @@ projects <-
              sort = "projectTitle",
              order = c("asc", "desc"),
              catalog = NULL,
-             as = c("tibble", "lol", "list", "tibble_all"),
+             as = c("tibble", "lol", "list", "tibble_expanded"),
              columns = projects_default_columns("character"))
 {
     if (is.null(filters)){
@@ -98,8 +96,10 @@ projects <-
 
     as <- match.arg(as)
 
-    if (as == "tibble_all"){
-        columns <- all_columns("projects")
+    if (as == "tibble_expanded"){
+        columns_full <- all_columns("projects")
+        ## filtering out matrices columns that are project specific
+        columns <- columns_full[!grepl("matrices", columns_full, ignore.case = TRUE)]
     }
 
     response <- .index_GET(
@@ -116,8 +116,9 @@ projects <-
         tibble = .as_tbl_hca(response$content, columns, "projects_tbl_hca"),
         lol = .as_lol_hca(response$content, columns),
         list = response$content,
-        tibble_all = .as_tbl_hca(response$content, columns, "projects_tbl_hca")
+        tibble_expanded = .as_tbl_hca(response$content, columns, "projects_tbl_hca")
     )
+
 }
 
 #' @rdname projects

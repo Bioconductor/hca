@@ -10,7 +10,7 @@
 #' The .loom file will be imported as a LoomExperiment object, and the
 #' additional manifest information will be added to the object for return.
 
-#' @importFrom dplyr %>% mutate arrange filter
+#' @importFrom dplyr %>% mutate arrange filter .data
 #' @importFrom tools file_ext
 #' @importFrom LoomExperiment import
 #' @importFrom SummarizedExperiment colData rowData
@@ -60,8 +60,8 @@ optimus_loom_annotation <- function(loom_file_path = NULL, catalog = NULL) {
 
     ## taking only the loom file entries to avoid multiplicity
     loom_manifest_subset_tbl <- loom_manifest_tbl %>%
-        dplyr::filter(sequencing_process.provenance.document_id %in% BiocGenerics::unique(SummarizedExperiment::colData(loom_exp)$input_id)) %>%
-        dplyr::filter(file_format == "loom")
+        dplyr::filter(.data$sequencing_process.provenance.document_id %in% BiocGenerics::unique(SummarizedExperiment::colData(loom_exp)$input_id)) %>%
+        dplyr::filter(.data$file_format == "loom")
 
     ## before merging the additional manifest information with the colData
     ## we must make note of the original order of the colData rows

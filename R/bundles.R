@@ -23,6 +23,7 @@
 #'     to be used to query the HCA API for information about available bundles.
 NULL # don't add next function to documentation
 
+#' @importFrom BiocGenerics grepl
 #'
 #' @inheritParams projects
 #'
@@ -41,7 +42,7 @@ bundles <-
              sort = "projectTitle",
              order = c("asc", "desc"),
              catalog = NULL,
-             as = c("tibble", "lol", "list", "tibble_all"),
+             as = c("tibble", "lol", "list", "tibble_expanded"),
              columns = bundles_default_columns("character"))
 {
     if(is.null(catalog)){
@@ -54,8 +55,10 @@ bundles <-
 
     as <- match.arg(as) # defaults from argument
 
-    if (as == "tibble_all"){
-        columns <- all_columns("bundles")
+    if (as == "tibble_expanded"){
+        columns_full <- all_columns("bundles")
+        ## filtering out matrices columns that are project specific
+        columns <- columns_full[!grepl("matrices", columns_full, ignore.case = TRUE)]
     }
 
     response <- .index_GET(
@@ -72,7 +75,7 @@ bundles <-
         tibble = .as_tbl_hca(response$content, columns, "bundles_tbl_hca"),
         lol = .as_lol_hca(response$content, columns),
         list = response$content,
-        tibble = .as_tbl_hca(response$content, columns, "bundles_tbl_hca")
+        tibble_expanded = .as_tbl_hca(response$content, columns, "bundles_tbl_hca")
     )
 }
 

@@ -31,6 +31,7 @@
 #'     to be used to query the HCA API for information about available files.
 NULL # don't add next function to documentation
 
+#' @importFrom BiocGenerics grepl
 
 #' @inheritParams projects
 #'
@@ -49,7 +50,7 @@ files <-
              sort = "projectTitle",
              order = c("asc", "desc"),
              catalog = NULL,
-             as = c("tibble", "lol", "list", "tibble_all"),
+             as = c("tibble", "lol", "list", "tibble_expanded"),
              columns = files_default_columns("character"))
 {
     if (is.null(filters)){
@@ -62,8 +63,10 @@ files <-
 
     as <- match.arg(as) # defaults from argument
 
-    if (as == "tibble_all"){
-        columns <- all_columns("files")
+    if (as == "tibble_expanded"){
+        columns_full <- all_columns("files")
+        ## filtering out matrices columns that are project specific
+        columns <- columns_full[!grepl("matrices", columns_full, ignore.case = TRUE)]
     }
 
     response <- .index_GET(
@@ -80,7 +83,7 @@ files <-
         tibble = .as_tbl_hca(response$content, columns, "files_tbl_hca"),
         lol = .as_lol_hca(response$content, columns),
         list = response$content,
-        tibble_all = .as_tbl_hca(response$content, columns, "files_tbl_hca")
+        tibble_expanded = .as_tbl_hca(response$content, columns, "files_tbl_hca")
     )
 }
 
