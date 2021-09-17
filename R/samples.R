@@ -4,10 +4,7 @@
     entryId = "hits[*].entryId",
     projectTitle = "hits[*].projects[*].projectTitle[*]",
     genusSpecies = "hits[*].donorOrganisms[*].genusSpecies[*]",
-    samples.organ = "hits[*].samples[*].organ",
     disease = "hits[*].donorOrganisms[*].disease[*]",
-    instrumentManufacturerModel =
-        "hits[*].protocols[*].instrumentManufacturerModel[*]",
     fileType = "hits[*].fileTypeSummaries[*].fileType",
     count = "hits[*].fileTypeSummaries[*].count"
 )
