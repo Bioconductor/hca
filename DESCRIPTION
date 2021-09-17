@@ -44,8 +44,7 @@ Imports:
     SingleCellExperiment,
     S4Vectors,
     futile.logger,
-    methods,
-    BiocGenerics
+    methods
 Suggests:
     testthat (>= 3.0.0),
     knitr,
