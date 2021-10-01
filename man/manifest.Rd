@@ -2,49 +2,32 @@
 % Please edit documentation in R/manifest.R
 \name{manifest}
 \alias{manifest}
-\alias{manifest_url_generator}
-\alias{manifest_uuid_constructor}
 \alias{manifest_cache}
 \title{HCA File Querying}
 \usage{
-manifest_url_generator(manifest_filter, catalog)
-
-manifest_uuid_constructor(manifest_filter, catalog)
-
-manifest(filters = NULL, catalog = NULL)
+manifest(filters = NULL, catalog = NULL, update_cache = FALSE)
 
 manifest_cache(create = FALSE)
 }
 \arguments{
-\item{manifest_filter}{hca filter object}
+\item{filters}{hca filter object}
 
 \item{catalog}{character() name of catalog}
 
-\item{filters}{hca filter object}
+\item{update_cache}{logical(1) when \code{TRUE}, update an existing
+cached resource by querying the HCA data server.}
 
 \item{create}{logical(1) create the default cache location, if it
 does not yet exist.}
 }
 \value{
-\code{manifest_url_generator()} returns a url string to be used in an
-API call
-
-\code{manifest_uuid_constructo()} returns a url string to be used in an
-API call
-
 \code{manifest_cache()} returns the path to the default cache. Use
 this as the \verb{cache=} argument to \code{BiocFileCache()}.
 }
 \description{
-\code{manifest()} takes a list of user provided project titles
-to be used to query the HCA API for information about
+\code{manifest()} takes a list of user provided project
+titles to be used to query the HCA API for information about
 available manifest files.
-
-\code{manifest_url_generator()} takes a filter object with criteria
-for the query and the catalog to search within.
-
-\code{manifest_uuid_constructo()} takes a filter object with criteria
-for the query and the catalog to search within.
 
 \code{manifest_cache()} is the default location of the cache
 of downloaded manifest.
@@ -55,13 +38,14 @@ of downloaded manifest.
 dramatically \code{unlink(manifest_cache(), recursive = TRUE)}.
 }
 \examples{
-manifest_url_generator(filters(), catalogs()[1])
-manifest_url_generator(filters(), catalogs()[1])
 manifest_filter <- hca::filters(
     projectId = list(is = "4a95101c-9ffc-4f30-a809-f04518a23803"),
     fileFormat = list(is = "loom"),
     workflow = list(is = c("optimus_v4.2.2", "optimus_v4.2.3"))
-    )
-\dontrun{manifest(manifest_filter)}
+)
+\dontrun{
+result <- manifest(manifest_filter)
+result
+}
 manifest_cache(create = FALSE)
 }
