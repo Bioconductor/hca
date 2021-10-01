@@ -23,7 +23,9 @@ catalogs <- local({
             ## `CATALOGS` in the local environment; the assignment
             ## persists for the session, so catalogs() is only
             ## expensive once
-            CATALOGS <<- unique(names(json[["content"]][["catalogs"]]))
+            default_catalog <- json$content$default_catalog
+            catalogs <- names(json$content$catalogs)
+            CATALOGS <<- unique(c(default_catalog, catalogs))
         }
         CATALOGS
     }
