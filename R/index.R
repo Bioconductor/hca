@@ -9,7 +9,7 @@
 {
     stopifnot(
         `use 'filters()' to create 'filter=' argument` =
-            inherits(filters, "filters"),
+            .is_filter(filters),
         length(size) == 1L || size < 0 && size <= 1000,
         ## sort, order  already validated
         ## catalog validation

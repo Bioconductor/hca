@@ -47,7 +47,9 @@ lol_hits_pull <-
     if (all(idx)) { # all 'NULL' -- no information on class
         value <- rep(NA, length(template))
     } else if (all(lengths(template) < 2L)) {
-        template <- unlist(template, use.names = FALSE)
+        template <-
+            ## organismAgeRange is a nested list; don't unlist recursively
+            unlist(template, use.names = FALSE, recursive = FALSE)
         value <- vector(class(template), length(idx))
         value[idx] <- NA
         value[!idx] <- template

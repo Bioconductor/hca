@@ -39,8 +39,12 @@
 }
 
 #' @export
-.is_catalog <- function(x, na.ok = FALSE) {
+.is_catalog <- function(x) {
     .is_scalar_character(x) && (x %in% catalogs())
+}
+
+.is_filter <- function(x) {
+    all(inherits(x, c("filters", "hca"), which = TRUE) == 1:2)
 }
 
 ## wrap lines to output width, with 2-character 'exdent' of lines

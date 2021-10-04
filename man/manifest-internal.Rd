@@ -18,7 +18,7 @@ manifest_uuid_constructor(manifest_filter, catalog)
 \code{manifest_url_generator()} returns a url string to be used
 in an API call
 
-\code{manifest_uuid_constructo()} returns a url string to be
+\code{manifest_uuid_constructor()} returns a url string to be
 used in an API call
 }
 \description{
@@ -29,7 +29,7 @@ criteria for the query and the catalog to search within.
 with criteria for the query and the catalog to search within.
 }
 \examples{
-manifest_url_generator(filters(), catalogs()[1])
-manifest_uuid_generator(filters(), catalogs()[1])
+hca:::manifest_url_generator(filters(), catalogs()[1])
+hca:::manifest_uuid_constructor(filters(), catalogs()[1])
 }
 \keyword{internal}

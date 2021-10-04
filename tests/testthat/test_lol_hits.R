@@ -52,7 +52,7 @@ test_that("'lol_hits_pull()' works", {
     )
     x <- lol(l)
 
-    expect_equal(lol_hits_pull(x, "hits[*]"), c(1, 2, 3))
+    expect_equal(lol_hits_pull(x, "hits[*]"), list(1, 2, 3))
     expect_equal(lol_hits_pull(x, "hits[*].a"), c(1, NA, 3))
     expect_equal(lol_hits_pull(x, "hits[*].b"), c(NA, 2, NA))
 

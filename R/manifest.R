@@ -28,7 +28,7 @@ NULL # don't add next function to documentation
 #' @keywords internal
 #'
 #' @examples
-#' manifest_url_generator(filters(), catalogs()[1])
+#' hca:::manifest_url_generator(filters(), catalogs()[1])
 manifest_url_generator <-
     function(manifest_filter, catalog)
 {
@@ -58,7 +58,7 @@ manifest_url_generator <-
 #'
 #' @param catalog character() name of catalog
 #'
-#' @return `manifest_uuid_constructo()` returns a url string to be
+#' @return `manifest_uuid_constructor()` returns a url string to be
 #'     used in an API call
 #'
 #' @importFrom jsonlite fromJSON
@@ -67,7 +67,7 @@ manifest_url_generator <-
 #' @keywords internal
 #'
 #' @examples
-#' manifest_uuid_generator(filters(), catalogs()[1])
+#' hca:::manifest_uuid_constructor(filters(), catalogs()[1])
 manifest_uuid_constructor <-
     function(manifest_filter, catalog)
 {
