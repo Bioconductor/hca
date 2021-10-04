@@ -38,15 +38,14 @@ Imports:
     BiocFileCache,
     tools,
     utils,
-    digest,
-    BiocGenerics,
+    digest
+Suggests:
+    futile.logger,
     LoomExperiment,
     SummarizedExperiment,
     SingleCellExperiment,
     S4Vectors,
-    futile.logger,
-    methods
-Suggests:
+    methods,
     testthat (>= 3.0.0),
     knitr,
     rmarkdown,
