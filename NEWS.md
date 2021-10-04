@@ -1,3 +1,11 @@
+Changes in version 1.2
+
+New features
+
++ (v. 1.1.5) Implement `manifest()` endpoint. Impement `"tibble_expand"`
+  option for `projects()`, `bundles()`, `samples()`, and `files()`. Implement
+  `optimus_loom_annotation()`.
+
 Changes in RELEASE version 1.0 (2021-08-19)
 
 Bug fixes
