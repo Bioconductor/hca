@@ -83,6 +83,22 @@
     .tbl_hca_column_check(tbl_hca, required_columns, type)
 }
 
+#' @importFrom dplyr pull
+.as_expanded_tbl_hca <-
+    function(x, exclude_path_pattern, required_columns, type)
+{
+    lol <- .as_lol_hca(x, character())
+    path <-
+        lol_path(lol) |>
+        filter(.data$is_leaf) |>
+        pull("path")
+    if (length(exclude_path_pattern))
+        path <- path[!grepl(exclude_path_pattern, path, ignore.case = TRUE)]
+    column_keys <- .tbl_hca_name_columns(path)
+    keys <- .tbl_hca_add_required_columns(column_keys, required_columns)
+    .as_tbl_hca(x, keys, type)
+}
+
 ## accessors
 
 .tbl_hca_keys <- function(x)
@@ -160,4 +176,14 @@ hca_prev.tbl_hca <-
     names(x) <- names2
 
     x
+}
+
+## ensure required columns are present & first
+.tbl_hca_add_required_columns <-
+    function(x, required_columns)
+{
+    ## add required columns at front
+    x <- c(required_columns, x)
+    ## eliminate duplicate entries
+    x[!duplicated(x)]
 }

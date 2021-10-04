@@ -40,14 +40,9 @@ sort result; default: \code{"projectTitle"}.}
 \item{catalog}{character(1) source of data. Use
 \code{catalogs()} for possible values.}
 
-\item{as}{character(1) return format. Default: \code{"tibble"}, a tibble
-summarizing essential elements of HCA projects. \code{"lol"}: a
-representation of the JSON returned by the query as a
-'list-of-lists' data structure, indexed and presented to enable
-convenient filtering, selection, and extraction. \code{"list"} an R
-list (typically, highly recursive) containing detailed project
-information, constructed from the JSON response to the original
-query.}
+\item{as}{character(1) return format. One of \code{"tibble"} (default),
+\code{"lol"}, \code{"list"}, or \code{"tibble_expanded"}, as described in the
+Details and Value sections of \code{?projects}.}
 
 \item{columns}{named character() indicating the paths to be used
 for parsing the 'lol' returned from the HCA to a tibble. The
@@ -78,8 +73,8 @@ list-of-lists
 }
 \examples{
 title <- paste(
-    "Tabula Muris: Transcriptomic characterization of 20 organs and tissues",
-    "from Mus musculus at single cell resolution"
+    "Tabula Muris: Transcriptomic characterization of 20 organs and",
+    "tissues from Mus musculus at single cell resolution"
 )
 filters <- filters( projectTitle = list(is = title) )
 samples(filters = filters)

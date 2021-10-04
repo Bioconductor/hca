@@ -23,14 +23,12 @@
 #'     to be used to query the HCA API for information about available samples.
 NULL # don't add next function to documentation
 
-#' @importFrom BiocGenerics grepl
-#'
 #' @inheritParams projects
 #'
 #' @examples
 #' title <- paste(
-#'     "Tabula Muris: Transcriptomic characterization of 20 organs and tissues",
-#'     "from Mus musculus at single cell resolution"
+#'     "Tabula Muris: Transcriptomic characterization of 20 organs and",
+#'     "tissues from Mus musculus at single cell resolution"
 #' )
 #' filters <- filters( projectTitle = list(is = title) )
 #' samples(filters = filters)
@@ -45,21 +43,19 @@ samples <-
              as = c("tibble", "lol", "list", "tibble_expanded"),
              columns = samples_default_columns("character"))
 {
-    if(is.null(catalog)){
+    if (is.null(catalog)) {
         catalog <- catalogs()[1]
     }
 
-    if (is.null(filters)){
+    if (is.null(filters)) {
         filters <- filters()
     }
 
     as <- match.arg(as) # defaults from argument
 
-    if (as == "tibble_expanded"){
-        columns_full <- all_columns("samples")
-        ## filtering out matrices columns that are project specific
-        columns <- columns_full[!grepl("matrices", columns_full, ignore.case = TRUE)]
-    }
+    stopifnot(
+        .is_character(columns)
+    )
 
     response <- .index_GET(
         filters = filters,
@@ -75,7 +71,12 @@ samples <-
         tibble = .as_tbl_hca(response$content, columns, "samples_tbl_hca"),
         lol = .as_lol_hca(response$content, columns),
         list = response$content,
-        tibble_expanded = .as_tbl_hca(response$content, columns, "samples_tbl_hca")
+        tibble_expanded = .as_expanded_tbl_hca(
+            response$content,
+            exclude_path_pattern = character(),
+            required_columns = .SAMPLES_REQUIRED_COLUMNS,
+            type = "samples_tbl_hca"
+        )
     )
 }
 

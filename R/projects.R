@@ -22,8 +22,6 @@
 #'     HCA API for information about available projects.
 NULL # don't add next function to documentation
 
-#' @importFrom BiocGenerics grepl
-#'
 #' @param filters filter object created by `filters()`, or `NULL`
 #'     (default; all projects).
 #'
@@ -40,14 +38,9 @@ NULL # don't add next function to documentation
 #' @param catalog character(1) source of data. Use
 #'     `catalogs()` for possible values.
 #'
-#' @param as character(1) return format. Default: `"tibble"`, a tibble
-#'     summarizing essential elements of HCA projects. `"lol"`: a
-#'     representation of the JSON returned by the query as a
-#'     'list-of-lists' data structure, indexed and presented to enable
-#'     convenient filtering, selection, and extraction. `"list"` an R
-#'     list (typically, highly recursive) containing detailed project
-#'     information, constructed from the JSON response to the original
-#'     query.
+#' @param as character(1) return format. One of `"tibble"` (default),
+#'     `"lol"`, `"list"`, or `"tibble_expanded"`, as described in the
+#'     Details and Value sections of `?projects`.
 #'
 #' @param columns named character() indicating the paths to be used
 #'     for parsing the 'lol' returned from the HCA to a tibble. The
@@ -57,17 +50,42 @@ NULL # don't add next function to documentation
 #'     path `hits[*].donorOrganisms[*].biologicalSex[*]` is given the
 #'     name `donorOrganisms.biologicalSex`.
 #'
+#' @details The `as` argument determines the object returned by the
+#'     function. Possible values are:
+#' \itemize{
+#'
+#' \item{"tibble"}{ (default) A tibble (data.frame) summarizing
+#'   essential elements of projects, samples, bundles, or files.}
+#'
+#' \item{"lol"}{ A 'list-of-lists' representation of the JSON returned
+#'     by the query as a 'list-of-lists' data structure, indexed and
+#'     presented to enable convenient filtering, selection, and
+#'     extraction. See `?lol`.}
+#'
+#' \item{"list"}{ An R list (typically, highly recursive) containing
+#'     detailed project information, constructed from the JSON
+#'     response to the original query.}
+#'
+#' \item{"tibble_expanded"}{ A tibble (data.frame) containing (almost)
+#'     all information for each project, sample, bundle, or file. The
+#'     exception is user-contributed matrices present in `projects()`
+#'     records; these must be accessed using the `"lol"` format to
+#'     extract specific paths as a standard `"tibble"`.}
+#'
+#' }
+#'
 #' @seealso `lol()` and other `lol_*()` functions for working with the
 #'     list-of-list data structure returned when `as = "lol"`.
 #'
-#' @return When `as = "tibble"`, `projects()` returns a tibble with
-#'     each row representing an HCA project, and columns summarizing
-#'     the project. Each `.hit` is a single result; a result may
-#'     contain several projects, as indexed by `.project`.
+#' @return When `as = "tibble"` or `as = "tibble_expanded"`, a tibble
+#'     with each row representing an HCA object (project, sample,
+#'     bundle, or file, depending on the function invoked), and
+#'     columns summarizing the object. `"tibble_expanded"` columns
+#'     contains almost all information about the object, except as
+#'     noted in the Details section.
 #'
-#'     When `as = "lol"`, `projects()` returns a list-of-lists data
-#'     structure representing detailed information on each project
-#'     ('hit').
+#'     When `as = "lol"`, a list-of-lists data structure representing
+#'     detailed information on each object.
 #'
 #'     When `as = "list"`, `projects()` returns an R list, typically
 #'     containing other lists or atomic vectors, representing detailed
@@ -86,21 +104,19 @@ projects <-
              as = c("tibble", "lol", "list", "tibble_expanded"),
              columns = projects_default_columns("character"))
 {
-    if (is.null(filters)){
+    if (is.null(filters)) {
         filters <- filters()
     }
 
-    if(is.null(catalog)){
+    if(is.null(catalog)) {
         catalog <- catalogs()[1]
     }
 
     as <- match.arg(as)
 
-    if (as == "tibble_expanded"){
-        columns_full <- all_columns("projects")
-        ## filtering out matrices columns that are project specific
-        columns <- columns_full[!grepl("matrices", columns_full, ignore.case = TRUE)]
-    }
+    stopifnot(
+        .is_character(columns)
+    )
 
     response <- .index_GET(
         filters = filters,
@@ -116,9 +132,13 @@ projects <-
         tibble = .as_tbl_hca(response$content, columns, "projects_tbl_hca"),
         lol = .as_lol_hca(response$content, columns),
         list = response$content,
-        tibble_expanded = .as_tbl_hca(response$content, columns, "projects_tbl_hca")
+        tibble_expanded = .as_expanded_tbl_hca(
+            response$content,
+            exclude_path_pattern = "matrices",
+            required_columns = .PROJECTS_REQUIRED_COLUMNS,
+            type = "projects_tbl_hca"
+        )
     )
-
 }
 
 #' @rdname projects

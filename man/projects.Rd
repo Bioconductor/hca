@@ -40,14 +40,9 @@ sort result; default: \code{"projectTitle"}.}
 \item{catalog}{character(1) source of data. Use
 \code{catalogs()} for possible values.}
 
-\item{as}{character(1) return format. Default: \code{"tibble"}, a tibble
-summarizing essential elements of HCA projects. \code{"lol"}: a
-representation of the JSON returned by the query as a
-'list-of-lists' data structure, indexed and presented to enable
-convenient filtering, selection, and extraction. \code{"list"} an R
-list (typically, highly recursive) containing detailed project
-information, constructed from the JSON response to the original
-query.}
+\item{as}{character(1) return format. One of \code{"tibble"} (default),
+\code{"lol"}, \code{"list"}, or \code{"tibble_expanded"}, as described in the
+Details and Value sections of \code{?projects}.}
 
 \item{columns}{named character() indicating the paths to be used
 for parsing the 'lol' returned from the HCA to a tibble. The
@@ -65,12 +60,13 @@ than 1; details are returned when a single facet is specified.}
 the object.}
 }
 \value{
-When \code{as = "tibble"}, \code{projects()} returns a tibble with
-each row representing an HCA project, and columns summarizing
-the project. Each \code{.hit} is a single result; a result may
-contain several projects, as indexed by \code{.project}.\preformatted{When `as = "lol"`, `projects()` returns a list-of-lists data
-structure representing detailed information on each project
-('hit').
+When \code{as = "tibble"} or \code{as = "tibble_expanded"}, a tibble
+with each row representing an HCA object (project, sample,
+bundle, or file, depending on the function invoked), and
+columns summarizing the object. \code{"tibble_expanded"} columns
+contains almost all information about the object, except as
+noted in the Details section.\preformatted{When `as = "lol"`, a list-of-lists data structure representing
+detailed information on each object.
 
 When `as = "list"`, `projects()` returns an R list, typically
 containing other lists or atomic vectors, representing detailed
@@ -112,6 +108,31 @@ by \code{projects()}, \code{files()}, \code{samples()}, or \code{bundles()}.
 \code{projects_detail()} takes a unique project_id and catalog for
 the project, and returns details about the specified project as a
 list-of-lists
+}
+\details{
+The \code{as} argument determines the object returned by the
+function. Possible values are:
+\itemize{
+
+\item{"tibble"}{ (default) A tibble (data.frame) summarizing
+essential elements of projects, samples, bundles, or files.}
+
+\item{"lol"}{ A 'list-of-lists' representation of the JSON returned
+by the query as a 'list-of-lists' data structure, indexed and
+presented to enable convenient filtering, selection, and
+extraction. See \code{?lol}.}
+
+\item{"list"}{ An R list (typically, highly recursive) containing
+detailed project information, constructed from the JSON
+response to the original query.}
+
+\item{"tibble_expanded"}{ A tibble (data.frame) containing (almost)
+all information for each project, sample, bundle, or file. The
+exception is user-contributed matrices present in \code{projects()}
+records; these must be accessed using the \code{"lol"} format to
+extract specific paths as a standard \code{"tibble"}.}
+
+}
 }
 \examples{
 projects(filters())
