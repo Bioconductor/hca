@@ -6,6 +6,10 @@ New features
   option for `projects()`, `bundles()`, `samples()`, and `files()`. Implement
   `optimus_loom_annotation()`.
 
+Bug fixes
+
++ (v. 1.2.1) `manifest()` uses all rows to guess column format.
+
 Changes in RELEASE version 1.0 (2021-08-19)
 
 Bug fixes
