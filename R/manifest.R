@@ -213,7 +213,9 @@ manifest <-
         update_cache = update_cache
     )
 
-    manifest_tibble <- read_tsv(manifest_file_location, show_col_types = FALSE)
+    manifest_tibble <- read_tsv(
+        manifest_file_location, show_col_types = FALSE, guess_max = Inf
+    )
 
     ## make returned tbl extend tbl_df not tbl_hca
     ## i.e. manifest_tbl_hca tbl_df ...
