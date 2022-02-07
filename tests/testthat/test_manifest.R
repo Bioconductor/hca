@@ -1,4 +1,5 @@
 test_that("'manifest()' works with default arguments", {
+    skip("manifest() generates an internal server 500 error, 7 February, 2022")
     test_manifest <- manifest()
     expect_true(tibble::is_tibble(test_manifest))
     expect_true(inherits(test_manifest, "manifest_tbl_hca"))
