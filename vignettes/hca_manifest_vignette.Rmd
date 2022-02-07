@@ -54,14 +54,17 @@ library(LoomExperiment)
 library(hca)
 ```
 
-# Example: Default function parameters
+# Example: manifests
 
-```{r}
+The manifest for all files available can be obtained with
+
+```{r, eval = FALSE}
 default_manifest_tbl <- hca::manifest()
 default_manifest_tbl
 ```
 
-# Example: Manifest for specific criteria
+This is seldom useful; instead, create a filter identifying the files
+of interest.
 
 ```{r}
 manifest_filter <- hca::filters(
@@ -69,11 +72,19 @@ manifest_filter <- hca::filters(
     fileFormat = list(is = "loom"),
     workflow = list(is = c("optimus_v4.2.2", "optimus_v4.2.3"))
 )
+```
 
+Retrieve the manifest
+
+```{r}
 manifest_tibble <- hca::manifest(filters = manifest_filter)
 manifest_tibble
+```
 
-## what specimen organs are represented in these files?
+And perform additional filtering, e.g., identifying the specimen
+organs represented in the files.
+
+```{r}
 manifest_tibble |>
     dplyr::count(specimen_from_organism.organ)
 ```
