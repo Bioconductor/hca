@@ -5,7 +5,7 @@
     projectTitle = "hits[*].projects[*].projectTitle[*]",
     genusSpecies = "hits[*].donorOrganisms[*].genusSpecies[*]",
     disease = "hits[*].donorOrganisms[*].disease[*]",
-    fileType = "hits[*].fileTypeSummaries[*].fileType",
+    format = "hits[*].fileTypeSummaries[*].format",
     count = "hits[*].fileTypeSummaries[*].count"
 )
 
