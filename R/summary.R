@@ -23,7 +23,7 @@
 .summary_fileTypeSummaries <- function(content) {
     records <- content$fileTypeSummaries
     tibble(
-        fileType = vapply(records, `[[`, character(1), "fileType"),
+        format = vapply(records, `[[`, character(1), "format"),
         count = vapply(records, `[[`, integer(1), "count"),
         totalSize = vapply(records, `[[`, numeric(1), "totalSize")
     )
