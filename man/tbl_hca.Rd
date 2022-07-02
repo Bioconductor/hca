@@ -22,8 +22,9 @@ containing the previous 'page' of results.
 }
 \description{
 \code{projects()}, \code{samples()}, \code{files()}, and \code{bundles()}
-return, by default, a 'tibble' representation of the query.\preformatted{`hca_next()` returns the next 'page' of results, if available.
-}
+return, by default, a 'tibble' representation of the query.
+
+\code{hca_next()} returns the next 'page' of results, if available.
 
 \code{hca_prev()} returns the previous 'page' of results.
 }

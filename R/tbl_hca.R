@@ -113,9 +113,9 @@
 #' @title 'tibble' representation of HCA query results
 #'
 #' @description `projects()`, `samples()`, `files()`, and `bundles()`
-#' return, by default, a 'tibble' representation of the query.
+#'     return, by default, a 'tibble' representation of the query.
 #'
-#'     `hca_next()` returns the next 'page' of results, if available.
+#' `hca_next()` returns the next 'page' of results, if available.
 #'
 #' @param x a 'tibble' returned by `projects()`, `samples()`,
 #'     `files()`, or `bundles()`.

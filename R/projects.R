@@ -84,12 +84,12 @@ NULL # don't add next function to documentation
 #'     contains almost all information about the object, except as
 #'     noted in the Details section.
 #'
-#'     When `as = "lol"`, a list-of-lists data structure representing
-#'     detailed information on each object.
+#' When `as = "lol"`, a list-of-lists data structure representing
+#' detailed information on each object.
 #'
-#'     When `as = "list"`, `projects()` returns an R list, typically
-#'     containing other lists or atomic vectors, representing detailed
-#'     information on each project.
+#' When `as = "list"`, `projects()` returns an R list, typically
+#' containing other lists or atomic vectors, representing detailed
+#' information on each project.
 #'
 #' @examples
 #' projects(filters())
@@ -154,14 +154,14 @@ projects <-
 #'     tibble summarizing terms available as `projects()` return
 #'     values, and for use in filters. The tibble contains columns
 #'
-#'     - `facet`: the name of the facet.
-#'     - `n_terms`: the number of distinct values the facet can take.
-#'     - `n_values`: the number of occurrences of the facet term in the
-#'        entire catalog.
+#' - `facet`: the name of the facet.
+#' - `n_terms`: the number of distinct values the facet can take.
+#' - `n_values`: the number of occurrences of the facet term in the
+#'    entire catalog.
 #'
-#'     `projects_facets()` invoked with a scalar value for `facet=`
-#'     returns a tibble summarizing terms used in the facet, and the
-#'     number of occurrences of the term in the entire catalog.
+#' `projects_facets()` invoked with a scalar value for `facet=`
+#' returns a tibble summarizing terms used in the facet, and the
+#' number of occurrences of the term in the entire catalog.
 #'
 #' @examples
 #' projects_facets()
