@@ -26,7 +26,7 @@ Description: This package provides users with the ability to query the
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0
 Depends: R (>= 4.1)
 Imports:
     httr,
@@ -38,7 +38,9 @@ Imports:
     BiocFileCache,
     tools,
     utils,
-    digest
+    digest,
+    shiny,
+    DT
 Suggests:
     futile.logger,
     LoomExperiment,
