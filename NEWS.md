@@ -1,3 +1,9 @@
+Changes in version 1.6
+
+New features
+
++ (v. 1.5.1) Implement `hca_view()` for intereactive tibble view & filter
+
 Changes in version 1.2
 
 New features
