@@ -76,7 +76,7 @@
 #'     path.
 #'
 #' @examples
-#' plol <- projects(as = "lol")
+#' plol <- projects(size = 5, as = "lol")
 #' plol
 #'
 #' @export

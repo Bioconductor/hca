@@ -61,9 +61,11 @@ mutation patterns' project.
 
 ## Discover projects with loom files
 
-Use `projects()` to retrieve all projects in the HCA's default catalog.
+Use `projects()` to retrieve the first 200 projects in the HCA's
+default catalog.
+
 ```{r}
-projects()
+projects(size = 200)
 ```
 
 Use `filters()` to restrict the projects to just those that contain at
@@ -181,7 +183,7 @@ Instead of retrieving the result of `projects()` as a tibble, retrieve
 it as a 'list-of-lists'
 
 ```{r}
-projects_list <- projects(as = "list")
+projects_list <- projects(size = 200, as = "list")
 ```
 
 This is a complicated structure. We will use `lengths()`, `names()`,
@@ -215,7 +217,7 @@ Use `as = "lol"` to create a more convenient way to select, filter and
 extract elements from the list-of-lists by `projects()`.
 
 ```{r}
-lol <- projects(as = "lol")
+lol <- projects(size = 200, as = "lol")
 lol
 ```
 

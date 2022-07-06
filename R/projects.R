@@ -92,7 +92,7 @@ NULL # don't add next function to documentation
 #' information on each project.
 #'
 #' @examples
-#' projects(filters())
+#' projects(filters(), size = 100)
 #'
 #' @export
 projects <-

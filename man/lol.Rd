@@ -112,7 +112,7 @@ geometry of \verb{hits[*]}, even when the mapping between \verb{hits[*]}
 and \code{path} is not 1:1.
 }
 \examples{
-plol <- projects(as = "lol")
+plol <- projects(size = 5, as = "lol")
 plol
 
 plol |> lol_select("hits[*].projects[*]")

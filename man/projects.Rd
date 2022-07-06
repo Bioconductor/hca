@@ -138,7 +138,7 @@ extract specific paths as a standard \code{"tibble"}.}
 }
 }
 \examples{
-projects(filters())
+projects(filters(), size = 100)
 
 projects_facets()
 projects_facets("genusSpecies")
