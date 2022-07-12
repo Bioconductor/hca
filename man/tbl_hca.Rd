@@ -5,13 +5,17 @@
 \alias{hca_prev.tbl_hca}
 \title{'tibble' representation of HCA query results}
 \usage{
-\method{hca_next}{tbl_hca}(x)
+\method{hca_next}{tbl_hca}(x, size)
 
-\method{hca_prev}{tbl_hca}(x)
+\method{hca_prev}{tbl_hca}(x, size)
 }
 \arguments{
 \item{x}{a 'tibble' returned by \code{projects()}, \code{samples()},
 \code{files()}, or \code{bundles()}.}
+
+\item{size}{the (non-negative integer) number of elements to
+retrieve in the page request. The default is the number of
+elements requested in \code{x}.}
 }
 \value{
 \code{hca_next()} returns a tibble, with the same columns as
@@ -22,8 +26,11 @@ containing the previous 'page' of results.
 }
 \description{
 \code{projects()}, \code{samples()}, \code{files()}, and \code{bundles()}
-return, by default, a 'tibble' representation of the query.\preformatted{`hca_next()` returns the next 'page' of results, if available.
-}
+return, by default, a 'tibble' representation of the
+query.
+
+\code{hca_next()} returns the next 'page' of results, if
+available.
 
 \code{hca_prev()} returns the previous 'page' of results.
 }
@@ -31,6 +38,6 @@ return, by default, a 'tibble' representation of the query.\preformatted{`hca_ne
 projects <- projects(size = 5)      # projects 1-5
 next_projects <- hca_next(projects) # projects 6-10
 
-hca_prev(next_projects)            # projects 1-5
+hca_prev(next_projects)             # projects 1-5
 
 }

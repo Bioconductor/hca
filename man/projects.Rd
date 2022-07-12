@@ -65,17 +65,21 @@ with each row representing an HCA object (project, sample,
 bundle, or file, depending on the function invoked), and
 columns summarizing the object. \code{"tibble_expanded"} columns
 contains almost all information about the object, except as
-noted in the Details section.\preformatted{When `as = "lol"`, a list-of-lists data structure representing
+noted in the Details section.
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{When `as = "lol"`, a list-of-lists data structure representing
 detailed information on each object.
 
 When `as = "list"`, `projects()` returns an R list, typically
 containing other lists or atomic vectors, representing detailed
 information on each project.
-}
+}\if{html}{\out{</div>}}
 
 \code{projects_facets()} invoked with no \verb{facet=} argument returns a
 tibble summarizing terms available as \code{projects()} return
-values, and for use in filters. The tibble contains columns\preformatted{- `facet`: the name of the facet.
+values, and for use in filters. The tibble contains columns
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{- `facet`: the name of the facet.
 - `n_terms`: the number of distinct values the facet can take.
 - `n_values`: the number of occurrences of the facet term in the
    entire catalog.
@@ -83,7 +87,7 @@ values, and for use in filters. The tibble contains columns\preformatted{- `face
 `projects_facets()` invoked with a scalar value for `facet=`
 returns a tibble summarizing terms used in the facet, and the
 number of occurrences of the term in the entire catalog.
-}
+}\if{html}{\out{</div>}}
 
 \verb{*_columns()} returns a tibble with column \code{name}
 containing the column name used in the tibble returned by

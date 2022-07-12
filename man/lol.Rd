@@ -31,9 +31,9 @@ lol_path(x)
 
 \method{print}{lol}(x, ...)
 
-\method{hca_next}{lol_hca}(x)
+\method{hca_next}{lol_hca}(x, size)
 
-\method{hca_prev}{lol_hca}(x)
+\method{hca_prev}{lol_hca}(x, size)
 
 lol_hits_lpull(x, path)
 
@@ -48,6 +48,10 @@ lol_hits_pull(x, path)
 \item{...}{for \code{lol_filter()}, named filter expressions
 evaluating to a logical vector with length equal to the number
 of rows in \code{lol_path()}.}
+
+\item{size}{the (non-negative integer) number of elements to
+retrieve in the page request. The default is the number of
+elements requested in \code{x}.}
 }
 \value{
 \code{lol()} returns a representation of the list-of-lists. The

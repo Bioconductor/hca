@@ -37,27 +37,35 @@
 }
 
 ## pagination
+.hca_pagination <- function(x)
+    UseMethod(".hca_pagination")
+
+.hca_pagination.default <- function(x)
+    attr(x, "pagination")
+
 .hca_next <-
-    function(x)
+    function(x, size)
 {
-    url <- x[["next"]]
+    url <- .hca_pagination(x)[["next"]]
     if (is.null(url))
         stop("already on the last page of results", call. = FALSE)
-    .hca_GET_next_or_prev(url)
+    .hca_GET_next_or_prev(url, size)
 }
 
 .hca_prev <-
-    function(x)
+    function(x, size)
 {
-    url <- x[["previous"]]
+    url <- .hca_pagination(x)[["previous"]]
     if (is.null(url))
         stop("already on the first page of results", call. = FALSE)
-    .hca_GET_next_or_prev(url)
+    .hca_GET_next_or_prev(url, size)
 }
 
 .hca_GET_next_or_prev <-
-    function (url)
+    function (url, size)
 {
+    if (!missing(size))
+        url <- sub("&size=[0-9]+", paste0("&size=", size), url)
     response <- GET(url)
     stop_for_status(response)
     list(
@@ -77,6 +85,10 @@
 #' @param x a 'tibble' or 'lol' object returned by `projects()`,
 #'     `samples()`, `files()`, or `bundles()`.
 #'
+#' @param size the (non-negative integer) number of elements to
+#'     retrieve in the page request. The default is the number of
+#'     elements requested in `x`.
+#'
 #' @return `hca_next()` returns the next page of results as a 'tibble'
 #'     or 'lol'
 #'
@@ -87,7 +99,7 @@
 #' next_files
 #'
 #' @export
-hca_next <- function(x)
+hca_next <- function(x, size)
     UseMethod("hca_next")
 
 #' @rdname hca
@@ -100,5 +112,10 @@ hca_next <- function(x)
 #' hca_prev(next_files)             # previous results, i.e., files 1-5
 #'
 #' @export
-hca_prev <- function(x)
+hca_prev <- function(x, size)
     UseMethod("hca_prev")
+
+## bind (concatenate) two hca_* objects
+#' @export
+.hca_bind <- function(x, y)
+    UseMethod(".hca_bind")
