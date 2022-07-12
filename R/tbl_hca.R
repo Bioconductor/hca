@@ -104,21 +104,24 @@
 .tbl_hca_keys <- function(x)
     attr(x, "keys")
 
-.tbl_hca_pagination <- function(x)
-    attr(x, "pagination")
-
 #' @rdname tbl_hca
 #' @md
 #'
 #' @title 'tibble' representation of HCA query results
 #'
 #' @description `projects()`, `samples()`, `files()`, and `bundles()`
-#' return, by default, a 'tibble' representation of the query.
+#'     return, by default, a 'tibble' representation of the
+#'     query.
 #'
-#'     `hca_next()` returns the next 'page' of results, if available.
+#' @description `hca_next()` returns the next 'page' of results, if
+#'     available.
 #'
 #' @param x a 'tibble' returned by `projects()`, `samples()`,
 #'     `files()`, or `bundles()`.
+#'
+#' @param size the (non-negative integer) number of elements to
+#'     retrieve in the page request. The default is the number of
+#'     elements requested in `x`.
 #'
 #' @return `hca_next()` returns a tibble, with the same columns as
 #'     `x`, containing the next 'page' of results.
@@ -129,11 +132,10 @@
 #'
 #' @export
 hca_next.tbl_hca <-
-    function (x)
+    function (x, size)
 {
-    pagination <- .tbl_hca_pagination(x)
+    response <- .hca_next(x, size)
     keys <- .tbl_hca_keys(x)
-    response <- .hca_next(pagination)
     .as_tbl_hca(response$content, keys, class(x)[1])
 }
 
@@ -145,15 +147,14 @@ hca_next.tbl_hca <-
 #'     containing the previous 'page' of results.
 #'
 #' @examples
-#' hca_prev(next_projects)            # projects 1-5
+#' hca_prev(next_projects)             # projects 1-5
 #'
 #' @export
 hca_prev.tbl_hca <-
-    function (x)
+    function (x, size)
 {
-    pagination <- .tbl_hca_pagination(x)
+    response <- .hca_prev(x, size)
     keys <- .tbl_hca_keys(x)
-    response <- .hca_prev(pagination)
     .as_tbl_hca(response$content, keys, class(x)[1])
 }
 
@@ -186,4 +187,34 @@ hca_prev.tbl_hca <-
     x <- c(required_columns, x)
     ## eliminate duplicate entries
     x[!duplicated(x)]
+}
+
+#' @export
+.hca_bind.tbl_hca <-
+    function(x, y)
+{
+    ## Bind rows, ensuring columns are of same type. The only scenario
+    ## supported is promotion of atomic type to list-of-atomic
+
+    shared_columns <- intersect(names(x), names(y))
+    x_is_atomic <- vapply(x[shared_columns], is.atomic, logical(1))
+    y_is_atomic <- vapply(y[shared_columns], is.atomic, logical(1))
+    inconsistent_columns <- x_is_atomic != y_is_atomic
+
+    ## put atomic column into list, if necessary
+    update <- shared_columns[inconsistent_columns & x_is_atomic]
+    x[update] <- lapply(x[update], as.list)
+
+    update <- shared_columns[inconsistent_columns & y_is_atomic]
+    y[update] <- lapply(y[update], as.list)
+
+    ## bind rows of now-consistent tbls
+    tbl <- bind_rows(x, y)
+
+    ## update pagination
+    pagination <- .hca_pagination(y)
+    pagination[["previous"]] <- .hca_pagination(x)[["previous"]]
+    attr(tbl, "pagination") <- pagination
+
+    tbl
 }

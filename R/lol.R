@@ -316,9 +316,6 @@ print.lol <-
 
 ## pagination
 
-.lol_hca_pagination <- function(x)
-    attr(x, "pagination")
-
 .lol_hca_keys <- function(x)
     attr(x, "keys")
 
@@ -331,6 +328,10 @@ print.lol <-
 #' @param x a 'list-of-lists' returned by `projects()`, `samples()`,
 #'     `files()`, or `bundles()`
 #'
+#' @param size the (non-negative integer) number of elements to
+#'     retrieve in the page request. The default is the number of
+#'     elements requested in `x`.
+#'
 #' @return `hca_next()` returns a list-of-lists containing the next
 #'     'page' of results.
 #'
@@ -340,11 +341,10 @@ print.lol <-
 #'
 #' @export
 hca_next.lol_hca <-
-    function(x)
+    function(x, size)
 {
-    pagination <- .lol_hca_pagination(x)
+    response <- .hca_next(x, size)
     keys <- .lol_hca_keys(x)
-    response <- .hca_next(pagination)
     .as_lol_hca(response$content, keys)
 }
 
@@ -360,10 +360,29 @@ hca_next.lol_hca <-
 #'
 #' @export
 hca_prev.lol_hca <-
-    function(x)
+    function(x, size)
 {
-    pagination <- .lol_hca_pagination(x)
+    response <- .hca_prev(x, size)
     keys <- .lol_hca_keys(x)
-    response <- .hca_prev(pagination)
     .as_lol_hca(response$content, keys)
+}
+
+#' @export
+.hca_bind.lol_hca <-
+    function(x, y)
+{
+    ## bind list of hits & create a new object
+    hits_x <- .lol_lol(x)[["hits"]]
+    hits_y <- .lol_lol(y)[["hits"]]
+    lol <- lol(list(hits = c(hits_x, hits_y)))
+
+    class(lol) <- class(y)
+    attr(lol, "keys") <- attr(y, "keys")
+
+    ## update pagination
+    pagination <- attr(y, "pagination")
+    pagination[["previous"]] <- .hca_pagination(x)[["previous"]]
+    attr(lol, "pagination") <- pagination
+
+    lol
 }
