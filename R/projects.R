@@ -115,23 +115,27 @@ projects <-
     as <- match.arg(as)
 
     stopifnot(
+        size > 0L,
         .is_character(columns)
     )
 
+    ## project queries are limited to 100 at a time...
+    remaining <- size
+    query_size <- min(100L, remaining)
     response <- .index_GET(
         filters = filters,
-        size = size,
+        size = query_size,
         sort = sort,
         order = order,
         catalog = catalog,
         base_path = .PROJECTS_PATH
     )
 
-    switch(
+    value <- query_value <- switch(
         as,
         tibble = .as_tbl_hca(response$content, columns, "projects_tbl_hca"),
         lol = .as_lol_hca(response$content, columns),
-        list = response$content,
+        list = .as_list_hca(response$content),
         tibble_expanded = .as_expanded_tbl_hca(
             response$content,
             exclude_path_pattern = "matrices",
@@ -139,6 +143,19 @@ projects <-
             type = "projects_tbl_hca"
         )
     )
+
+    repeat {
+        remaining <- remaining - query_size
+        no_next_page <- is.null(.hca_pagination(query_value)[["next"]])
+        if (remaining <= 0L || no_next_page)
+            break
+
+        query_size <- min(100L, remaining)
+        query_value <- hca_next(query_value, query_size)
+        value <- .hca_bind(value, query_value)
+    }
+
+    value
 }
 
 #' @rdname projects

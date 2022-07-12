@@ -4,6 +4,12 @@ New features
 
 + (v. 1.5.1) Implement `hca_view()` for intereactive tibble view & filter
 
+Bug fixes
+
++ (v. 1.5.2) `projects()` constructs the complete tibble of projects
+  by paging through result sets of size 100, to accommodate upstream
+  changes. See https://github.com/Bioconductor/hca/issues/33
+
 Changes in version 1.2
 
 New features

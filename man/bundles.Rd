@@ -9,7 +9,7 @@
 \usage{
 bundles(
   filters = NULL,
-  size = 1000L,
+  size = 100L,
   sort = "projectTitle",
   order = c("asc", "desc"),
   catalog = NULL,

@@ -5,13 +5,17 @@
 \alias{hca_prev}
 \title{Page through HCA results}
 \usage{
-hca_next(x)
+hca_next(x, size)
 
-hca_prev(x)
+hca_prev(x, size)
 }
 \arguments{
 \item{x}{a 'tibble' or 'lol' object returned by \code{projects()},
 \code{samples()}, \code{files()}, or \code{bundles()}.}
+
+\item{size}{the (non-negative integer) number of elements to
+retrieve in the page request. The default is the number of
+elements requested in \code{x}.}
 }
 \value{
 \code{hca_next()} returns the next page of results as a 'tibble'

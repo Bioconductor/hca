@@ -36,7 +36,7 @@ NULL # don't add next function to documentation
 #' @export
 bundles <-
     function(filters = NULL,
-             size = 1000L,
+             size = 100L,
              sort = "projectTitle",
              order = c("asc", "desc"),
              catalog = NULL,
@@ -54,8 +54,12 @@ bundles <-
     as <- match.arg(as) # defaults from argument
 
     stopifnot(
+        size > 0L,
         .is_character(columns)
     )
+
+    if (size > 100L && identical(as, "lol"))
+        stop("'size' must be <= 100 when 'as = \"lol\"'")
 
     response <- .index_GET(
         filters = filters,
