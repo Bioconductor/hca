@@ -3,9 +3,25 @@
 .PROJECTS_DEFAULT_COLUMNS <- c(
     projectId = "hits[*].entryId",
     projectTitle = "hits[*].projects[*].projectTitle",
-    genusSpecies = "hits[*].donorOrganisms[*].genusSpecies[*]",
-    samples.organ = "hits[*].samples[*].organ[*]",
-    specimens.organ = "hits[*].specimens[*].organ[*]"
+    genusSpecies = "hits[*].donorOrganisms[*].genusSpecies[*]", # Species
+    sampleEntityType = "hits[*].samples[*].sampleEntityType[*]", # Sample Type
+    specimenOrgan = "hits[*].specimens[*].organ[*]", # Anatomical Entity
+    specimenOrganPart = "hits[*].specimens[*].organPart[*]", # Organ Part
+    ## modelOrgan =  , # Model Organ -- organoids|cellLines
+    selectedCellType =
+        "hits[*].cellSuspensions[*].selectedCellType[*]", # Selected Cell Types
+    libraryConstructionApproach =
+        "hits[*].protocols[*].libraryConstructionApproach[*]", # Library Construction Method
+    nucleicAcidSource = "hits[*].protocols[*].nucleicAcidSource[*]", # Nucleic Acid Source
+    pairedEnd = "hits[*].protocols[*].pairedEnd[*]", # Paired End
+    workflow = "hits[*].protocols[*].workflow[*]", # Analysis Protocol
+    specimenDisease = "hits[*].specimens[*].disease[*]", # Disease Status (Specimen)
+    donorDisease = "hits[*].donorOrganisms[*].disease[*]", # Disease Status (Donor)
+    developmentStage = "hits[*].donorOrganisms[*].developmentStage[*]" # Development Stage
+    ## Donor Count
+    ## Cell Count Estimate
+    ## Submission Date
+    ## Update Date
 )
 
 .PROJECTS_REQUIRED_COLUMNS <- c(

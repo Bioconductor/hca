@@ -18,6 +18,19 @@
     function(tbl)
 {
     ## use this function to capture 'tbl' in the server function
+
+    if (packageVersion("DT") >= "0.23.2") {
+        ## format 'list-columns' with ', ' between elements
+        is_list_column <- vapply(tbl, inherits, logical(1), "list")
+        list_columns <- names(tbl)[is_list_column]
+        columnDefs = list(list(
+            targets = list_columns,
+            render = list("_" = "[, ]")
+        ))
+    } else {
+        columnDefs = NULL
+    }    
+
     function(input, output) {
         output$hca = renderDataTable({
             datatable(
@@ -25,7 +38,9 @@
                 selection = 'multiple',
                 rownames = FALSE,
                 options = list(
-                    scrollY = TRUE
+                    scrollX = TRUE,
+                    scrollY = TRUE,
+                    columnDefs = columnDefs
                 )
             ) |>
                 formatStyle(colnames(tbl), 'vertical-align' = "top")
