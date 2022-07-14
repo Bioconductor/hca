@@ -9,6 +9,9 @@ User visible changes
 + (v. 1.5.3) Provide more default `projects()` columns (similar to
   data portal).
 
++ (v. 1.5.4) Improve vignette readability by shortening output of some
+  code chunks; use built-in 'pipe', `|>`.
+
 Bug fixes
 
 + (v. 1.5.2) `projects()` constructs the complete tibble of projects

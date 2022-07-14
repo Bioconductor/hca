@@ -78,17 +78,18 @@ project_tibble
 ```
 
 Use standard _R_ commands to further filter projects to the one we are
-interested in, with title starting with "Single...".
-Extract the unique `projectId` for this project.
+interested in, with title starting with "Single...".  Extract the
+unique `projectId` for the first project with this title.
 
 ```{r}
-project_tibble %>%
-    filter(startsWith(projectTitle, "Single")) %>%
+project_tibble |>
+    filter(startsWith(projectTitle, "Single")) |>
+    head(1) |>
     t()
 
 projectIds <-
-    project_tibble %>%
-    filter(startsWith(projectTitle, "Single")) %>%
+    project_tibble |>
+    filter(startsWith(projectTitle, "Single")) |>
     dplyr::pull(projectId)
 
 projectId <- projectIds[1]
@@ -119,7 +120,7 @@ simply copy the url into a browser. We'll download the file and then
 immediately import it into _R_.
 
 ```{r}
-file_locations <- file_tibble %>% files_download()
+file_locations <- file_tibble |> files_download()
 
 LoomExperiment::import(unname(file_locations[1]),
                        type ="SingleCellLoomExperiment")
@@ -286,8 +287,8 @@ projects |>
 Select the following entry, augment the filter, and query available files
 
 ```{r}
-projects %>%
-    filter(startsWith(projectTitle, "Reconstruct")) %>%
+projects |>
+    filter(startsWith(projectTitle, "Reconstruct")) |>
     t()
 ```
 
@@ -306,9 +307,9 @@ filters <- filters(
     fileFormat = list(is = "h5ad")
 )
 files <-
-    files(filters) %>%
+    files(filters) |>
     head(1)            # only first file, for demonstration
-files %>% t()
+files |> t()
 ```
 
 ```{r, eval = FALSE}
@@ -332,7 +333,7 @@ sce
 project_filter <- filters(fileFormat = list(is = "csv"))
 project_tibble <- projects(project_filter)
 
-project_tibble %>%
+project_tibble |>
     filter(
         startsWith(
             projectTitle,
@@ -341,13 +342,13 @@ project_tibble %>%
     )
 
 projectId <-
-    project_tibble %>%
+    project_tibble |>
     filter(
         startsWith(
             projectTitle,
             "Reconstructing the human first trimester"
         )
-    ) %>%
+    ) |>
     pull(projectId)
 
 file_filter <- filters(
@@ -358,7 +359,7 @@ file_filter <- filters(
 ## first 4 files will be returned
 file_tibble <- files(file_filter, size = 4)
 
-file_tibble %>%
+file_tibble |>
     files_download()
 ```
 
@@ -374,29 +375,29 @@ Pagination works for the default `tibble` output
 page_1_tbl <- projects(size = 30)
 page_1_tbl
 
-page_2_tbl <- page_1_tbl %>% hca_next()
+page_2_tbl <- page_1_tbl |> hca_next()
 page_2_tbl
 
 ## should be identical to page_1_tbl
-page_2_tbl %>% hca_prev()
+page_2_tbl |> hca_prev()
 ```
 
 Pagination also works for the `lol` objects
 
 ```{r}
 page_1_lol <- projects(size = 5, as = "lol")
-page_1_lol %>%
+page_1_lol |>
     lol_pull("hits[*].projects[*].projectTitle")
 
 page_2_lol <-
-    page_1_lol %>%
+    page_1_lol |>
     hca_next()
-page_2_lol %>%
+page_2_lol |>
     lol_pull("hits[*].projects[*].projectTitle")
 
 ## should be identical to page_1_lol
-page_2_lol %>%
-    hca_prev() %>%
+page_2_lol |>
+    hca_prev() |>
     lol_pull("hits[*].projects[*].projectTitle")
 ```
 
@@ -434,20 +435,41 @@ heart_projects <- projects(filters = heart_filters, size = 4)
 heart_projects
 
 projectId <-
-    heart_projects %>%
+    heart_projects |>
     filter(
         startsWith(
             projectTitle,
             "Cells of the adult human"
         )
-    ) %>%
+    ) |>
     dplyr::pull(projectId)
 
-projects_detail(uuid = projectId)
+result <- projects_detail(uuid = projectId)
+```
+
+The result is a list containing three elements representing
+information for navigating next or previous (alphabetical, by default)
+(`pagination`) project, the filters (`termFacets`) available, and
+details of the project (`hits`).
+```{r}
+names(result)
+```
+
+As mentioned above, the `hits` are a complicated list-of-lists
+structure.  A very convenient way to explore this structure visually
+is with `listview::jsonedit(result)`. Selecting individual elements is
+possible using the `lol` interface; an alternative is
+`cellxgenedp::jmespath()`.
+
+```{r}
+lol(result)
 ```
 
 # Exploring manifest files
-**See the accompanying "Human Cell Atlas Manifests" vignette on details pertaining to the use of the `manifest` endpoint and further annotation of `.loom` files**
+
+See the accompanying "Human Cell Atlas Manifests" vignette on details
+pertaining to the use of the `manifest` endpoint and further
+annotation of `.loom` files.
 
 # Session info
 
