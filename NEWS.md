@@ -6,6 +6,11 @@ Bug fixes
   by paging through result sets of size 100, to accommodate upstream
   changes. See https://github.com/Bioconductor/hca/issues/33
 
+User visible changes
+
+- (v. 1.4.2) Improve vignette readability by shortening output of some
+  code chunks.
+
 Changes in version 1.2
 
 New features
