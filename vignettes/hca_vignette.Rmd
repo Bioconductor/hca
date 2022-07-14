@@ -76,12 +76,13 @@ project_tibble
 ```
 
 Use standard _R_ commands to further filter projects to the one we are
-interested in, with title starting with "Single...".
-Extract the unique `projectId` for this project.
+interested in, with title starting with "Single...".  Extract the
+unique `projectId` for the first project with this title.
 
 ```{r}
 project_tibble %>%
     filter(startsWith(projectTitle, "Single")) %>%
+    head(1) %>%
     t()
 
 projectIds <-
@@ -441,11 +442,32 @@ projectId <-
     ) %>%
     dplyr::pull(projectId)
 
-projects_detail(uuid = projectId)
+result <- projects_detail(uuid = projectId)
+```
+
+The result is a list containing three elements representing
+information for navigating next or previous (alphabetical, by default)
+(`pagination`) project, the filters (`termFacets`) available, and
+details of the project (`hits`).
+```{r}
+names(result)
+```
+
+As mentioned above, the `hits` are a complicated list-of-lists
+structure.  A very convenient way to explore this structure visually
+is with `listview::jsonedit(result)`. Selecting individual elements is
+possible using the `lol` interface; an alternative is
+`cellxgenedp::jmespath()`.
+
+```{r}
+lol(result)
 ```
 
 # Exploring manifest files
-**See the accompanying "Human Cell Atlas Manifests" vignette on details pertaining to the use of the `manifest` endpoint and further annotation of `.loom` files**
+
+See the accompanying "Human Cell Atlas Manifests" vignette on details
+pertaining to the use of the `manifest` endpoint and further
+annotation of `.loom` files.
 
 # Session info
 
