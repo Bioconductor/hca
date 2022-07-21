@@ -31,7 +31,7 @@ validated filters in a format suitable for use in \code{projects()}
 and related functions.
 }
 \description{
-\code{facet_options()} returns a vector of possible facets
+\code{facet_options()} returns a character vector of possible facets
 to use during filtering.
 
 \code{filters()} takes user input to be used as query

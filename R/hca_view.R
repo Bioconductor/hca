@@ -14,6 +14,8 @@
 #'
 #' @importFrom DT renderDataTable datatable dataTableOutput
 #'     formatStyle
+#'
+#' @importFrom utils packageVersion
 .hca_view_server <-
     function(tbl)
 {
