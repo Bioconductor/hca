@@ -8,27 +8,25 @@
 #'
 #' @title HCA Filter Construction
 #'
-#' @description `filters()` takes user input to be used as query
-#'     filters. Each named argument is a list with a name specifying a
-#'     verb (e.g., `"is"`) and a character vector of allowed values,
-#'     as in the examples. This input is then validated, reformatted
-#'     to JSON, and encoded into a properly formatted URL.
-
-## helper functions
-
+#' @description `facet_options()` returns a character vector of possible facets
+#'     to use during filtering.
+#'
 #' @return `facet_options()` returns a vector of all permissible query
 #'     facets for the HCA api.
 #'
 #' @importFrom jsonlite read_json
 #'
+#' @examples
+#' facet_options()
+#'
 #' @export
 facet_options <- function() {
     json <- .hca_openapi()
-    parameters <- json$paths$`/index/projects`$get$parameters
+    parameters <- json$paths[["/index/{entity_type}"]]$get$parameters
     parameter_names <- vapply(parameters, `[[`, character(1), "name")
     filter_parameter_idx <- which(!is.na(match(parameter_names, "filters")))
     filter_parameter <- parameters[[filter_parameter_idx]]
-    names(filter_parameter$content$`application/json`$schema$properties)
+    names(filter_parameter$content[["application/json"]]$schema$properties)
 }
 
 ## internal only
@@ -74,6 +72,12 @@ facet_options <- function() {
 }
 
 #' @rdname filters
+#'
+#' @description `filters()` takes user input to be used as query
+#'     filters. Each named argument is a list with a name specifying a
+#'     verb (e.g., `"is"`) and a character vector of allowed values,
+#'     as in the examples. This input is then validated, reformatted
+#'     to JSON, and encoded into a properly formatted URL.
 #'
 #' @param ... named arguments, each of which is a `list()` specifying
 #'     a query facet and its corresponding value to be used in the

@@ -31,6 +31,9 @@ validated filters in a format suitable for use in \code{projects()}
 and related functions.
 }
 \description{
+\code{facet_options()} returns a vector of possible facets
+to use during filtering.
+
 \code{filters()} takes user input to be used as query
 filters. Each named argument is a list with a name specifying a
 verb (e.g., \code{"is"}) and a character vector of allowed values,
@@ -38,6 +41,8 @@ as in the examples. This input is then validated, reformatted
 to JSON, and encoded into a properly formatted URL.
 }
 \examples{
+facet_options()
+
 filters()
 
 filters(
