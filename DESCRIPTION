@@ -1,6 +1,6 @@
 Package: hca
 Title: Exploring the Human Cell Atlas Data Coordinating Platform
-Version: 1.5.4
+Version: 1.5.5
 Authors@R:
     c(person(given = "Maya",
            family = "McDaniel",

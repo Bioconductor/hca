@@ -18,6 +18,9 @@ Bug fixes
   by paging through result sets of size 100, to accommodate upstream
   changes. See https://github.com/Bioconductor/hca/issues/33
 
++ (v. 1.5.5) `facet_options()`consults the correct part of the updated
+  API specification to find available filters.
+
 Changes in version 1.2
 
 New features
