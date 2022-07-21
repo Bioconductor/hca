@@ -6,6 +6,9 @@ Bug fixes
   by paging through result sets of size 100, to accommodate upstream
   changes. See https://github.com/Bioconductor/hca/issues/33
 
++ (v. 1.4.2) `facet_options()`consults the correct part of the updated
+  API specification to find available filters.
+
 User visible changes
 
 - (v. 1.4.2) Improve vignette readability by shortening output of some
