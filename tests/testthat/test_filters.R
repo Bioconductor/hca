@@ -1,3 +1,9 @@
+test_that("'facet_options()' works", {
+    object <- facet_options()
+    expect_type(object, "character")
+    expect_true(length(object) > 1L)
+})
+
 test_that("'filters()' works", {
 
     ## empty object
