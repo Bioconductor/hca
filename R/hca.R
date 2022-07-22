@@ -1,3 +1,8 @@
+## dev url: "https://service.dev.singlecell.gi.ucsc.edu"
+## use with environment variable BIOCONDUCTOR_HCA_BASE_URL
+## Sys.setenv(
+##    BIOCONDUCTOR_HCA_BASE_URL = "https://service.dev.singlecell.gi.ucsc.edu"
+## ))
 .BASE_URL <- "https://service.azul.data.humancellatlas.org"
 
 .hca_path <- function(path) {

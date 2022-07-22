@@ -62,3 +62,11 @@
     ## collapse into a single string with embedded new lines
     paste(lines, collapse = "\n")
 }        
+
+## .onLoad
+
+.onLoad <-
+    function(libname, pkgname)
+{
+    .BASE_URL <<- Sys.getenv("BIOCONDUCTOR_HCA_BASE_URL", .BASE_URL)
+}
