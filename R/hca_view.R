@@ -42,6 +42,7 @@
                 options = list(
                     scrollX = TRUE,
                     scrollY = TRUE,
+                    pageLength = 100,
                     columnDefs = columnDefs
                 )
             ) |>
