@@ -43,7 +43,6 @@ Imports:
     miniUI,
     DT
 Suggests:
-    futile.logger,
     LoomExperiment,
     SummarizedExperiment,
     SingleCellExperiment,
