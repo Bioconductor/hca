@@ -4,10 +4,19 @@
 \alias{catalogs}
 \title{Catalogs Available in the HCA}
 \usage{
-catalogs()
+catalogs(catalog = NULL)
+}
+\arguments{
+\item{catalog}{\code{character(1)} default catalog. When missing or
+NULL, the catalog defined by the Human Cell Atlas API is used;
+this is usually the most recently available catalog. Providing
+a non-null argument changes the default globally; restore
+default order by explicitly defining the arugment \code{catalog = NULL}.}
 }
 \value{
-character() vector of available catalogs
+character() vector of available catalogs. The first is the
+default, defined by the API or by the user with argument
+\code{catalog}.
 }
 \description{
 \code{catalogs()} queries the API for all available project catalogs

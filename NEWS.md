@@ -4,6 +4,9 @@ New features
 
 + (v. 1.5.1) Implement `hca_view()` for intereactive tibble view & filter
 
++ (v. 1.5.7) Allow user to specify prefered catalog via argument to
+  `catalogs()`
+
 User visible changes
 
 + (v. 1.5.3) Provide more default `projects()` columns (similar to
