@@ -47,6 +47,16 @@
     all(inherits(x, c("filters", "hca"), which = TRUE) == 1:2)
 }
 
+.is_project_id <- local({
+    HEX_PATTERN <- paste0("^", paste0(
+        "[0-9abcdef]",
+        "{", c(8L, 4L, 4L, 4L, 12L), "}",
+        collapse = "-"
+    ), "$")
+    function(x)
+        grepl(HEX_PATTERN, x)
+})
+
 ## wrap lines to output width, with 2-character 'exdent' of lines
 ## after the first
 

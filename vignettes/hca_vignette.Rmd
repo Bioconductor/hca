@@ -95,6 +95,15 @@ projectIds <-
 projectId <- projectIds[1]
 ```
 
+A project id can be used to discover the title or additional project
+information.
+
+```{r}
+project_title(projectId)
+
+project_information(projectId)
+```
+
 ## Discover and download the loom file of interest
 
 `files()` retrieves (the first 1000) files from the Human Cell Atlas

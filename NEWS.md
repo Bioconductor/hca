@@ -1,4 +1,11 @@
-Changes in version 1.6
+# Changes in version 1.8
+
+New features
+
+- (v. 1.7.1) Implement `project_title()` and `project_information()`
+  to retrieve summary information from project IDs.
+
+# Changes in version 1.6
 
 New features
 
@@ -24,7 +31,7 @@ Bug fixes
 + (v. 1.5.5) `facet_options()`consults the correct part of the updated
   API specification to find available filters.
 
-Changes in version 1.2
+# Changes in version 1.2
 
 New features
 
@@ -36,7 +43,7 @@ Bug fixes
 
 + (v. 1.2.1) `manifest()` uses all rows to guess column format.
 
-Changes in RELEASE version 1.0 (2021-08-19)
+# Changes in RELEASE version 1.0 (2021-08-19)
 
 Bug fixes
 
@@ -51,7 +58,7 @@ Bug fixes
 + (v. 1.0.1) Update `filters()` to handle long character strings
   without newline breaks
 
-Changes in version 0.99.0 (2021-02-26)
+# Changes in version 0.99.0 (2021-02-26)
 
 + Prep for submission to Bioconductor
 + Added a `NEWS.md` file to track changes to the package.

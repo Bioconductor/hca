@@ -1,18 +1,15 @@
 Package: hca
 Title: Exploring the Human Cell Atlas Data Coordinating Platform
-Version: 1.7.0
+Version: 1.7.1
 Authors@R:
-    c(person(given = "Maya",
-           family = "McDaniel",
-           role = c("aut"),
-           email = "maya.mcdaniel@roswellpark.org"
-      ),
+    c(person(given = "Maya", family = "McDaniel", role = "aut"),
       person(given = "Martin",
            family = "Morgan",
            role = c("aut", "cre"),
            email = "martin.morgan@roswellpark.org",
            comment = c(ORCID = "0000-0002-5874-8148")
-      )
+      ),
+      person(given = "Kayla", family = "Interdonato", role = "ctb")
     )
 Description: This package provides users with the ability to query the
     Human Cell Atlas data repository for single-cell experiment
@@ -26,7 +23,7 @@ Description: This package provides users with the ability to query the
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.2
 Depends: R (>= 4.1)
 Imports:
     httr,
