@@ -30,11 +30,18 @@ project_information_description_clean <-
     project_information_strwrap(description)
 }
 
+project_information_url_clean <-
+    function(url)
+{
+    url <- paste(unlist(url, use.names = FALSE), collapse = " ")
+    project_information_strwrap(url)
+}
+
 #' @rdname project_information
 #'
-#' @title Project-related Queries
+#' @title Project Summaries from Project IDs
 #'
-#' @description `project_information()` queries the HCA databasee for
+#' @description `project_information()` queries the HCA database for
 #'     project title, description, contact, DOI, and publication URI.
 #'
 #' @param project_id `character(1)` project identifier, e.g.,
@@ -45,8 +52,6 @@ project_information_description_clean <-
 #'     tibble is of class `project_information` and is printed in an
 #'     interactive session formatted so long columns, e.g.,
 #'     `projectDescription`, are more easily read.
-#'
-#' @importFrom hca filters projects
 #'
 #' @importFrom dplyr mutate bind_cols
 #'
@@ -59,7 +64,8 @@ project_information <-
     function(project_id)
 {
     stopifnot(
-        .is_scalar_character(project_id)
+        .is_scalar_character(project_id),
+        .is_project_id(project_id)
     )
 
     filter <- filters(projectId = list(is = project_id))
@@ -103,7 +109,8 @@ project_title <-
     function(project_id)
 {
     stopifnot(
-        .is_scalar_character(project_id)
+        .is_scalar_character(project_id),
+        .is_project_id(project_id)
     )
 
     project_information(project_id) |>
@@ -137,9 +144,9 @@ print.project_information <-
         project_information_contributors_clean(x$contributors), "\n",
         "Description\n",
         project_information_description_clean(x$projectDescription), "\n",
-        "doi: ", x$doi, "\n",
-        "url: ", x$url, "\n",
-        "project: ", x$hca_project_url, "\n",
+        "DOI\n", project_information_url_clean(x$doi), "\n",
+        "URL\n", project_information_url_clean(x$url), "\n",
+        "Project\n", project_information_url_clean(x$hca_project_url), "\n",
         sep = ""
     )
 }

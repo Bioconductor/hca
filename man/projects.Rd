@@ -111,6 +111,9 @@ by \code{projects()}, \code{files()}, \code{samples()}, or \code{bundles()}.
 \code{projects_detail()} takes a unique project_id and catalog for
 the project, and returns details about the specified project as a
 list-of-lists
+
+See \code{project_information()} and \code{project_title()} to
+easily summarize a project from its project id.
 }
 \details{
 The \code{as} argument determines the object returned by the
@@ -151,6 +154,9 @@ projects_detail(uuid = project_uuid)
 
 }
 \seealso{
+\code{project_information()} and \code{project_title()} to easily
+summarize a project from its project id.
+
 \code{lol()} and other \verb{lol_*()} functions for working with the
 list-of-list data structure returned when \code{as = "lol"}.
 }

@@ -4,7 +4,7 @@
 \alias{project_information}
 \alias{project_title}
 \alias{print.project_information}
-\title{Project-related Queries}
+\title{Project Summaries from Project IDs}
 \usage{
 project_information(project_id)
 
@@ -37,7 +37,7 @@ the result of \code{project_information()} is displayed for it's
 side effect of displaying the object.
 }
 \description{
-\code{project_information()} queries the HCA databasee for
+\code{project_information()} queries the HCA database for
 project title, description, contact, DOI, and publication URI.
 
 \code{project_title()} returns the title of the project,

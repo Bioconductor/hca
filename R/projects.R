@@ -36,6 +36,9 @@
 #'
 #' @description `projects()` takes user input to be used to query the
 #'     HCA API for information about available projects.
+#'
+#' @seealso `project_information()` and `project_title()` to easily
+#'     summarize a project from its project id.
 NULL # don't add next function to documentation
 
 #' @param filters filter object created by `filters()`, or `NULL`
@@ -253,6 +256,9 @@ projects_default_columns <-
 #' @description `projects_detail()` takes a unique project_id and catalog for
 #' the project, and returns details about the specified project as a
 #' list-of-lists
+#'
+#' @description See `project_information()` and `project_title()` to
+#'     easily summarize a project from its project id.
 #'
 #' @param uuid character() unique identifier (e.g., `projectId`) of
 #'     the object.
