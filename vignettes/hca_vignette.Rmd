@@ -289,7 +289,11 @@ necessary.
 ```{r}
 projects |>
     select(projectId, cellSuspensions.organ, totalCells) |>
-    filter(lengths(totalCells) > 0) |>
+    filter(
+        ## 2023-06-06 two projects have different 'organ' and
+        ## 'totalCells' lengths, causing problems with `unnest()`
+        lengths(cellSuspensions.organ) == lengths(totalCells)
+    ) |>
     tidyr::unnest(c("cellSuspensions.organ", "totalCells"))
 ```
 
@@ -298,7 +302,7 @@ Select the following entry, augment the filter, and query available files
 ```{r}
 projects |>
     filter(startsWith(projectTitle, "Reconstruct")) |>
-    t()
+    glimpse()
 ```
 
 This approach can be used to customize the tibbles returned by the
