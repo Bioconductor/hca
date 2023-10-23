@@ -56,7 +56,8 @@ library(hca)
 
 # Example: manifests
 
-The manifest for all files available can be obtained with
+The manifest for all files available can be obtained with (this can
+takes several minutes to complete)
 
 ```{r, eval = FALSE}
 default_manifest_tbl <- hca::manifest()

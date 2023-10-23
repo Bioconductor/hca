@@ -29,14 +29,14 @@ list-of-lists of summary statistics.
 \code{summary()} provides numerical summaries of catalog content
 }
 \examples{
-summary()
+hca::summary()
 
 filter <- filters(
     organ = list(is = c("brain", "heart")),
     genusSpecies = list(is = "Homo sapiens")
 )
-summary(filter)
-summary(filter, "fileTypeSummaries")
-summary(filter, "cellCountSummaries")
+hca::summary(filter)
+hca::summary(filter, "fileTypeSummaries")
+hca::summary(filter, "cellCountSummaries")
 
 }

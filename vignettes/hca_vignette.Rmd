@@ -430,13 +430,13 @@ heart_bundles
 
 # Example: Obtaining summaries of project catalogs
 HCA experiments are organized into catalogs, each of which can be summarized
-with the `summary()` function
+with the `hca::summary()` function
 
 ```{r}
 heart_filters <- filters(organ = list(is = "heart"))
-summary(filters = heart_filters, type = "fileTypeSummaries")
+hca::summary(filters = heart_filters, type = "fileTypeSummaries")
 first_catalog <- catalogs()[1]
-summary(type = "overview", catalog = first_catalog)
+hca::summary(type = "overview", catalog = first_catalog)
 ```
 
 # Example: Obtaining details on individual projects, files, samples, and bundles
