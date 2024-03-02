@@ -1,3 +1,10 @@
+# Changes in version 1.11
+
+Bug fixes
+
+- (v. 1.11.1) unlink cache on Bioconductor build system once every 2
+  weeks to mitigate cache corruption.
+
 # Changes in version 1.8
 
 New features

@@ -79,4 +79,16 @@
     function(libname, pkgname)
 {
     .BASE_URL <<- Sys.getenv("BIOCONDUCTOR_HCA_BASE_URL", .BASE_URL)
+
+    ## unlink cache on build system once every two weeks
+    if (identical(Sys.getenv("IS_BIOC_BUILD_MACHINE"), "true")) {
+        cache_path <- manifest_cache()
+        if (dir.exists(cache_path)) {
+            creation_time <-  file.info(cache_path, extra_cols = FALSE)$ctime
+            age <- difftime(Sys.Date(), creation_time, units = "days")
+            if (age > 14) {
+                unlink(cache_path, recursive = TRUE, force =  TRUE)
+            }
+        }
+    }
 }

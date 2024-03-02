@@ -71,27 +71,24 @@ NULL # don't add next function to documentation
 #'
 #' @details The `as` argument determines the object returned by the
 #'     function. Possible values are:
-#' \itemize{
 #'
-#' \item{"tibble"}{ (default) A tibble (data.frame) summarizing
-#'   essential elements of projects, samples, bundles, or files.}
+#' - "tibble" (default) A tibble (data.frame) summarizing essential
+#'   elements of projects, samples, bundles, or files.
 #'
-#' \item{"lol"}{ A 'list-of-lists' representation of the JSON returned
-#'     by the query as a 'list-of-lists' data structure, indexed and
-#'     presented to enable convenient filtering, selection, and
-#'     extraction. See `?lol`.}
+#' - "lol" A 'list-of-lists' representation of the JSON returned by
+#'   the query as a 'list-of-lists' data structure, indexed and
+#'   presented to enable convenient filtering, selection, and
+#'   extraction. See `?lol`.
 #'
-#' \item{"list"}{ An R list (typically, highly recursive) containing
-#'     detailed project information, constructed from the JSON
-#'     response to the original query.}
+#' - "list" An R list (typically, highly recursive) containing
+#'   detailed project information, constructed from the JSON response
+#'   to the original query.
 #'
-#' \item{"tibble_expanded"}{ A tibble (data.frame) containing (almost)
-#'     all information for each project, sample, bundle, or file. The
-#'     exception is user-contributed matrices present in `projects()`
-#'     records; these must be accessed using the `"lol"` format to
-#'     extract specific paths as a standard `"tibble"`.}
-#'
-#' }
+#' - "tibble_expanded" A tibble (data.frame) containing (almost) all
+#'   information for each project, sample, bundle, or file. The
+#'   exception is user-contributed matrices present in `projects()`
+#'   records; these must be accessed using the `"lol"` format to
+#'   extract specific paths as a standard `"tibble"`.
 #'
 #' @seealso `lol()` and other `lol_*()` functions for working with the
 #'     list-of-list data structure returned when `as = "lol"`.

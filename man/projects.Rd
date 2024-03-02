@@ -119,25 +119,20 @@ easily summarize a project from its project id.
 The \code{as} argument determines the object returned by the
 function. Possible values are:
 \itemize{
-
-\item{"tibble"}{ (default) A tibble (data.frame) summarizing
-essential elements of projects, samples, bundles, or files.}
-
-\item{"lol"}{ A 'list-of-lists' representation of the JSON returned
-by the query as a 'list-of-lists' data structure, indexed and
+\item "tibble" (default) A tibble (data.frame) summarizing essential
+elements of projects, samples, bundles, or files.
+\item "lol" A 'list-of-lists' representation of the JSON returned by
+the query as a 'list-of-lists' data structure, indexed and
 presented to enable convenient filtering, selection, and
-extraction. See \code{?lol}.}
-
-\item{"list"}{ An R list (typically, highly recursive) containing
-detailed project information, constructed from the JSON
-response to the original query.}
-
-\item{"tibble_expanded"}{ A tibble (data.frame) containing (almost)
-all information for each project, sample, bundle, or file. The
+extraction. See \code{?lol}.
+\item "list" An R list (typically, highly recursive) containing
+detailed project information, constructed from the JSON response
+to the original query.
+\item "tibble_expanded" A tibble (data.frame) containing (almost) all
+information for each project, sample, bundle, or file. The
 exception is user-contributed matrices present in \code{projects()}
 records; these must be accessed using the \code{"lol"} format to
-extract specific paths as a standard \code{"tibble"}.}
-
+extract specific paths as a standard \code{"tibble"}.
 }
 }
 \examples{
