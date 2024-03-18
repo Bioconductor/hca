@@ -108,9 +108,10 @@ manifest_uuid_constructor <-
         config <-  httr::config(followlocation = 0)
 
         total_wait <- 0L
+        HTTR_VERB <- httr::PUT
         message("requesting manifest")
         repeat {
-            ref_response <- httr::GET(manifest_ref_url, config = config)
+            ref_response <- HTTR_VERB(manifest_ref_url, config = config)
             stop_for_status(ref_response)
 
             content <- httr::content(ref_response)
@@ -121,9 +122,10 @@ manifest_uuid_constructor <-
                 wait <- content$`Retry-After`
                 total_wait <- total_wait + wait
                 manifest_ref_url <- content$Location
+                HTTR_VERB <- httr::GET
                 message(
                     "waiting ", wait, " more seconds ",
-                "(", total_wait, " seconds total)..."
+                    "(", total_wait, " seconds total)..."
                 )
                 Sys.sleep(wait)
             } else {
