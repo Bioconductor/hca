@@ -1,9 +1,12 @@
-# Changes in version 1.11
+# Changes in version 1.12
 
 Bug fixes
 
 - (v. 1.11.1) unlink cache on Bioconductor build system once every 2
   weeks to mitigate cache corruption.
+
+- (v. 1.11.2) `manifest()` requires modification to accommodate changes
+  introduced by HCA
 
 # Changes in version 1.8
 
