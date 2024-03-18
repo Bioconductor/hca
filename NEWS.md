@@ -1,3 +1,10 @@
+# Changes in version 1.10.1
+
+Bug fixes
+
+- (v. 1.10.1) `manifest()` requires modification to accommodate changes
+  introduced by HCA
+
 # Changes in version 1.8
 
 New features
