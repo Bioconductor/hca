@@ -20,7 +20,7 @@
     timestamp <- NULL
     function() {
         if (is.null(timestamp) || Sys.time() > timestamp + 3600L) {
-            api <- .hca_path("/openapi")
+            api <- .hca_path("/openapi.json")
             json <<- jsonlite::read_json(api)
             timestamp <<- Sys.time()
         }
